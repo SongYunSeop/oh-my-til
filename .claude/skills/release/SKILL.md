@@ -44,9 +44,63 @@ $ARGUMENTS에서 bump 타입을 추출합니다: `patch`, `minor`, `major` (기�
 4. 변경사항을 커밋: `🔖 chore: release v{version}`
 5. 태그 생성: `git tag v{version}`
 6. 푸시: `git push origin main --tags`
-7. GitHub Release 생성:
+7. 릴리스 노트 작성 (아래 템플릿 참고)
+8. GitHub Release 생성:
    ```
-   gh release create v{version} main.js manifest.json styles.css --title "v{version}" --generate-notes
+   gh release create v{version} main.js manifest.json styles.css --title "v{version}" --notes "{릴리스 노트}"
    ```
 
 에셋은 반드시 `main.js`, `manifest.json`, `styles.css` 세 파일입니다.
+
+## 릴리스 노트 작성
+
+이전 태그부터 현재까지 커밋을 분석하여 릴리스 노트를 작성한다.
+
+### 커밋 분석
+
+```bash
+git log {이전태그}...HEAD --oneline
+```
+
+이전 태그가 없으면 전체 커밋을 대상으로 한다.
+
+### 커밋 분류 규칙
+
+커밋 prefix 이모지 또는 타입으로 분류:
+
+| prefix | 카테고리 |
+|--------|----------|
+| `✨ feat` | Features |
+| `♻️ refactor`, `⚡ perf`, `🎨 style` | Improvements |
+| `🐛 fix` | Bug Fixes |
+| `📝 docs` | Documentation |
+| `✅ test` | Tests |
+| `🔖 chore`, `🔧 chore` | Chores (릴리스 노트에서 제외) |
+
+### 릴리스 노트 템플릿
+
+```markdown
+## What's Changed
+
+### Features
+- 변경 요약 (커밋 메시지를 사용자 관점으로 재작성)
+
+### Improvements
+- 개선 요약
+
+### Bug Fixes
+- 수정 요약
+
+### Documentation
+- 문서 변경 요약
+
+**Full Changelog**: https://github.com/{owner}/{repo}/compare/{이전태그}...v{version}
+```
+
+### 작성 규칙
+
+- 커밋 메시지를 그대로 복사하지 않고, **사용자 관점**에서 재작성한다
+- 영문으로 작성한다
+- `chore` 커밋(버전 범프, 릴리스 등)은 노트에서 제외한다
+- 빈 카테고리는 섹션째 생략한다
+- 한 카테고리에 항목이 1개면 카테고리 헤딩 없이 바로 나열해도 된다
