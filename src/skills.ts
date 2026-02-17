@@ -12,17 +12,55 @@ const SKILLS: Record<string, string> = {
 	"research/SKILL.md": researchSkill,
 };
 
+const SKILLS_BASE = ".claude/skills/claude-til";
+const OLD_SKILLS_BASE = ".claude/skills";
+
 const MCP_MARKER_START = "<!-- claude-til:mcp-tools:start -->";
 const MCP_MARKER_END = "<!-- claude-til:mcp-tools:end -->";
 
 /**
- * vault의 .claude/skills/ 에 skill 파일이 없으면 자동 설치한다.
- * 이미 존재하는 파일은 건드리지 않는다 (사용자 커스터마이즈 보호).
+ * frontmatter에서 plugin-version 값을 추출한다.
  */
-export async function installSkills(vault: Vault): Promise<void> {
+export function extractPluginVersion(content: string): string | null {
+	const match = content.match(/^---\n([\s\S]*?)\n---/);
+	if (!match) return null;
+	const versionMatch = match[1]!.match(/plugin-version:\s*"?([^"\n]+)"?/);
+	return versionMatch ? versionMatch[1]!.trim() : null;
+}
+
+/**
+ * semver 비교. a > b이면 true.
+ */
+export function isNewerVersion(a: string, b: string): boolean {
+	const pa = a.split(".").map(Number);
+	const pb = b.split(".").map(Number);
+	for (let i = 0; i < 3; i++) {
+		if ((pa[i] || 0) > (pb[i] || 0)) return true;
+		if ((pa[i] || 0) < (pb[i] || 0)) return false;
+	}
+	return false;
+}
+
+/**
+ * vault의 .claude/skills/claude-til/ 에 skill 파일을 설치/업데이트한다.
+ *
+ * - 파일이 없으면 새로 설치
+ * - plugin-version이 현재보다 낮으면 업데이트
+ * - plugin-version이 없으면 사용자 커스터마이즈로 간주, 건너뜀
+ */
+export async function installSkills(vault: Vault, pluginVersion: string): Promise<void> {
 	for (const [relativePath, content] of Object.entries(SKILLS)) {
-		const fullPath = `.claude/skills/${relativePath}`;
-		if (await vault.adapter.exists(fullPath)) continue;
+		const fullPath = `${SKILLS_BASE}/${relativePath}`;
+
+		if (await vault.adapter.exists(fullPath)) {
+			const existing = await vault.adapter.read(fullPath);
+			const installedVersion = extractPluginVersion(existing);
+
+			// plugin-version이 없으면 사용자 커스터마이즈 → 건너뜀
+			if (!installedVersion) continue;
+			// 현재 버전이 더 높지 않으면 건너뜀
+			if (!isNewerVersion(pluginVersion, installedVersion)) continue;
+		}
 
 		// 디렉토리 생성
 		const dir = fullPath.substring(0, fullPath.lastIndexOf("/"));
@@ -34,16 +72,18 @@ export async function installSkills(vault: Vault): Promise<void> {
 		console.log(`Claude TIL: skill 설치됨 → ${fullPath}`);
 	}
 
-	await installClaudeMdSection(vault);
+	await installClaudeMdSection(vault, pluginVersion);
+	await cleanupOldSkills(vault);
 }
 
 /**
- * .claude/CLAUDE.md에 MCP 도구 안내 섹션을 추가한다.
- * 마커 주석으로 관리하여 기존 내용을 보존하고 중복 추가를 방지한다.
+ * .claude/CLAUDE.md에 MCP 도구 안내 섹션을 추가/업데이트한다.
+ * 마커 주석(버전 포함)으로 관리하여 기존 내용을 보존한다.
  */
-async function installClaudeMdSection(vault: Vault): Promise<void> {
+async function installClaudeMdSection(vault: Vault, pluginVersion: string): Promise<void> {
 	const filePath = ".claude/CLAUDE.md";
-	const section = `${MCP_MARKER_START}\n${claudeMdSection}\n${MCP_MARKER_END}`;
+	const markerStart = `${MCP_MARKER_START}:${pluginVersion}`;
+	const section = `${markerStart}\n${claudeMdSection}\n${MCP_MARKER_END}`;
 
 	if (!(await vault.adapter.exists(".claude"))) {
 		await vault.adapter.mkdir(".claude");
@@ -51,11 +91,45 @@ async function installClaudeMdSection(vault: Vault): Promise<void> {
 
 	if (await vault.adapter.exists(filePath)) {
 		const existing = await vault.adapter.read(filePath);
-		if (existing.includes(MCP_MARKER_START)) return; // 이미 설치됨
-		await vault.adapter.write(filePath, existing.trimEnd() + "\n\n" + section + "\n");
+
+		if (existing.includes(markerStart)) return; // 같은 버전 이미 설치됨
+
+		// 이전 버전 마커가 있으면 교체
+		if (existing.includes(MCP_MARKER_START)) {
+			const replaced = existing.replace(
+				new RegExp(`${escapeRegExp(MCP_MARKER_START)}[\\s\\S]*?${escapeRegExp(MCP_MARKER_END)}`),
+				section,
+			);
+			await vault.adapter.write(filePath, replaced);
+		} else {
+			await vault.adapter.write(filePath, existing.trimEnd() + "\n\n" + section + "\n");
+		}
 	} else {
 		await vault.adapter.write(filePath, section + "\n");
 	}
 
 	console.log("Claude TIL: CLAUDE.md에 MCP 도구 안내 추가됨");
+}
+
+/**
+ * 이전 경로(.claude/skills/til/ 등)의 skill을 정리한다.
+ * plugin-version이 있는 파일만 삭제 (사용자 커스터마이즈 보호).
+ */
+async function cleanupOldSkills(vault: Vault): Promise<void> {
+	const oldPaths = ["til/SKILL.md", "backlog/SKILL.md", "research/SKILL.md"];
+	for (const relativePath of oldPaths) {
+		const oldPath = `${OLD_SKILLS_BASE}/${relativePath}`;
+		if (!(await vault.adapter.exists(oldPath))) continue;
+
+		const content = await vault.adapter.read(oldPath);
+		const version = extractPluginVersion(content);
+		if (version) {
+			await vault.adapter.remove(oldPath);
+			console.log(`Claude TIL: 이전 skill 삭제 → ${oldPath}`);
+		}
+	}
+}
+
+function escapeRegExp(str: string): string {
+	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

@@ -43,8 +43,8 @@ export default class TILPlugin extends Plugin {
 
 		this.addSettingTab(new TILSettingTab(this.app, this));
 
-		// skill 자동 설치 (.claude/skills/ 에 없으면 복사)
-		installSkills(this.app.vault);
+		// skill 자동 설치/업데이트 (.claude/skills/claude-til/)
+		installSkills(this.app.vault, this.manifest.version);
 
 		// 파일 watcher 시작
 		if (this.settings.autoOpenNewTIL) {

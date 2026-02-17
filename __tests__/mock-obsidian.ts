@@ -48,6 +48,9 @@ export class Vault {
 		read: async (path: string): Promise<string> => {
 			return this.files.get(path) ?? "";
 		},
+		remove: async (path: string): Promise<void> => {
+			this.files.delete(path);
+		},
 	};
 
 	// 테스트 헬퍼: 파일/폴더 등록
