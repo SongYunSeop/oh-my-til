@@ -22,6 +22,16 @@ argument-hint: "<주제> [카테고리]"
 - 이미 작성된 TIL을 수정하고 싶을 때 → 직접 파일을 편집
 - 주제가 너무 넓어서 TIL 한 장으로 정리할 수 없을 때 → `/research`로 분해 후 개별 `/til`
 
+## MCP 도구 활용
+
+`claude-til` MCP 서버가 연결되어 있으면 MCP 도구를 활용한다:
+
+- **Phase 1 시작 전**: `til_list`로 기존 TIL 목록을 확인하여 동일/유사 주제 중복 방지
+- **Phase 2 중**: `vault_search`로 vault 내 관련 노트를 검색하여 `[[wikilink]]` 후보 파악
+- **Phase 3 저장 전**: `vault_get_active_file`로 사용자가 보고 있는 파일 컨텍스트 확인
+
+MCP 도구를 사용할 수 없는 경우에도 워크플로우는 정상 동작한다.
+
 ## 워크플로우
 
 ### Phase 1: 주제 리서치

@@ -20,6 +20,15 @@ disable-model-invocation: true
 - 특정 개념을 학습하고 싶을 때 → `/til` 사용
 - 백로그 항목을 완료 처리하고 싶을 때 → `/til`로 학습 후 자동 체크되거나 직접 편집
 
+## MCP 도구 활용
+
+`claude-til` MCP 서버가 연결되어 있으면 MCP 도구를 우선 사용한다:
+
+- **전체 조회** (`/backlog`): `til_backlog_status` 도구로 진행률 데이터를 가져온다
+- **카테고리 조회** (`/backlog 카테고리`): `til_backlog_status` 도구에 `category` 인수를 전달한다. 섹션별 상세 내역이 필요하면 파일을 직접 읽는다
+
+MCP 도구를 사용할 수 없는 경우 아래 워크플로우대로 파일을 직접 읽는다.
+
 ## 워크플로우
 
 ### 인수가 없을 때 (`/backlog`)
