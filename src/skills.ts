@@ -12,8 +12,8 @@ const SKILLS: Record<string, string> = {
 	"research/SKILL.md": researchSkill,
 };
 
-const SKILLS_BASE = ".claude/skills/claude-til";
-const OLD_SKILLS_BASE = ".claude/skills";
+const SKILLS_BASE = ".claude/skills";
+const OLD_SKILLS_BASE = ".claude/skills/claude-til";
 
 const MCP_MARKER_START = "<!-- claude-til:mcp-tools:start -->";
 const MCP_MARKER_END = "<!-- claude-til:mcp-tools:end -->";
@@ -42,7 +42,7 @@ export function isNewerVersion(a: string, b: string): boolean {
 }
 
 /**
- * vault의 .claude/skills/claude-til/ 에 skill 파일을 설치/업데이트한다.
+ * vault의 .claude/skills/ 에 skill 파일을 설치/업데이트한다.
  *
  * - 파일이 없으면 새로 설치
  * - plugin-version이 현재보다 낮으면 업데이트
@@ -112,7 +112,7 @@ async function installClaudeMdSection(vault: Vault, pluginVersion: string): Prom
 }
 
 /**
- * 이전 경로(.claude/skills/til/ 등)의 skill을 정리한다.
+ * 이전 경로(.claude/skills/claude-til/ 등)의 skill을 정리한다.
  * plugin-version이 있는 파일만 삭제 (사용자 커스터마이즈 보호).
  */
 async function cleanupOldSkills(vault: Vault): Promise<void> {

@@ -22,8 +22,8 @@ function isNewerVersion(a: string, b: string): boolean {
 
 // --- installSkills 로직 재현 (esbuild text import 우회) ---
 
-const SKILLS_BASE = ".claude/skills/claude-til";
-const OLD_SKILLS_BASE = ".claude/skills";
+const SKILLS_BASE = ".claude/skills";
+const OLD_SKILLS_BASE = ".claude/skills/claude-til";
 const MCP_MARKER_START = "<!-- claude-til:mcp-tools:start -->";
 const MCP_MARKER_END = "<!-- claude-til:mcp-tools:end -->";
 
@@ -165,49 +165,49 @@ describe("installSkills", () => {
 	it("파일이 없으면 새로 설치한다", async () => {
 		const installed = await installSkills(vault, "0.2.0", skills);
 
-		expect(installed).toContain(".claude/skills/claude-til/til/SKILL.md");
-		expect(installed).toContain(".claude/skills/claude-til/backlog/SKILL.md");
+		expect(installed).toContain(".claude/skills/til/SKILL.md");
+		expect(installed).toContain(".claude/skills/backlog/SKILL.md");
 
-		const content = await vault.adapter.read(".claude/skills/claude-til/til/SKILL.md");
+		const content = await vault.adapter.read(".claude/skills/til/SKILL.md");
 		expect(content).toContain("# TIL Skill v2");
 	});
 
 	it("plugin-version이 낮은 파일은 업데이트한다", async () => {
 		vault._setFile(
-			".claude/skills/claude-til/til/SKILL.md",
+			".claude/skills/til/SKILL.md",
 			'---\nplugin-version: "0.1.0"\n---\n# TIL Skill v1',
 		);
 
 		const installed = await installSkills(vault, "0.2.0", skills);
 
-		expect(installed).toContain(".claude/skills/claude-til/til/SKILL.md");
-		const content = await vault.adapter.read(".claude/skills/claude-til/til/SKILL.md");
+		expect(installed).toContain(".claude/skills/til/SKILL.md");
+		const content = await vault.adapter.read(".claude/skills/til/SKILL.md");
 		expect(content).toContain("# TIL Skill v2");
 	});
 
 	it("같은 버전이면 건너뛴다", async () => {
 		vault._setFile(
-			".claude/skills/claude-til/til/SKILL.md",
+			".claude/skills/til/SKILL.md",
 			'---\nplugin-version: "0.2.0"\n---\n# TIL Skill v2 (기존)',
 		);
 
 		const installed = await installSkills(vault, "0.2.0", skills);
 
-		expect(installed).not.toContain(".claude/skills/claude-til/til/SKILL.md");
-		const content = await vault.adapter.read(".claude/skills/claude-til/til/SKILL.md");
+		expect(installed).not.toContain(".claude/skills/til/SKILL.md");
+		const content = await vault.adapter.read(".claude/skills/til/SKILL.md");
 		expect(content).toContain("기존");
 	});
 
 	it("plugin-version이 없으면 사용자 커스터마이즈로 간주하고 건너뛴다", async () => {
 		vault._setFile(
-			".claude/skills/claude-til/til/SKILL.md",
+			".claude/skills/til/SKILL.md",
 			"# 사용자가 직접 작성한 스킬",
 		);
 
 		const installed = await installSkills(vault, "0.2.0", skills);
 
-		expect(installed).not.toContain(".claude/skills/claude-til/til/SKILL.md");
-		const content = await vault.adapter.read(".claude/skills/claude-til/til/SKILL.md");
+		expect(installed).not.toContain(".claude/skills/til/SKILL.md");
+		const content = await vault.adapter.read(".claude/skills/til/SKILL.md");
 		expect(content).toBe("# 사용자가 직접 작성한 스킬");
 	});
 
@@ -284,31 +284,31 @@ describe("cleanupOldSkills", () => {
 
 	it("이전 경로의 plugin-managed 스킬을 삭제한다", async () => {
 		vault._setFile(
-			".claude/skills/til/SKILL.md",
+			".claude/skills/claude-til/til/SKILL.md",
 			'---\nplugin-version: "0.1.0"\n---\n# TIL',
 		);
 		vault._setFile(
-			".claude/skills/backlog/SKILL.md",
+			".claude/skills/claude-til/backlog/SKILL.md",
 			'---\nplugin-version: "0.1.0"\n---\n# Backlog',
 		);
 
 		const removed = await cleanupOldSkills(vault);
 
-		expect(removed).toContain(".claude/skills/til/SKILL.md");
-		expect(removed).toContain(".claude/skills/backlog/SKILL.md");
-		expect(await vault.adapter.exists(".claude/skills/til/SKILL.md")).toBe(false);
+		expect(removed).toContain(".claude/skills/claude-til/til/SKILL.md");
+		expect(removed).toContain(".claude/skills/claude-til/backlog/SKILL.md");
+		expect(await vault.adapter.exists(".claude/skills/claude-til/til/SKILL.md")).toBe(false);
 	});
 
 	it("plugin-version이 없는 사용자 파일은 보존한다", async () => {
 		vault._setFile(
-			".claude/skills/til/SKILL.md",
+			".claude/skills/claude-til/til/SKILL.md",
 			"# 사용자가 직접 작성한 스킬",
 		);
 
 		const removed = await cleanupOldSkills(vault);
 
 		expect(removed).toEqual([]);
-		expect(await vault.adapter.exists(".claude/skills/til/SKILL.md")).toBe(true);
+		expect(await vault.adapter.exists(".claude/skills/claude-til/til/SKILL.md")).toBe(true);
 	});
 
 	it("이전 경로에 파일이 없으면 아무것도 하지 않는다", async () => {

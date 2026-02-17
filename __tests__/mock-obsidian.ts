@@ -165,6 +165,7 @@ export class FuzzySuggestModal<T> {
 
 export class Plugin {
 	app: App;
+	manifest = { version: "0.0.0" };
 	constructor() { this.app = new App(); }
 	addCommand(_cmd: unknown): void {}
 	addSettingTab(_tab: unknown): void {}

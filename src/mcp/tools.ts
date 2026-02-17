@@ -148,13 +148,14 @@ export function registerTools(server: McpServer, app: App, tilPath: string): voi
 			}),
 		},
 		async ({ category }) => {
-			const backlogFolder = tilPath + "/backlog";
+			// 백로그 파일은 til/{카테고리}/backlog.md 경로에 있다
 			const files = app.vault.getFiles().filter((f) => {
-				if (!f.path.startsWith(backlogFolder + "/") && f.path !== backlogFolder) return false;
-				if (f.extension !== "md") return false;
+				if (!f.path.startsWith(tilPath + "/")) return false;
+				if (f.name !== "backlog.md") return false;
 				if (category) {
-					const relative = f.path.replace(backlogFolder + "/", "");
-					if (!relative.startsWith(category + "/") && relative !== category + ".md") return false;
+					const relative = f.path.replace(tilPath + "/", "");
+					const cat = relative.split("/")[0];
+					if (cat !== category) return false;
 				}
 				return true;
 			});
