@@ -11,7 +11,7 @@ An Obsidian plugin that embeds a Claude Code terminal in the sidebar and provide
 ## Features
 
 - **Embedded Terminal** — Claude Code terminal in Obsidian sidebar (xterm.js + node-pty)
-- **Built-in MCP Server** — Claude Code can directly access your vault via WebSocket
+- **Built-in MCP Server** — Claude Code can directly access your vault via HTTP
 - **Learning Dashboard** — TIL statistics and category breakdown at a glance
 - **Auto-installed Skills** — `/til`, `/research`, `/backlog` commands ready out of the box
 - **File Watcher** — Newly created TIL files open automatically in the editor
@@ -46,10 +46,10 @@ Restart Obsidian, then enable **Claude TIL** in Settings > Community plugins.
 
 ### MCP Server Setup (Optional)
 
-The plugin runs a WebSocket-based MCP server so Claude Code can access your vault directly:
+The plugin runs an HTTP-based MCP server so Claude Code can access your vault directly:
 
 ```bash
-claude mcp add --transport ws claude-til ws://localhost:22360
+claude mcp add --transport http claude-til http://localhost:22360/mcp
 ```
 
 ## Configuration
@@ -62,7 +62,7 @@ claude mcp add --transport ws claude-til ws://localhost:22360
 | TIL Folder | `til` | Where TIL files are stored (relative to vault root) |
 | Auto Open New TIL | `true` | Open new TIL files in editor automatically |
 | MCP Server | `true` | Enable built-in MCP server |
-| MCP Port | `22360` | WebSocket server port |
+| MCP Port | `22360` | MCP server port |
 
 ## MCP Tools
 
@@ -108,8 +108,7 @@ src/
 │   ├── TerminalView.ts      # Sidebar terminal (ItemView + xterm.js)
 │   └── pty.ts               # PTY process manager (node-pty)
 ├── mcp/
-│   ├── server.ts            # MCP server lifecycle
-│   ├── transport.ts         # WebSocket transport adapter
+│   ├── server.ts            # MCP server lifecycle (Streamable HTTP)
 │   └── tools.ts             # MCP tool definitions
 └── dashboard/
     ├── DashboardView.ts     # Learning dashboard (ItemView)
@@ -122,7 +121,7 @@ src/
 |---|---|
 | **Runtime** | TypeScript, Obsidian Plugin API |
 | **Terminal** | xterm.js, node-pty |
-| **MCP** | @modelcontextprotocol/sdk, ws |
+| **MCP** | @modelcontextprotocol/sdk |
 | **Build** | esbuild |
 | **Test** | vitest |
 

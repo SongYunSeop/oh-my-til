@@ -14,7 +14,6 @@ Obsidian의 역할은 "터미널 임베딩 + 파일 감시 + skill 배포 + MCP 
 - xterm.js (@xterm/xterm) — 터미널 렌더링
 - node-pty — PTY(의사 터미널) 프로세스 관리
 - @modelcontextprotocol/sdk — MCP 프로토콜 구현
-- ws — WebSocket 서버 (MCP 트랜스포트)
 - zod — 입력 스키마 검증 (MCP SDK 피어)
 - @electron/rebuild — 네이티브 모듈 재빌드 (Electron 37.10.2)
 - esbuild — 번들러
@@ -35,8 +34,7 @@ src/
 │   ├── TerminalView.ts   ← 사이드바 터미널 (ItemView + xterm.js)
 │   └── pty.ts            ← PTY 프로세스 관리 (node-pty)
 ├── mcp/
-│   ├── server.ts         ← MCP 서버 라이프사이클 (WebSocket 서버 + McpServer)
-│   ├── transport.ts      ← WebSocket 트랜스포트 어댑터
+│   ├── server.ts         ← MCP 서버 라이프사이클 (HTTP + Streamable HTTP 트랜스포트)
 │   └── tools.ts          ← MCP 도구 정의 (vault 접근)
 └── dashboard/
     ├── DashboardView.ts  ← 학습 대시보드 (ItemView)
@@ -68,7 +66,7 @@ npm run build          # 프로덕션 빌드
 - `onunload()`에서 PTY 프로세스를 반드시 kill
 - 파일 감시는 `vault.on('create', ...)` 사용
 - manifest.json의 `isDesktopOnly`는 반드시 `true` (node-pty 네이티브 모듈 때문)
-- esbuild에서 node-pty, ws는 external로 처리
+- esbuild에서 node-pty는 external로 처리
 - UI 워크플로우(주제 입력, 백로그 선택)는 Claude Code 스킬이 담당 — Obsidian 쪽에서 중복 구현하지 않는다
 - MCP 도구는 Obsidian `App` 인스턴스를 통해 vault 접근 — node-pty/터미널을 거치지 않음
 - MCP 서버는 `onload()`에서 시작, `onunload()`에서 종료

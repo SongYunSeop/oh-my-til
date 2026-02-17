@@ -11,7 +11,7 @@ Obsidian 사이드바에 Claude Code 터미널을 임베딩하여 AI 기반 TIL(
 ## 기능
 
 - **터미널 임베딩** — Obsidian 사이드바에서 Claude Code 터미널 실행 (xterm.js + node-pty)
-- **MCP 서버 내장** — Claude Code가 WebSocket으로 vault에 직접 접근 (별도 플러그인 불필요)
+- **MCP 서버 내장** — Claude Code가 HTTP로 vault에 직접 접근 (별도 플러그인 불필요)
 - **학습 대시보드** — TIL 통계, 카테고리별 학습 현황을 한눈에
 - **스킬 자동 설치** — `/til`, `/research`, `/backlog` 명령을 바로 사용 가능
 - **파일 자동 열기** — 새로 생성된 TIL 파일을 에디터에서 자동으로 열기
@@ -46,10 +46,10 @@ Obsidian을 재시작한 뒤 설정 > Community plugins에서 **Claude TIL**을 
 
 ### MCP 서버 연결 (선택)
 
-플러그인이 WebSocket 기반 MCP 서버를 내장하고 있어 Claude Code가 vault에 직접 접근할 수 있습니다:
+플러그인이 HTTP 기반 MCP 서버를 내장하고 있어 Claude Code가 vault에 직접 접근할 수 있습니다:
 
 ```bash
-claude mcp add --transport ws claude-til ws://localhost:22360
+claude mcp add --transport http claude-til http://localhost:22360/mcp
 ```
 
 ## 설정
@@ -62,7 +62,7 @@ claude mcp add --transport ws claude-til ws://localhost:22360
 | TIL 폴더 경로 | `til` | TIL 파일 저장 폴더 (vault 루트 기준) |
 | 새 TIL 파일 자동 열기 | `true` | til/ 폴더에 새 파일 생성 시 자동 오픈 |
 | MCP 서버 활성화 | `true` | 내장 MCP 서버 실행 여부 |
-| MCP 포트 | `22360` | WebSocket 서버 포트 |
+| MCP 포트 | `22360` | MCP 서버 포트 |
 
 ## MCP 도구
 
@@ -108,8 +108,7 @@ src/
 │   ├── TerminalView.ts      # 사이드바 터미널 (ItemView + xterm.js)
 │   └── pty.ts               # PTY 프로세스 관리 (node-pty)
 ├── mcp/
-│   ├── server.ts            # MCP 서버 라이프사이클
-│   ├── transport.ts         # WebSocket 트랜스포트 어댑터
+│   ├── server.ts            # MCP 서버 라이프사이클 (Streamable HTTP)
 │   └── tools.ts             # MCP 도구 정의
 └── dashboard/
     ├── DashboardView.ts     # 학습 대시보드 (ItemView)
@@ -122,7 +121,7 @@ src/
 |---|---|
 | **런타임** | TypeScript, Obsidian Plugin API |
 | **터미널** | xterm.js, node-pty |
-| **MCP** | @modelcontextprotocol/sdk, ws |
+| **MCP** | @modelcontextprotocol/sdk |
 | **빌드** | esbuild |
 | **테스트** | vitest |
 
