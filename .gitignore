@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+main.js
+main.js.map
+
+# Obsidian plugin data
+data.json
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# OMC
+.omc/
