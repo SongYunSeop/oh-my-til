@@ -1,0 +1,146 @@
+# Claude TIL
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Obsidian](https://img.shields.io/badge/Obsidian-v1.5.0+-7C3AED)](https://obsidian.md)
+[![Version](https://img.shields.io/github/v/release/SongYunSeop/obsidian-claude-til)](https://github.com/SongYunSeop/obsidian-claude-til/releases)
+
+[English](README.md) | **한국어**
+
+Obsidian 사이드바에 Claude Code 터미널을 임베딩하여 AI 기반 TIL(Today I Learned) 학습 워크플로우를 제공하는 플러그인입니다.
+
+## 기능
+
+- **터미널 임베딩** — Obsidian 사이드바에서 Claude Code 터미널 실행 (xterm.js + node-pty)
+- **MCP 서버 내장** — Claude Code가 WebSocket으로 vault에 직접 접근 (별도 플러그인 불필요)
+- **학습 대시보드** — TIL 통계, 카테고리별 학습 현황을 한눈에
+- **스킬 자동 설치** — `/til`, `/research`, `/backlog` 명령을 바로 사용 가능
+- **파일 자동 열기** — 새로 생성된 TIL 파일을 에디터에서 자동으로 열기
+
+## 핵심 흐름
+
+```
+커맨드 팔레트 → 터미널 열기 → Claude Code 자동 시작
+→ /til, /backlog, /research 스킬 실행
+→ Claude가 리서치 → 대화형 학습 → TIL 마크다운 저장
+→ 새 파일 감지 → 에디터에서 자동 열기
+```
+
+## 시작하기
+
+### 요구 사항
+
+- [Obsidian](https://obsidian.md) v1.5.0 이상
+- [Node.js](https://nodejs.org) 18 이상
+- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) (`claude`)
+
+### 설치
+
+```bash
+git clone https://github.com/SongYunSeop/obsidian-claude-til.git
+cd obsidian-claude-til
+npm install
+npm run deploy -- /path/to/your/vault
+```
+
+Obsidian을 재시작한 뒤 설정 > Community plugins에서 **Claude TIL**을 활성화합니다.
+
+### MCP 서버 연결 (선택)
+
+플러그인이 WebSocket 기반 MCP 서버를 내장하고 있어 Claude Code가 vault에 직접 접근할 수 있습니다:
+
+```bash
+claude mcp add --transport ws claude-til ws://localhost:22360
+```
+
+## 설정
+
+| 설정 | 기본값 | 설명 |
+|------|--------|------|
+| Shell 경로 | 시스템 기본 셸 | 터미널에서 사용할 셸 |
+| Claude 자동 실행 | `true` | 터미널 열릴 때 `claude` 명령 자동 실행 |
+| 글꼴 크기 | `13` | 터미널 글꼴 크기 (px) |
+| TIL 폴더 경로 | `til` | TIL 파일 저장 폴더 (vault 루트 기준) |
+| 새 TIL 파일 자동 열기 | `true` | til/ 폴더에 새 파일 생성 시 자동 오픈 |
+| MCP 서버 활성화 | `true` | 내장 MCP 서버 실행 여부 |
+| MCP 포트 | `22360` | WebSocket 서버 포트 |
+
+## MCP 도구
+
+MCP 서버 연결 시 Claude Code에서 사용할 수 있는 도구:
+
+| 도구 | 설명 |
+|------|------|
+| `vault_read_note` | 경로로 노트 내용 읽기 |
+| `vault_list_files` | 폴더 내 파일 목록 (필터링 가능) |
+| `vault_search` | vault 전체 텍스트 검색 |
+| `vault_get_active_file` | 현재 열린 파일 가져오기 |
+| `til_list` | 카테고리별 TIL 파일 목록 |
+| `til_backlog_status` | 백로그 진행률 요약 (체크박스 카운트) |
+
+## Claude 스킬
+
+플러그인이 `.claude/skills/`에 자동 설치하는 스킬:
+
+| 스킬 | 명령 | 설명 |
+|------|------|------|
+| **til** | `/til <주제> [카테고리]` | 주제 리서치 → 대화형 학습 → TIL 저장 |
+| **research** | `/research <주제> [카테고리]` | 주제를 리서치하여 학습 백로그 생성 |
+| **backlog** | `/backlog [카테고리]` | 학습 백로그 조회 및 진행 상황 요약 |
+
+## 개발
+
+```bash
+npm run dev              # 워치 모드 (esbuild)
+npm test                 # 테스트 실행 (vitest)
+npm run rebuild-pty      # Obsidian Electron용 node-pty 재빌드
+npm run deploy -- /path  # vault에 배포
+```
+
+### 프로젝트 구조
+
+```
+src/
+├── main.ts                  # 플러그인 진입점
+├── settings.ts              # 설정 탭 + 인터페이스
+├── skills.ts                # 스킬 자동 설치
+├── watcher.ts               # 파일 감시 → 에디터에서 열기
+├── terminal/
+│   ├── TerminalView.ts      # 사이드바 터미널 (ItemView + xterm.js)
+│   └── pty.ts               # PTY 프로세스 관리 (node-pty)
+├── mcp/
+│   ├── server.ts            # MCP 서버 라이프사이클
+│   ├── transport.ts         # WebSocket 트랜스포트 어댑터
+│   └── tools.ts             # MCP 도구 정의
+└── dashboard/
+    ├── DashboardView.ts     # 학습 대시보드 (ItemView)
+    └── stats.ts             # TIL 통계 계산
+```
+
+### 기술 스택
+
+| | |
+|---|---|
+| **런타임** | TypeScript, Obsidian Plugin API |
+| **터미널** | xterm.js, node-pty |
+| **MCP** | @modelcontextprotocol/sdk, ws |
+| **빌드** | esbuild |
+| **테스트** | vitest |
+
+## 로드맵
+
+- [x] Claude Code 터미널 임베딩
+- [x] MCP 서버 내장
+- [x] 학습 대시보드 (기본 통계)
+- [ ] 대시보드 백로그 진행률 바
+- [ ] 리치 대시보드 — 최근 TIL 목록, 학습 스트릭, 주간 요약
+- [ ] 노트 링크 통합 — 관련 노트에 백링크 자동 삽입
+
+## 감사의 글
+
+- [claude-code-terminal](https://github.com/dternyak/claude-code-terminal) — xterm.js + node-pty Obsidian 통합 패턴의 원본
+- [Obsidian Developer Docs](https://docs.obsidian.md/Home)
+- [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
+
+## 라이선스
+
+[MIT](LICENSE)

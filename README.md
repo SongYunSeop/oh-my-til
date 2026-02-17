@@ -4,9 +4,9 @@
 [![Obsidian](https://img.shields.io/badge/Obsidian-v1.5.0+-7C3AED)](https://obsidian.md)
 [![Version](https://img.shields.io/github/v/release/SongYunSeop/obsidian-claude-til)](https://github.com/SongYunSeop/obsidian-claude-til/releases)
 
-An Obsidian plugin that embeds a Claude Code terminal in the sidebar and provides an AI-powered TIL (Today I Learned) learning workflow.
+**English** | [한국어](README.ko.md)
 
-> Obsidian 사이드바에 Claude Code 터미널을 임베딩하여 AI 기반 TIL 학습 워크플로우를 제공하는 플러그인입니다.
+An Obsidian plugin that embeds a Claude Code terminal in the sidebar and provides an AI-powered TIL (Today I Learned) learning workflow.
 
 ## Features
 
