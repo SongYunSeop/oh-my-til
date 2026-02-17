@@ -43,10 +43,12 @@ src/
 __tests__/
 ├── mock-obsidian.ts      ← obsidian 모듈 mock
 ├── utils.test.ts         ← 설정 기본값 테스트
-├── skills.test.ts        ← skill 자동 설치 로직 테스트
+├── skills.test.ts        ← skill 버전 기반 설치/업데이트 로직 테스트
 ├── watcher.test.ts       ← 파일 감시 필터링 로직 테스트
 ├── stats.test.ts         ← 통계 계산 로직 테스트
-└── mcp-tools.test.ts     ← MCP 도구 로직 테스트
+├── mcp-tools.test.ts     ← MCP 도구 필터링/집계 로직 테스트
+├── mcp-server.test.ts    ← MCP 서버 HTTP 라우팅/CORS/라이프사이클 테스트
+└── main-logic.test.ts    ← 플러그인 핵심 로직 (watcher 동기화, 설정 검증)
 ```
 
 ## 빌드
