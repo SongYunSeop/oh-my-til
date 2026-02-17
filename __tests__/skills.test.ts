@@ -60,3 +60,66 @@ describe("installSkills", () => {
 		expect(installed).toEqual([]);
 	});
 });
+
+const MCP_MARKER_START = "<!-- claude-til:mcp-tools:start -->";
+
+async function installClaudeMdSection(
+	vault: Vault,
+	content: string
+): Promise<boolean> {
+	const filePath = ".claude/CLAUDE.md";
+	const section = `${MCP_MARKER_START}\n${content}\n<!-- claude-til:mcp-tools:end -->`;
+
+	if (!(await vault.adapter.exists(".claude"))) {
+		await vault.adapter.mkdir(".claude");
+	}
+
+	if (await vault.adapter.exists(filePath)) {
+		const existing = await vault.adapter.read(filePath);
+		if (existing.includes(MCP_MARKER_START)) return false;
+		await vault.adapter.write(filePath, existing.trimEnd() + "\n\n" + section + "\n");
+	} else {
+		await vault.adapter.write(filePath, section + "\n");
+	}
+	return true;
+}
+
+describe("installClaudeMdSection", () => {
+	let vault: Vault;
+	const mcpContent = "## MCP 도구";
+
+	beforeEach(() => {
+		vault = new Vault();
+	});
+
+	it("CLAUDE.md가 없으면 새로 생성한다", async () => {
+		const installed = await installClaudeMdSection(vault, mcpContent);
+		expect(installed).toBe(true);
+
+		const content = await vault.adapter.read(".claude/CLAUDE.md");
+		expect(content).toContain(MCP_MARKER_START);
+		expect(content).toContain("## MCP 도구");
+	});
+
+	it("CLAUDE.md가 있으면 끝에 추가한다", async () => {
+		vault._setFile(".claude/CLAUDE.md", "# 기존 내용");
+
+		const installed = await installClaudeMdSection(vault, mcpContent);
+		expect(installed).toBe(true);
+
+		const content = await vault.adapter.read(".claude/CLAUDE.md");
+		expect(content).toContain("# 기존 내용");
+		expect(content).toContain(MCP_MARKER_START);
+	});
+
+	it("이미 마커가 있으면 중복 추가하지 않는다", async () => {
+		vault._setFile(".claude/CLAUDE.md", `기존 내용\n\n${MCP_MARKER_START}\n이전 설치\n<!-- claude-til:mcp-tools:end -->`);
+
+		const installed = await installClaudeMdSection(vault, mcpContent);
+		expect(installed).toBe(false);
+
+		const content = await vault.adapter.read(".claude/CLAUDE.md");
+		expect(content).toContain("이전 설치");
+		expect(content).not.toContain("## MCP 도구");
+	});
+});

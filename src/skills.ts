@@ -4,12 +4,16 @@ import { Vault } from "obsidian";
 import tilSkill from "../skills/til/SKILL.md";
 import backlogSkill from "../skills/backlog/SKILL.md";
 import researchSkill from "../skills/research/SKILL.md";
+import claudeMdSection from "../skills/claude-md-section.md";
 
 const SKILLS: Record<string, string> = {
 	"til/SKILL.md": tilSkill,
 	"backlog/SKILL.md": backlogSkill,
 	"research/SKILL.md": researchSkill,
 };
+
+const MCP_MARKER_START = "<!-- claude-til:mcp-tools:start -->";
+const MCP_MARKER_END = "<!-- claude-til:mcp-tools:end -->";
 
 /**
  * vault의 .claude/skills/ 에 skill 파일이 없으면 자동 설치한다.
@@ -29,4 +33,29 @@ export async function installSkills(vault: Vault): Promise<void> {
 		await vault.adapter.write(fullPath, content);
 		console.log(`Claude TIL: skill 설치됨 → ${fullPath}`);
 	}
+
+	await installClaudeMdSection(vault);
+}
+
+/**
+ * .claude/CLAUDE.md에 MCP 도구 안내 섹션을 추가한다.
+ * 마커 주석으로 관리하여 기존 내용을 보존하고 중복 추가를 방지한다.
+ */
+async function installClaudeMdSection(vault: Vault): Promise<void> {
+	const filePath = ".claude/CLAUDE.md";
+	const section = `${MCP_MARKER_START}\n${claudeMdSection}\n${MCP_MARKER_END}`;
+
+	if (!(await vault.adapter.exists(".claude"))) {
+		await vault.adapter.mkdir(".claude");
+	}
+
+	if (await vault.adapter.exists(filePath)) {
+		const existing = await vault.adapter.read(filePath);
+		if (existing.includes(MCP_MARKER_START)) return; // 이미 설치됨
+		await vault.adapter.write(filePath, existing.trimEnd() + "\n\n" + section + "\n");
+	} else {
+		await vault.adapter.write(filePath, section + "\n");
+	}
+
+	console.log("Claude TIL: CLAUDE.md에 MCP 도구 안내 추가됨");
 }
