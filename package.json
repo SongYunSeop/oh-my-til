@@ -8,6 +8,7 @@
 		"build": "node esbuild.config.mjs production",
 		"rebuild-pty": "npx @electron/rebuild -m node_modules/node-pty -v 37.10.2",
 		"deploy": "bash scripts/deploy.sh",
+		"check": "vitest run && node esbuild.config.mjs production && tsc --noEmit",
 		"test": "vitest run"
 	},
 	"keywords": [],
