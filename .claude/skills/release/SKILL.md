@@ -77,6 +77,8 @@ git log {이전태그}...HEAD --oneline
 | `✅ test` | Tests |
 | `🔖 chore`, `🔧 chore` | Chores (릴리스 노트에서 제외) |
 
+사용자와 무관한 개발 도구/워크플로우 변경은 **Internal**로 분류한다.
+
 ### 릴리스 노트 템플릿
 
 ```markdown
@@ -93,6 +95,9 @@ git log {이전태그}...HEAD --oneline
 
 ### Documentation
 - 문서 변경 요약
+
+### Internal
+- 개발 도구/워크플로우 변경 요약
 
 **Full Changelog**: https://github.com/{owner}/{repo}/compare/{이전태그}...v{version}
 ```
