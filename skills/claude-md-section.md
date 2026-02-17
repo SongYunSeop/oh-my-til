@@ -17,6 +17,16 @@ Obsidian 플러그인이 MCP 서버를 통해 vault 접근 도구를 제공합�
 - `vault_search`로 관련 노트를 찾아 `[[wikilink]]` 연결
 - `vault_get_active_file`로 사용자가 보고 있는 파일 컨텍스트 파악
 
+### 터미널 위키링크 출력 규칙
+
+Obsidian 터미널은 `[[wikilink]]` 패턴을 감지하여 클릭 가능한 링크로 표시합니다. 대화 중 vault에 있는 노트를 언급할 때는 반드시 `[[경로|표시명]]` 형태로 출력하세요.
+
+- 기존 TIL 언급: `[[til/javascript/closure|클로저]]에 대한 TIL이 이미 있습니다`
+- 백로그 언급: `[[til/react/backlog|React 백로그]]를 확인해보세요`
+- 관련 노트 추천: `이 내용은 [[til/typescript/generics|제네릭]]과 관련 있습니다`
+
+이렇게 하면 사용자가 터미널에서 바로 클릭하여 해당 노트로 이동할 수 있습니다.
+
 ### MCP 연결
 
 ```bash

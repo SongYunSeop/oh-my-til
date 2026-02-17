@@ -31,8 +31,9 @@ src/
 ├── skills.ts             ← Skill 버전 기반 자동 설치/업데이트 + CLAUDE.md MCP 섹션 관리
 ├── watcher.ts            ← 새 TIL 파일 감지 → 에디터에서 열기
 ├── terminal/
-│   ├── TerminalView.ts   ← 사이드바 터미널 (ItemView + xterm.js)
-│   └── pty.ts            ← PTY 프로세스 관리 (node-pty)
+│   ├── TerminalView.ts       ← 사이드바 터미널 (ItemView + xterm.js)
+│   ├── WikilinkProvider.ts   ← [[위키링크]] 감지 + 클릭 시 노트 열기 (ILinkProvider)
+│   └── pty.ts                ← PTY 프로세스 관리 (node-pty)
 ├── mcp/
 │   ├── server.ts         ← MCP 서버 라이프사이클 (HTTP + Streamable HTTP 트랜스포트)
 │   └── tools.ts          ← MCP 도구 정의 (vault 접근)
@@ -48,7 +49,8 @@ __tests__/
 ├── stats.test.ts         ← 통계 계산 로직 테스트
 ├── mcp-tools.test.ts     ← MCP 도구 필터링/집계 로직 테스트
 ├── mcp-server.test.ts    ← MCP 서버 HTTP 라우팅/CORS/라이프사이클 테스트
-└── main-logic.test.ts    ← 플러그인 핵심 로직 (watcher 동기화, 설정 검증)
+├── main-logic.test.ts    ← 플러그인 핵심 로직 (watcher 동기화, 설정 검증)
+└── wikilink-provider.test.ts ← 위키링크 감지 순수 함수 테스트
 ```
 
 ## 빌드
@@ -80,6 +82,12 @@ npm run deploy -- <vault-path>  # vault에 배포 (빌드 + 복사 + pty 재빌�
 - Skill 파일의 `plugin-version` frontmatter로 자동 업데이트 관리. 없으면 사용자 커스터마이즈로 간주하여 덮어쓰지 않음
 - 백로그 파일은 `til/{카테고리}/backlog.md` 경로 패턴
 - 한국어 작성, 기술 용어 원어 병기
+- **버전 업데이트 체크리스트**: 기능 추가/스킬 변경 시 아래 5개 파일의 버전을 반드시 동기화:
+  1. `package.json` → `"version"`
+  2. `manifest.json` → `"version"`
+  3. `skills/til/SKILL.md` → `plugin-version` frontmatter
+  4. `skills/backlog/SKILL.md` → `plugin-version` frontmatter
+  5. `skills/research/SKILL.md` → `plugin-version` frontmatter
 
 ## 참고 문서
 

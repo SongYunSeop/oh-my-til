@@ -3,7 +3,7 @@ name: backlog
 description: "학습 백로그를 조회하고 진행 상황을 보여준다"
 argument-hint: "[카테고리]"
 disable-model-invocation: true
-plugin-version: "0.1.2"
+plugin-version: "0.1.3"
 ---
 
 # Backlog Skill
@@ -62,36 +62,40 @@ MCP 도구를 사용할 수 없는 경우 아래 워크플로우대로 파일을
 
 | 카테고리 | 진행률 | 완료 | 최근 학습 | 진행바 |
 |---------|--------|------|----------|--------|
-| claude-code | 30% | 4/13 | 2026-02-15 | ████░░░░░░ |
-| javascript | 0% | 0/8 | 2026-02-10 | ░░░░░░░░░░ |
+| [[til/claude-code/backlog|claude-code]] | 30% | 4/13 | 2026-02-15 | ████░░░░░░ |
+| [[til/javascript/backlog|javascript]] | 0% | 0/8 | 2026-02-10 | ░░░░░░░░░░ |
 
 총 21개 항목 중 4개 완료
 ```
 
+카테고리명은 `[[til/{카테고리}/backlog|카테고리명]]` 위키링크로 출력하여 클릭 시 해당 백로그 파일로 이동할 수 있게 한다.
+
 ### 카테고리 조회 (`/backlog claude-code`)
 
 ```
-📋 claude-code 백로그 (4/13 완료, 30%)
+📋 [[til/claude-code/backlog|claude-code]] 백로그 (4/13 완료, 30%)
 
 ## 선행 지식 (2/4)
-- [x] CLAUDE.md ✅
-- [x] Settings와 Configuration ✅
-- [ ] Permission 모드
-- [ ] CLI 레퍼런스(CLI Reference)
+- [x] [[til/claude-code/claude-md|CLAUDE.md]] ✅
+- [x] [[til/claude-code/settings|Settings와 Configuration]] ✅
+- [ ] [[til/claude-code/permission-mode|Permission 모드]]
+- [ ] [[til/claude-code/cli-reference|CLI 레퍼런스(CLI Reference)]]
 
 ## 핵심 개념 (1/5)
-- [x] Hooks ✅
-- [ ] MCP(Model Context Protocol)
-- [ ] Context 관리(Context Management)
-- [ ] Agent Teams
-- [ ] IDE Integration
+- [x] [[til/claude-code/hooks|Hooks]] ✅
+- [ ] [[til/claude-code/mcp|MCP(Model Context Protocol)]]
+- [ ] [[til/claude-code/context-management|Context 관리(Context Management)]]
+- [ ] [[til/claude-code/agent-teams|Agent Teams]]
+- [ ] [[til/claude-code/ide-integration|IDE Integration]]
 
 ## 심화 (1/4)
-- [ ] GitHub Actions와 CI/CD
+- [ ] [[til/claude-code/github-actions-ci-cd|GitHub Actions와 CI/CD]]
 - ...
 ```
 
-완료된 항목은 `- [x] 항목명 ✅` 형식으로 체크박스와 체크마크를 함께 표시하여 시각적으로 구분한다.
+- 완료된 항목은 `- [x] [[경로|항목명]] ✅` 형식으로 위키링크 + 체크마크를 함께 표시한다
+- 각 항목의 위키링크는 backlog.md 파일에 이미 `[[til/{카테고리}/{slug}|표시명]]` 형태로 저장되어 있으므로, 해당 링크를 그대로 출력한다
+- backlog.md의 원본 위키링크를 파싱하여 출력한다. 원본에 위키링크가 없는 항목은 일반 텍스트로 출력한다
 
 ## 주의사항
 
