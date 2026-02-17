@@ -156,8 +156,11 @@ export class TerminalView extends ItemView {
 
 			// claude 자동 실행
 			if (this.settings.autoLaunchClaude) {
+				const cmd = this.settings.resumeLastSession
+					? "clear && claude --continue\r"
+					: "clear && claude\r";
 				setTimeout(() => {
-					this.ptyProcess?.write("clear && claude\r");
+					this.ptyProcess?.write(cmd);
 				}, 300);
 			}
 		} catch (error) {

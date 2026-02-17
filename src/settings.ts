@@ -3,6 +3,7 @@ import { App, PluginSettingTab, Setting, Plugin } from "obsidian";
 export interface TILSettings {
 	shellPath: string;
 	autoLaunchClaude: boolean;
+	resumeLastSession: boolean;
 	fontSize: number;
 	tilPath: string;
 	autoOpenNewTIL: boolean;
@@ -15,6 +16,7 @@ export const DEFAULT_SETTINGS: TILSettings = {
 		? "powershell.exe"
 		: process.env.SHELL || "/bin/zsh",
 	autoLaunchClaude: true,
+	resumeLastSession: false,
 	fontSize: 13,
 	tilPath: "til",
 	autoOpenNewTIL: true,
@@ -55,6 +57,18 @@ export class TILSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.autoLaunchClaude)
 					.onChange(async (value) => {
 						this.plugin.settings.autoLaunchClaude = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("이전 세션 이어가기")
+			.setDesc("터미널 시작 시 마지막 Claude 대화를 이어갑니다 (--continue)")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.resumeLastSession)
+					.onChange(async (value) => {
+						this.plugin.settings.resumeLastSession = value;
 						await this.plugin.saveSettings();
 					})
 			);
