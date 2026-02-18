@@ -171,7 +171,8 @@ export function filterRecentFiles(
 
 	const groupMap = new Map<string, RecentFileEntry[]>();
 	for (const f of filtered) {
-		const date = new Date(f.mtime).toISOString().slice(0, 10);
+		const d = new Date(f.mtime);
+		const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 		const relative = f.path.slice(tilPath.length + 1);
 		const parts = relative.split("/");
 		const category = parts.length >= 2 ? parts[0]! : "(uncategorized)";
