@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Claude TIL — Obsidian vault 배포 스크립트
 # Usage: ./scripts/deploy.sh /path/to/vault
-#   예시: ./scripts/deploy.sh ~/workspace/songyunseop
+#   예시: ./scripts/deploy.sh ~/workspace/my-vault
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -52,7 +52,7 @@ done
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 [--refresh-skills] <vault-path>"
-  echo "  예시: $0 ~/workspace/songyunseop"
+  echo "  예시: $0 ~/workspace/my-vault"
   echo "  옵션: --refresh-skills  vault의 스킬/규칙 파일을 강제 재설치"
   exit 1
 fi

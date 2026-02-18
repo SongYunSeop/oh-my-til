@@ -12,12 +12,14 @@ export class TILMcpServer {
 	private app: App;
 	private port: number;
 	private tilPath: string;
+	private version: string;
 	private httpServer: http.Server | null = null;
 
-	constructor(app: App, port: number, tilPath: string) {
+	constructor(app: App, port: number, tilPath: string, version: string) {
 		this.app = app;
 		this.port = port;
 		this.tilPath = tilPath;
+		this.version = version;
 	}
 
 	async start(): Promise<void> {
@@ -46,11 +48,6 @@ export class TILMcpServer {
 	}
 
 	private async handleRequest(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {
-		res.setHeader("Access-Control-Allow-Origin", "*");
-		res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
-		res.setHeader("Access-Control-Allow-Headers", "Content-Type, mcp-session-id");
-		res.setHeader("Access-Control-Expose-Headers", "mcp-session-id");
-
 		if (req.method === "OPTIONS") {
 			res.writeHead(204);
 			res.end();
@@ -61,7 +58,7 @@ export class TILMcpServer {
 			try {
 				const mcpServer = new McpServer({
 					name: "claude-til",
-					version: "0.1.0",
+					version: this.version,
 				});
 				registerTools(mcpServer, this.app, this.tilPath);
 				const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });

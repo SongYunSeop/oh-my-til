@@ -125,7 +125,7 @@ export default class TILPlugin extends Plugin {
 
 		// MCP 서버 시작
 		if (this.settings.mcpEnabled) {
-			this.mcpServer = new TILMcpServer(this.app, this.settings.mcpPort, this.settings.tilPath);
+			this.mcpServer = new TILMcpServer(this.app, this.settings.mcpPort, this.settings.tilPath, this.manifest.version);
 			try {
 				await this.mcpServer.start();
 			} catch {

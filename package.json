@@ -11,9 +11,26 @@
 		"check": "vitest run && node esbuild.config.mjs production && tsc --noEmit",
 		"test": "vitest run"
 	},
-	"keywords": [],
+	"keywords": [
+		"obsidian",
+		"obsidian-plugin",
+		"claude",
+		"claude-code",
+		"til",
+		"learning",
+		"mcp",
+		"terminal"
+	],
 	"author": "SongYunSeop",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/SongYunSeop/obsidian-claude-til.git"
+	},
+	"homepage": "https://github.com/SongYunSeop/obsidian-claude-til",
+	"bugs": {
+		"url": "https://github.com/SongYunSeop/obsidian-claude-til/issues"
+	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.26.0",
 		"@xterm/addon-fit": "^0.10.0",
