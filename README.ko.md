@@ -8,6 +8,8 @@
 
 Obsidian 사이드바에 Claude Code 터미널을 임베딩하여 AI 기반 TIL(Today I Learned) 학습 워크플로우를 제공하는 플러그인입니다.
 
+![Claude TIL — 터미널 + TIL 노트](docs/screenshots/terminal-til.png)
+
 ## 기능
 
 - **터미널 임베딩** — Obsidian 사이드바에서 Claude Code 터미널 실행 (xterm.js + node-pty)

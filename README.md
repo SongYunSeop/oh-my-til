@@ -8,6 +8,8 @@
 
 An Obsidian plugin that embeds a Claude Code terminal in the sidebar and provides an AI-powered TIL (Today I Learned) learning workflow.
 
+![Claude TIL — Terminal + TIL note](docs/screenshots/terminal-til.png)
+
 ## Features
 
 - **Embedded Terminal** — Claude Code terminal in Obsidian sidebar (xterm.js + node-pty)
