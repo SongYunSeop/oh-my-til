@@ -9,7 +9,25 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 # Electron 버전 (Obsidian이 사용하는 버전)
-ELECTRON_VERSION="${ELECTRON_VERSION:-37.10.2}"
+# ELECTRON_VERSION 환경변수를 설정하거나, macOS Obsidian에서 자동 감지
+if [ -z "${ELECTRON_VERSION:-}" ]; then
+  # macOS: Obsidian.app에서 Electron 버전 자동 감지
+  PLIST="/Applications/Obsidian.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources/Info.plist"
+  if [ -f "$PLIST" ]; then
+    ELECTRON_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$PLIST" 2>/dev/null || true)
+  fi
+
+  if [ -z "${ELECTRON_VERSION:-}" ]; then
+    echo "Error: Electron 버전을 감지할 수 없습니다."
+    echo "  ELECTRON_VERSION 환경변수를 설정해주세요."
+    echo "  예: ELECTRON_VERSION=37.10.2 npm run deploy -- /path/to/vault"
+    echo ""
+    echo "  Obsidian 개발자 도구(Ctrl+Shift+I)에서 확인:"
+    echo "    process.versions.electron"
+    exit 1
+  fi
+  echo "    Electron 버전 자동 감지: ${ELECTRON_VERSION}"
+fi
 
 # ── 옵션 파싱 ──────────────────────────────────────────────
 

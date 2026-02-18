@@ -37,12 +37,27 @@ Command Palette → Open Terminal → Claude Code starts
 
 ### Installation
 
+#### Option A: Claude Code (Recommended)
+
+```bash
+git clone https://github.com/SongYunSeop/obsidian-claude-til.git
+cd obsidian-claude-til
+claude
+# Then run: /install-plugin /path/to/your/vault
+```
+
+Claude Code automatically detects Electron version and handles native module rebuilding.
+
+#### Option B: Manual
+
 ```bash
 git clone https://github.com/SongYunSeop/obsidian-claude-til.git
 cd obsidian-claude-til
 npm install
-npm run deploy -- /path/to/your/vault
+ELECTRON_VERSION=<your-electron-version> npm run deploy -- /path/to/your/vault
 ```
+
+> To find your Electron version, open Obsidian's Developer Tools (Ctrl+Shift+I) and run `process.versions.electron`.
 
 Restart Obsidian, then enable **Claude TIL** in Settings > Community plugins.
 
@@ -79,6 +94,8 @@ When the MCP server is connected, Claude Code can use these tools:
 | `vault_get_active_file` | Get the currently open file |
 | `til_list` | List TIL files grouped by category |
 | `til_backlog_status` | Backlog progress summary with checkbox counts |
+| `til_get_context` | Get existing knowledge context for a topic (files, links, unresolved mentions) |
+| `til_recent_context` | Recent learning activity grouped by date |
 
 ## Claude Skills
 
@@ -116,7 +133,8 @@ src/
 │   └── pty.ts               # PTY process manager (node-pty)
 ├── mcp/
 │   ├── server.ts            # MCP server lifecycle (Streamable HTTP)
-│   └── tools.ts             # MCP tool definitions
+│   ├── tools.ts             # MCP tool definitions
+│   └── context.ts           # Learning context helpers (pure functions)
 └── dashboard/
     ├── DashboardView.ts     # Learning dashboard (ItemView)
     └── stats.ts             # TIL statistics

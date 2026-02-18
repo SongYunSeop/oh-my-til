@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "node esbuild.config.mjs production",
-		"rebuild-pty": "npx @electron/rebuild -m node_modules/node-pty -v 37.10.2",
+		"rebuild-pty": "npx @electron/rebuild -m node_modules/node-pty -v ${ELECTRON_VERSION:?'ELECTRON_VERSION 환경변수를 설정하세요 (예: ELECTRON_VERSION=37.10.2 npm run rebuild-pty)'}",
 		"deploy": "bash scripts/deploy.sh",
 		"check": "vitest run && node esbuild.config.mjs production && tsc --noEmit",
 		"test": "vitest run"

@@ -37,12 +37,27 @@ Obsidian 사이드바에 Claude Code 터미널을 임베딩하여 AI 기반 TIL(
 
 ### 설치
 
+#### 방법 A: Claude Code (권장)
+
+```bash
+git clone https://github.com/SongYunSeop/obsidian-claude-til.git
+cd obsidian-claude-til
+claude
+# 실행 후: /install-plugin /path/to/your/vault
+```
+
+Claude Code가 Electron 버전을 자동 감지하고 네이티브 모듈 재빌드를 처리합니다.
+
+#### 방법 B: 수동 설치
+
 ```bash
 git clone https://github.com/SongYunSeop/obsidian-claude-til.git
 cd obsidian-claude-til
 npm install
-npm run deploy -- /path/to/your/vault
+ELECTRON_VERSION=<Electron-버전> npm run deploy -- /path/to/your/vault
 ```
+
+> Electron 버전 확인: Obsidian 개발자 도구(Ctrl+Shift+I)에서 `process.versions.electron` 실행
 
 Obsidian을 재시작한 뒤 설정 > Community plugins에서 **Claude TIL**을 활성화합니다.
 
@@ -79,6 +94,8 @@ MCP 서버 연결 시 Claude Code에서 사용할 수 있는 도구:
 | `vault_get_active_file` | 현재 열린 파일 가져오기 |
 | `til_list` | 카테고리별 TIL 파일 목록 |
 | `til_backlog_status` | 백로그 진행률 요약 (체크박스 카운트) |
+| `til_get_context` | 주제 관련 기존 학습 컨텍스트 (파일, 링크 관계, 미작성 주제) |
+| `til_recent_context` | 최근 학습 활동을 날짜별로 조회 |
 
 ## Claude 스킬
 
@@ -116,7 +133,8 @@ src/
 │   └── pty.ts               # PTY 프로세스 관리 (node-pty)
 ├── mcp/
 │   ├── server.ts            # MCP 서버 라이프사이클 (Streamable HTTP)
-│   └── tools.ts             # MCP 도구 정의
+│   ├── tools.ts             # MCP 도구 정의
+│   └── context.ts           # 학습 컨텍스트 헬퍼 (순수 함수)
 └── dashboard/
     ├── DashboardView.ts     # 학습 대시보드 (ItemView)
     └── stats.ts             # TIL 통계 계산
