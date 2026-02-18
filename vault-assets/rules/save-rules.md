@@ -1,5 +1,5 @@
 ---
-plugin-version: "0.2.0"
+plugin-version: "0.3.0"
 ---
 
 # TIL 저장 규칙
