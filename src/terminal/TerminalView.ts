@@ -5,6 +5,7 @@ import type { IPty } from "node-pty";
 import type { TILSettings } from "../settings";
 import { spawnPty } from "./pty";
 import { WikilinkProvider } from "./WikilinkProvider";
+import { handleShiftEnter } from "./keyboard";
 
 export const VIEW_TYPE_TIL_TERMINAL = "claude-til-terminal-view";
 
@@ -115,6 +116,18 @@ export class TerminalView extends ItemView {
 		this.fitAddon = new FitAddon();
 		this.terminal.loadAddon(this.fitAddon);
 		this.terminal.open(container);
+
+		// xterm.js는 Shift+Enter와 Enter 모두 \r(0x0d)을 전송하지만
+		// Claude Code는 \r(submit)과 \n(newline)을 구분함
+		// Shift+Enter의 모든 이벤트(keydown/keypress/keyup)를 차단하고
+		// keydown에서만 \n을 직접 PTY에 전송하여 multiline 입력 지원
+		this.terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
+			const result = handleShiftEnter(e);
+			if (result.sendNewline) {
+				this.ptyProcess?.write("\n");
+			}
+			return result.allowDefault;
+		});
 
 		// 위키링크 감지 등록
 		this.linkProviderDisposable = this.terminal.registerLinkProvider(

@@ -44,6 +44,7 @@ src/
 ├── terminal/
 │   ├── TerminalView.ts       ← 사이드바 터미널 (ItemView + xterm.js)
 │   ├── WikilinkProvider.ts   ← [[위키링크]] 감지 + CJK 셀 너비 + 클릭 시 노트 열기 (ILinkProvider)
+│   ├── keyboard.ts           ← Shift+Enter → \n 변환 순수 함수 (Claude Code multiline 지원)
 │   └── pty.ts                ← PTY 프로세스 관리 (node-pty)
 ├── mcp/
 │   ├── server.ts         ← MCP 서버 라이프사이클 (HTTP + Streamable HTTP 트랜스포트)
@@ -69,7 +70,8 @@ __tests__/
 ├── mcp-server.test.ts    ← MCP 서버 HTTP 라우팅/CORS/라이프사이클 테스트
 ├── main-logic.test.ts    ← 플러그인 핵심 로직 (watcher 동기화, 설정 검증)
 ├── backlog.test.ts       ← 백로그 파싱/경로 추출 테스트
-└── wikilink-provider.test.ts ← 위키링크 감지 + CJK 셀 너비 순수 함수 테스트
+├── wikilink-provider.test.ts ← 위키링크 감지 + CJK 셀 너비 순수 함수 테스트
+└── shift-enter.test.ts   ← Shift+Enter 키 핸들러 순수 함수 테스트
 ```
 
 ## 빌드
