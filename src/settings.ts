@@ -90,19 +90,6 @@ export class TILSettingTab extends PluginSettingTab {
 		containerEl.createEl("h3", { text: "TIL 설정" });
 
 		new Setting(containerEl)
-			.setName("TIL 폴더 경로")
-			.setDesc("TIL 파일이 저장되는 폴더 (vault 루트 기준)")
-			.addText((text) =>
-				text
-					.setPlaceholder("til")
-					.setValue(this.plugin.settings.tilPath)
-					.onChange(async (value) => {
-						this.plugin.settings.tilPath = value;
-						await this.plugin.saveSettings();
-					})
-			);
-
-		new Setting(containerEl)
 			.setName("새 TIL 파일 자동 열기")
 			.setDesc("til/ 폴더에 새 .md 파일이 생성되면 에디터에서 자동으로 엽니다")
 			.addToggle((toggle) =>

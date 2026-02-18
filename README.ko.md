@@ -77,7 +77,6 @@ claude mcp add --transport http claude-til http://localhost:22360/mcp
 | Claude 자동 실행 | `true` | 터미널 열릴 때 `claude` 명령 자동 실행 |
 | 이전 세션 재개 | `false` | 이전 Claude 세션 이어서 시작 (`--continue`) |
 | 글꼴 크기 | `13` | 터미널 글꼴 크기 (px) |
-| TIL 폴더 경로 | `til` | TIL 파일 저장 폴더 (vault 루트 기준) |
 | 새 TIL 파일 자동 열기 | `true` | til/ 폴더에 새 파일 생성 시 자동 오픈 |
 | MCP 서버 활성화 | `true` | 내장 MCP 서버 실행 여부 |
 | MCP 포트 | `22360` | MCP 서버 포트 |
@@ -156,6 +155,7 @@ src/
 - [x] MCP 서버 내장
 - [x] 학습 대시보드 (기본 통계)
 - [ ] 대시보드 백로그 진행률 바
+- [ ] TIL 폴더 경로 커스터마이즈
 - [ ] 리치 대시보드 — 최근 TIL 목록, 학습 스트릭, 주간 요약
 - [ ] 노트 링크 통합 — 관련 노트에 백링크 자동 삽입
 

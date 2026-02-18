@@ -77,7 +77,6 @@ claude mcp add --transport http claude-til http://localhost:22360/mcp
 | Auto Launch Claude | `true` | Run `claude` when terminal opens |
 | Resume Last Session | `false` | Resume previous Claude session (`--continue`) |
 | Font Size | `13` | Terminal font size (px) |
-| TIL Folder | `til` | Where TIL files are stored (relative to vault root) |
 | Auto Open New TIL | `true` | Open new TIL files in editor automatically |
 | MCP Server | `true` | Enable built-in MCP server |
 | MCP Port | `22360` | MCP server port |
@@ -156,6 +155,7 @@ src/
 - [x] Built-in MCP server
 - [x] Learning dashboard (basic stats)
 - [ ] Backlog progress bars in dashboard
+- [ ] Configurable TIL folder path
 - [ ] Rich dashboard — recent TILs, streaks, weekly summary
 - [ ] Note linking — auto-insert backlinks to related notes
 
