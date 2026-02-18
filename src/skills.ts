@@ -1,12 +1,12 @@
 import { Vault } from "obsidian";
 
 // esbuild의 text loader로 번들에 포함
-import tilSkill from "../skills/til/SKILL.md";
-import backlogSkill from "../skills/backlog/SKILL.md";
-import researchSkill from "../skills/research/SKILL.md";
-import saveSkill from "../skills/save/SKILL.md";
-import saveRules from "../rules/save-rules.md";
-import claudeMdSection from "../skills/claude-md-section.md";
+import tilSkill from "../vault-assets/skills/til/SKILL.md";
+import backlogSkill from "../vault-assets/skills/backlog/SKILL.md";
+import researchSkill from "../vault-assets/skills/research/SKILL.md";
+import saveSkill from "../vault-assets/skills/save/SKILL.md";
+import saveRules from "../vault-assets/rules/save-rules.md";
+import claudeMdSection from "../vault-assets/claude-md-section.md";
 
 const SKILLS: Record<string, string> = {
 	"til/SKILL.md": tilSkill,

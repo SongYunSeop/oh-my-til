@@ -43,8 +43,10 @@ src/
     ├── DashboardView.ts  ← 학습 대시보드 (ItemView)
     └── stats.ts          ← vault 파싱 → TIL 통계 계산
 
-rules/
-└── save-rules.md         ← /save 스킬 규칙 (esbuild text import → vault에 설치)
+vault-assets/             ← vault에 배포되는 파일 (esbuild text import → 런타임 설치)
+├── skills/               ← .claude/skills/에 설치되는 스킬 소스
+├── rules/                ← .claude/rules/에 설치되는 규칙 소스
+└── claude-md-section.md  ← .claude/CLAUDE.md에 삽입되는 MCP 안내
 
 __tests__/
 ├── mock-obsidian.ts      ← obsidian 모듈 mock
@@ -94,10 +96,10 @@ npm run deploy -- --refresh-skills <vault-path>  # 스킬/규칙 강제 재설�
 - **버전 업데이트 체크리스트**: 기능 추가/스킬 변경 시 아래 6개 파일의 버전을 반드시 동기화:
   1. `package.json` → `"version"`
   2. `manifest.json` → `"version"`
-  3. `skills/til/SKILL.md` → `plugin-version` frontmatter
-  4. `skills/backlog/SKILL.md` → `plugin-version` frontmatter
-  5. `skills/research/SKILL.md` → `plugin-version` frontmatter
-  6. `skills/save/SKILL.md` → `plugin-version` frontmatter
+  3. `src/vault-assets/skills/til/SKILL.md` → `plugin-version` frontmatter
+  4. `src/vault-assets/skills/backlog/SKILL.md` → `plugin-version` frontmatter
+  5. `src/vault-assets/skills/research/SKILL.md` → `plugin-version` frontmatter
+  6. `src/vault-assets/skills/save/SKILL.md` → `plugin-version` frontmatter
 
 ## 참고 문서
 

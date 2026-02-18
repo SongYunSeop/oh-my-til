@@ -50,10 +50,10 @@ $ARGUMENTS에서 bump 타입을 추출합니다: `patch`, `minor`, `major` (기�
    - `package.json` → `"version"`
    - `manifest.json` → `"version"`
    - `versions.json` → 새 버전 항목 추가 (minAppVersion은 manifest.json에서 읽기)
-   - `skills/til/SKILL.md` → `plugin-version` frontmatter
-   - `skills/backlog/SKILL.md` → `plugin-version` frontmatter
-   - `skills/research/SKILL.md` → `plugin-version` frontmatter
-   - `skills/save/SKILL.md` → `plugin-version` frontmatter
+   - `src/vault-assets/skills/til/SKILL.md` → `plugin-version` frontmatter
+   - `src/vault-assets/skills/backlog/SKILL.md` → `plugin-version` frontmatter
+   - `src/vault-assets/skills/research/SKILL.md` → `plugin-version` frontmatter
+   - `src/vault-assets/skills/save/SKILL.md` → `plugin-version` frontmatter
 4. 변경사항을 커밋: `🔖 chore: release v{version}`
 5. 태그 생성: `git tag v{version}`
 6. 푸시: `git push origin main --tags`
