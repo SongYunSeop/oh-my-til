@@ -15,7 +15,7 @@ An Obsidian plugin that embeds a Claude Code terminal in the sidebar and provide
 - **Embedded Terminal** — Claude Code terminal in Obsidian sidebar (xterm.js + node-pty)
 - **Built-in MCP Server** — Claude Code can directly access your vault via HTTP
 - **Learning Dashboard** — TIL statistics and category breakdown at a glance
-- **Auto-installed Skills** — `/til`, `/research`, `/backlog`, `/save` commands ready out of the box
+- **Auto-installed Skills** — `/til`, `/research`, `/backlog`, `/save`, `/migrate-links` commands ready out of the box
 - **Markdown Link Detection** — `[text](path)` links in terminal are clickable and open notes (CJK-aware)
 - **Backlog-to-TIL Trigger** — Click an empty backlog link to start a TIL session
 - **File Watcher** — Newly created TIL files open automatically in the editor
@@ -24,7 +24,7 @@ An Obsidian plugin that embeds a Claude Code terminal in the sidebar and provide
 
 ```
 Command Palette → Open Terminal → Claude Code starts
-→ Run /til, /backlog, /research, /save skills
+→ Run /til, /backlog, /research, /save, /migrate-links skills
 → Claude researches → interactive learning → saves TIL markdown
 → New file detected → opens in editor
 ```
@@ -108,6 +108,7 @@ The plugin auto-installs these skills to `.claude/skills/`:
 | **research** | `/research <topic> [category]` | Research a topic and create a learning backlog |
 | **backlog** | `/backlog [category]` | View learning backlog and progress |
 | **save** | *(auto-invoked by /til)* | Save TIL markdown with Daily note, MOC, and backlog updates |
+| **migrate-links** | `/migrate-links` | Batch-convert `[[wikilinks]]` to standard markdown links |
 
 ## Development
 
