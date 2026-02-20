@@ -170,7 +170,8 @@ export function registerTools(server: McpServer, app: App, tilPath: string): voi
 				totalTodo += progress.todo;
 				totalDone += progress.done;
 				if (progress.todo + progress.done > 0) {
-					results.push(`${file.path}: ${progress.done}/${progress.todo + progress.done} 완료`);
+					const cat = extractCategory(file.path, tilPath);
+					results.push(`[${cat}](${file.path}): ${progress.done}/${progress.todo + progress.done} 완료`);
 				}
 			}
 

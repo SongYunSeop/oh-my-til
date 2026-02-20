@@ -4,7 +4,7 @@
 
 Obsidian 플러그인. 사이드바에 Claude Code 터미널을 임베딩하여 TIL 학습 워크플로우를 Obsidian 안에서 실행한다. xterm.js + node-pty 기반.
 
-핵심 흐름: 커맨드 팔레트 → 터미널 열기 → Claude Code에서 `/til`, `/backlog`, `/research`, `/save` 스킬 직접 실행 → 새 파일 감지 시 에디터에서 열기
+핵심 흐름: 커맨드 팔레트 → 터미널 열기 → Claude Code에서 `/til`, `/backlog`, `/research`, `/save`, `/migrate-links` 스킬 직접 실행 → 새 파일 감지 시 에디터에서 열기
 
 Obsidian의 역할은 "터미널 임베딩 + 파일 감시 + skill 배포 + MCP 서버 + 대시보드"로 한정하고, 워크플로우 주도권은 Claude Code에 있다.
 
@@ -43,7 +43,7 @@ src/
 ├── backlog.ts            ← 백로그 파싱 순수 함수 (parseBacklogItems, extractTopicFromPath)
 ├── terminal/
 │   ├── TerminalView.ts       ← 사이드바 터미널 (ItemView + xterm.js)
-│   ├── WikilinkProvider.ts   ← [[위키링크]] 감지 + CJK 셀 너비 + 클릭 시 노트 열기 (ILinkProvider)
+│   ├── MarkdownLinkProvider.ts ← [마크다운 링크](path) 감지 + CJK 셀 너비 + 클릭 시 노트 열기 (ILinkProvider)
 │   ├── keyboard.ts           ← Shift+Enter → \n 변환 순수 함수 (Claude Code multiline 지원)
 │   └── pty.ts                ← PTY 프로세스 관리 (node-pty)
 ├── mcp/
@@ -70,7 +70,7 @@ __tests__/
 ├── mcp-server.test.ts    ← MCP 서버 HTTP 라우팅/CORS/라이프사이클 테스트
 ├── main-logic.test.ts    ← 플러그인 핵심 로직 (watcher 동기화, 설정 검증)
 ├── backlog.test.ts       ← 백로그 파싱/경로 추출 테스트
-├── wikilink-provider.test.ts ← 위키링크 감지 + CJK 셀 너비 순수 함수 테스트
+├── markdown-link-provider.test.ts ← 마크다운 링크 감지 + CJK 셀 너비 순수 함수 테스트
 └── shift-enter.test.ts   ← Shift+Enter 키 핸들러 순수 함수 테스트
 ```
 
@@ -88,7 +88,9 @@ npm run deploy -- --refresh-skills <vault-path>  # 스킬/규칙 강제 재설�
 
 ## 규칙
 
+- **코드 변경 시 항상 feature branch + worktree에서 작업한다**. main 브랜치에서 직접 수정하지 않는다.
 - **새 기능/워크플로우 변경 시 반드시 사용자와 방향을 먼저 논의한다**. 구현 방식이 여러 가지일 수 있는 작업은 바로 코드를 작성하지 않고, 접근 방법을 제안하고 합의한 뒤 작업한다.
+- **브랜치 격리 (git worktree)**: feature 브랜치 작업 시 `git worktree`를 사용하여 작업 디렉토리를 분리한다. 현재 브랜치에서 다른 feature 작업이 필요하면 `git worktree add ../obsidian-claude-til-<branch-name> <branch-name>`으로 별도 worktree를 생성하도록 안내한다. 같은 디렉토리에서 브랜치를 전환하지 않는다.
 - Obsidian API는 `obsidian` 모듈에서 import
 - node-pty는 `electronRequire`로 로드 (일반 import 불가, 네이티브 모듈)
 - `onload()`에서 등록한 리소스는 자동 해제됨
