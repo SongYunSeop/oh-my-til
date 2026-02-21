@@ -102,6 +102,7 @@ export class TerminalView extends ItemView {
 		this.terminal = new Terminal({
 			fontSize: this.settings.fontSize,
 			fontFamily: this.settings.fontFamily,
+			lineHeight: this.settings.lineHeight,
 			theme: {
 				background: theme.background,
 				foreground: theme.foreground,

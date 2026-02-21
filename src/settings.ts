@@ -6,6 +6,7 @@ export interface TILSettings {
 	resumeLastSession: boolean;
 	fontSize: number;
 	fontFamily: string;
+	lineHeight: number;
 	tilPath: string;
 	autoOpenNewTIL: boolean;
 	mcpEnabled: boolean;
@@ -20,6 +21,7 @@ export const DEFAULT_SETTINGS: TILSettings = {
 	resumeLastSession: false,
 	fontSize: 13,
 	fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+	lineHeight: 1.0,
 	tilPath: "til",
 	autoOpenNewTIL: true,
 	mcpEnabled: true,
@@ -118,6 +120,20 @@ export class TILSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					});
 			});
+
+		new Setting(containerEl)
+			.setName("행간")
+			.setDesc("터미널 행간 (1.0 = 기본, 1.2 = 넓게)")
+			.addSlider((slider) =>
+				slider
+					.setLimits(1.0, 2.0, 0.1)
+					.setValue(this.plugin.settings.lineHeight)
+					.setDynamicTooltip()
+					.onChange(async (value) => {
+						this.plugin.settings.lineHeight = value;
+						await this.plugin.saveSettings();
+					})
+			);
 
 		containerEl.createEl("h3", { text: "TIL 설정" });
 
