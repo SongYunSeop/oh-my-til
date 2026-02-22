@@ -23,6 +23,7 @@ Obsidian 플러그인이 MCP 서버를 통해 vault 접근 도구를 제공합�
 | `til_get_context` | 주제 관련 기존 학습 컨텍스트 (파일, 링크 관계, 미작성 주제) | `/til`, `/save`에서 관련 TIL·백로그 파악 |
 | `til_recent_context` | 최근 학습 흐름 (시간순) | 최근 학습 맥락 파악 |
 | `til_backlog_status` | 백로그 진행률 요약 (JSON: `{ totalDone, totalItems, categories: [{ name, path, done, total }] }`) | 학습 진행 상황 확인 |
+| `til_dashboard` | 학습 대시보드 통계 (JSON: `{ summary, heatmap, categories, backlog }`) | `/dashboard` 스킬에서 종합 현황 표시 |
 
 ### 활용 팁
 

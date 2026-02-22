@@ -9,6 +9,7 @@ export interface TILSettings {
 	lineHeight: number;
 	tilPath: string;
 	autoOpenNewTIL: boolean;
+	openDashboardOnStartup: boolean;
 	mcpEnabled: boolean;
 	mcpPort: number;
 }
@@ -24,6 +25,7 @@ export const DEFAULT_SETTINGS: TILSettings = {
 	lineHeight: 1.0,
 	tilPath: "til",
 	autoOpenNewTIL: true,
+	openDashboardOnStartup: false,
 	mcpEnabled: true,
 	mcpPort: 22360,
 };
@@ -145,6 +147,18 @@ export class TILSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.autoOpenNewTIL)
 					.onChange(async (value) => {
 						this.plugin.settings.autoOpenNewTIL = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("시작 시 대시보드 열기")
+			.setDesc("Obsidian을 열 때 학습 대시보드를 자동으로 표시합니다")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.openDashboardOnStartup)
+					.onChange(async (value) => {
+						this.plugin.settings.openDashboardOnStartup = value;
 						await this.plugin.saveSettings();
 					})
 			);

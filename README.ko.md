@@ -24,7 +24,7 @@ Obsidian 사이드바에 Claude Code 터미널을 임베딩하여 AI 기반 TIL(
 
 ```
 커맨드 팔레트 → 터미널 열기 → Claude Code 자동 시작
-→ /til, /backlog, /research, /save, /migrate-links 스킬 실행
+→ /til, /backlog, /research, /save, /dashboard, /migrate-links 스킬 실행
 → Claude가 리서치 → 대화형 학습 → TIL 마크다운 저장
 → 새 파일 감지 → 에디터에서 자동 열기
 ```

@@ -14,6 +14,11 @@ import {
 	type TopicContextResult,
 } from "./context";
 import { computeBacklogProgress, parseBacklogSections } from "../backlog";
+import {
+	computeEnhancedStats,
+	type EnhancedStatsFileEntry,
+	type BacklogProgressEntry,
+} from "../dashboard/stats";
 
 /**
  * MCP 도구를 서버에 등록한다.
@@ -279,6 +284,67 @@ export function registerTools(server: McpServer, app: App, tilPath: string): voi
 
 			const result = filterRecentFiles(filesWithMeta, days, tilPath);
 			return { content: [{ type: "text" as const, text: formatRecentContext(result) }] };
+		},
+	);
+
+	// til_dashboard: 학습 대시보드 통계
+	server.registerTool(
+		"til_dashboard",
+		{
+			title: "Dashboard Stats",
+			description: "학습 대시보드 통계를 반환합니다 (요약, 히트맵, 카테고리, 백로그)",
+		},
+		async () => {
+			// 1. vault 파일에서 EnhancedStatsFileEntry 구성 (frontmatter date 포함)
+			const files: EnhancedStatsFileEntry[] = app.vault.getFiles()
+				.filter((f) => f.extension === "md")
+				.map((f) => {
+					const cache = app.metadataCache.getFileCache(f);
+					const fmDate = cache?.frontmatter?.date;
+					const createdDate = typeof fmDate === "string" ? fmDate : undefined;
+					const fmTags = cache?.frontmatter?.tags;
+					const tags = Array.isArray(fmTags) ? fmTags.filter((t: unknown) => typeof t === "string") : undefined;
+					return {
+						path: f.path,
+						extension: f.extension,
+						mtime: f.stat.mtime,
+						ctime: f.stat.ctime,
+						createdDate,
+						tags,
+					};
+				});
+
+			// 2. backlog 파일 읽어서 BacklogProgressEntry 구성
+			const backlogFiles = app.vault.getFiles().filter((f) => {
+				if (!f.path.startsWith(tilPath + "/")) return false;
+				if (f.name !== "backlog.md") return false;
+				return true;
+			});
+
+			const backlogEntries: BacklogProgressEntry[] = [];
+			for (const file of backlogFiles) {
+				const content = await app.vault.read(file);
+				const progress = computeBacklogProgress(content);
+				const total = progress.todo + progress.done;
+				if (total > 0) {
+					backlogEntries.push({
+						category: extractCategory(file.path, tilPath),
+						filePath: file.path,
+						done: progress.done,
+						total,
+					});
+				}
+			}
+
+			// 3. computeEnhancedStats 호출
+			const stats = computeEnhancedStats(files, tilPath, backlogEntries);
+
+			// 4. JSON + 텍스트 반환
+			return {
+				content: [
+					{ type: "text" as const, text: JSON.stringify(stats) },
+				],
+			};
 		},
 	);
 }

@@ -24,7 +24,7 @@ An Obsidian plugin that embeds a Claude Code terminal in the sidebar and provide
 
 ```
 Command Palette → Open Terminal → Claude Code starts
-→ Run /til, /backlog, /research, /save, /migrate-links skills
+→ Run /til, /backlog, /research, /save, /dashboard, /migrate-links skills
 → Claude researches → interactive learning → saves TIL markdown
 → New file detected → opens in editor
 ```

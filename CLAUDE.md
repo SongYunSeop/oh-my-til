@@ -4,7 +4,7 @@
 
 Obsidian 플러그인. 사이드바에 Claude Code 터미널을 임베딩하여 TIL 학습 워크플로우를 Obsidian 안에서 실행한다. xterm.js + node-pty 기반.
 
-핵심 흐름: 커맨드 팔레트 → 터미널 열기 → Claude Code에서 `/til`, `/backlog`, `/research`, `/save`, `/migrate-links` 스킬 직접 실행 → 새 파일 감지 시 에디터에서 열기
+핵심 흐름: 커맨드 팔레트 → 터미널 열기 → Claude Code에서 `/til`, `/backlog`, `/research`, `/save`, `/dashboard`, `/migrate-links` 스킬 직접 실행 → 새 파일 감지 시 에디터에서 열기
 
 Obsidian의 역할은 "터미널 임베딩 + 파일 감시 + skill 배포 + MCP 서버 + 대시보드"로 한정하고, 워크플로우 주도권은 Claude Code에 있다.
 
@@ -42,6 +42,7 @@ src/
 ├── watcher.ts            ← 새 TIL 파일 감지 → 에디터에서 열기
 ├── backlog.ts            ← 백로그 파싱/포맷 순수 함수 (parseBacklogItems, extractTopicFromPath, parseBacklogSections, parseFrontmatterSources)
 ├── migrate-links.ts      ← Wikilink [[]] → [](path) 변환 순수 함수
+├── types.d.ts            ← TypeScript 타입 정의 (Electron 모듈)
 ├── terminal/
 │   ├── TerminalView.ts       ← 사이드바 터미널 (ItemView + xterm.js)
 │   ├── MarkdownLinkProvider.ts ← 3개 ILinkProvider: MarkdownLinkProvider ([text](path) + CJK), FilepathLinkProvider (til/ 경로), Osc8LinkProvider (OSC 8 하이퍼링크 + IMarker)
@@ -50,11 +51,11 @@ src/
 │   └── pty.ts                ← PTY 프로세스 관리 (node-pty)
 ├── mcp/
 │   ├── server.ts         ← MCP 서버 라이프사이클 (HTTP + Streamable HTTP 트랜스포트)
-│   ├── tools.ts          ← MCP 도구 정의 (vault 접근)
+│   ├── tools.ts          ← MCP 도구 정의 (vault 접근, til_dashboard 포함)
 │   └── context.ts        ← 학습 컨텍스트 순수 함수 (topic 매칭, 최근 활동, 포맷)
 └── dashboard/
-    ├── DashboardView.ts  ← 학습 대시보드 (ItemView)
-    └── stats.ts          ← vault 파싱 → TIL 통계 계산
+    ├── DashboardView.ts  ← 학습 대시보드 (Summary Cards + Heatmap + Categories + Recent + Backlog)
+    └── stats.ts          ← 대시보드 통계 순수 함수 (streak, heatmap, enhanced categories, backlog progress)
 
 vault-assets/             ← vault에 배포되는 파일 (esbuild text import → 런타임 설치)
 ├── skills/               ← .claude/skills/에 설치되는 스킬 소스
@@ -66,7 +67,7 @@ __tests__/
 ├── utils.test.ts         ← 설정 기본값 테스트
 ├── skills.test.ts        ← skill/rule 버전 기반 설치/업데이트 로직 테스트
 ├── watcher.test.ts       ← 파일 감시 필터링 로직 테스트
-├── stats.test.ts         ← 통계 계산 로직 테스트
+├── stats.test.ts         ← 대시보드 통계 (기본 + streak, heatmap, enhanced categories, backlog) 테스트
 ├── mcp-tools.test.ts     ← MCP 도구 필터링/집계 로직 테스트
 ├── context.test.ts       ← 학습 컨텍스트 순수 함수 테스트
 ├── mcp-server.test.ts    ← MCP 서버 HTTP 라우팅/CORS/라이프사이클 테스트

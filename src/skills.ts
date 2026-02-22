@@ -6,6 +6,7 @@ import backlogSkill from "../vault-assets/skills/backlog/SKILL.md";
 import researchSkill from "../vault-assets/skills/research/SKILL.md";
 import saveSkill from "../vault-assets/skills/save/SKILL.md";
 import migrateLinksSkill from "../vault-assets/skills/migrate-links/SKILL.md";
+import dashboardSkill from "../vault-assets/skills/dashboard/SKILL.md";
 import saveRules from "../vault-assets/rules/save-rules.md";
 import claudeMdSection from "../vault-assets/claude-md-section.md";
 
@@ -15,6 +16,7 @@ const SKILLS: Record<string, string> = {
 	"research/SKILL.md": researchSkill,
 	"save/SKILL.md": saveSkill,
 	"migrate-links/SKILL.md": migrateLinksSkill,
+	"dashboard/SKILL.md": dashboardSkill,
 };
 
 const RULES: Record<string, string> = {

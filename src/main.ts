@@ -47,6 +47,13 @@ export default class TILPlugin extends Plugin {
 		// skill 자동 설치/업데이트 (.claude/skills/claude-til/)
 		installSkills(this.app.vault, this.manifest.version);
 
+		// 시작 시 대시보드 자동 열기 (워크스페이스 복원 이후 포커스 확보)
+		if (this.settings.openDashboardOnStartup) {
+			this.app.workspace.onLayoutReady(() => {
+				setTimeout(() => this.openDashboard(), 500);
+			});
+		}
+
 		// 파일 watcher 시작
 		if (this.settings.autoOpenNewTIL) {
 			this.watcher = new TILWatcher(this.app, this.settings.tilPath);

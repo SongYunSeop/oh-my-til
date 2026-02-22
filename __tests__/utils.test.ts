@@ -10,6 +10,7 @@ describe("DEFAULT_SETTINGS", () => {
 		expect(DEFAULT_SETTINGS.lineHeight).toBe(1.0);
 		expect(DEFAULT_SETTINGS.tilPath).toBe("til");
 		expect(DEFAULT_SETTINGS.autoOpenNewTIL).toBe(true);
+		expect(DEFAULT_SETTINGS.openDashboardOnStartup).toBe(false);
 	});
 
 	it("shellPath가 문자열이다", () => {

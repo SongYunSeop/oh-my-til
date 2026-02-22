@@ -128,7 +128,7 @@ MCP 도구를 사용할 수 없는 경우, `./til/TIL MOC.md`와 `./til/{카테�
 
 ```markdown
 ---
-date: YYYY-MM-DD
+date: YYYY-MM-DDTHH:mm:ss
 category: 카테고리
 tags:
   - til
@@ -178,7 +178,7 @@ aliases:
 1. **Properties (frontmatter)**
    - `tags`에 항상 `til`을 포함한다
    - `aliases`에 한글/영문 제목을 넣어 검색이 쉽게 한다
-   - `date`는 ISO 형식 (YYYY-MM-DD)
+   - `date`는 ISO 형식 (YYYY-MM-DDTHH:mm:ss, 로컬 시간 기준). 반드시 `date` 명령어(`date +%Y-%m-%dT%H:%M:%S`)로 실제 현재 로컬 시각을 조회하여 사용한다
 
 2. **링크** — 항상 표준 마크다운 링크 형식 사용
    - **형식**: `[표시명](til/{카테고리}/{slug}.md)` (예: `[클로저(Closure)](til/javascript/closure.md)`)
