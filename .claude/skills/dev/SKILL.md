@@ -90,7 +90,7 @@ slug 생성 규칙:
 ```bash
 WORKTREE_DIR=$(echo "$BRANCH_NAME" | tr '/' '-')
 WORKTREE_PATH="../${PROJECT_NAME}-${WORKTREE_DIR}"
-# 예: feat/add-dashboard → ../obsidian-claude-til-feat-add-dashboard
+# 예: feat/add-dashboard → ../oh-my-til-feat-add-dashboard
 ```
 
 ## 경로 규칙 (중요)
@@ -101,7 +101,7 @@ Claude Code의 Bash 도구는 호출 간에 셸 상태(cd 포함)가 유지되�
 - worktree 작업 시: `$WORKTREE_PATH`의 절대 경로를 매 명령에 prefix로 붙인다
 - 파일 편집(Read/Edit 도구) 시: `$WORKTREE_PATH` 기준의 절대 경로로 파일을 참조한다
 - Phase 5 이후: `$PROJECT_ROOT`의 절대 경로를 사용한다
-- 변수 참조 대신 실제 절대 경로 문자열을 사용한다 (예: `/Users/.../obsidian-claude-til-feat-xxx/src/main.ts`)
+- 변수 참조 대신 실제 절대 경로 문자열을 사용한다 (예: `/Users/.../oh-my-til-feat-xxx/src/main.ts`)
 
 ## 사전 검증
 

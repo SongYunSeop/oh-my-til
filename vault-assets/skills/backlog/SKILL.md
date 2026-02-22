@@ -23,7 +23,7 @@ plugin-version: "__PLUGIN_VERSION__"
 
 ## MCP 도구 활용
 
-`claude-til` MCP 서버가 연결되어 있으면 MCP 도구를 우선 사용한다:
+`oh-my-til` MCP 서버가 연결되어 있으면 MCP 도구를 우선 사용한다:
 
 - **전체 조회** (`/backlog`): `til_backlog_status` 도구로 진행률 데이터를 가져온다
 - **카테고리 조회** (`/backlog 카테고리`): `til_backlog_status` 도구에 `category` 인수를 전달한다. `category` 지정 시 `sections` 필드가 포함되어 섹션별 개별 항목을 바로 활용할 수 있다

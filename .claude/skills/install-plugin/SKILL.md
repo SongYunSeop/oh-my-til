@@ -1,12 +1,12 @@
 ---
 name: install-plugin
-description: "Obsidian vault에 Claude TIL 플러그인을 설치합니다"
+description: "Obsidian vault에 Oh My TIL 플러그인을 설치합니다"
 argument-hint: "<vault-path>"
 ---
 
 # Install Plugin Skill
 
-Claude TIL 플러그인을 Obsidian vault에 설치합니다.
+Oh My TIL 플러그인을 Obsidian vault에 설치합니다.
 
 ## 활성화 조건
 
@@ -62,9 +62,9 @@ npm run deploy -- <vault-path>
 설치 완료!
 
 1. Obsidian을 재시작하세요
-2. 설정 > Community plugins에서 "Claude TIL"을 활성화하세요
+2. 설정 > Community plugins에서 "Oh My TIL"을 활성화하세요
 3. (선택) MCP 서버 연결:
-   claude mcp add --transport http claude-til http://localhost:22360/mcp
+   claude mcp add --transport http oh-my-til http://localhost:22360/mcp
 ```
 
 ## 주의사항

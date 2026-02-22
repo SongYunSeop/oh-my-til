@@ -20,7 +20,7 @@ plugin-version: "__PLUGIN_VERSION__"
 
 ## MCP 도구 활용
 
-`claude-til` MCP 서버가 연결되어 있으면 `til_dashboard` MCP 도구를 호출한다.
+`oh-my-til` MCP 서버가 연결되어 있으면 `til_dashboard` MCP 도구를 호출한다.
 
 `til_dashboard` 도구는 JSON 구조화 데이터를 반환한다:
 ```json

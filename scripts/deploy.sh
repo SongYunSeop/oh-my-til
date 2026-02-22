@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Claude TIL — Obsidian vault 배포 스크립트
+# Oh My TIL — Obsidian vault 배포 스크립트
 # Usage: ./scripts/deploy.sh /path/to/vault
 #   예시: ./scripts/deploy.sh ~/workspace/my-vault
 
@@ -64,7 +64,7 @@ if [ ! -d "$VAULT_PATH/.obsidian" ]; then
   exit 1
 fi
 
-PLUGIN_DIR="$VAULT_PATH/.obsidian/plugins/claude-til"
+PLUGIN_DIR="$VAULT_PATH/.obsidian/plugins/oh-my-til"
 
 # ── 1. 빌드 ───────────────────────────────────────────────
 
@@ -90,7 +90,7 @@ echo "==> 네이티브 모듈 설치 중..."
 if [ ! -f "$PLUGIN_DIR/package.json" ]; then
   cat > "$PLUGIN_DIR/package.json" << 'EOF'
 {
-  "name": "claude-til",
+  "name": "oh-my-til",
   "version": "1.0.0",
   "private": true,
   "type": "commonjs",

@@ -1,12 +1,12 @@
 ---
 name: update-plugin
-description: "설치된 Claude TIL 플러그인을 최신 버전으로 업데이트합니다"
+description: "설치된 Oh My TIL 플러그인을 최신 버전으로 업데이트합니다"
 argument-hint: "<vault-path>"
 ---
 
 # Update Plugin Skill
 
-이미 설치된 Claude TIL 플러그인을 최신 소스로 업데이트합니다.
+이미 설치된 Oh My TIL 플러그인을 최신 소스로 업데이트합니다.
 
 ## 활성화 조건
 
@@ -24,7 +24,7 @@ argument-hint: "<vault-path>"
 
 ```bash
 # vault 경로 + 기존 설치 검증
-ls <vault-path>/.obsidian/plugins/claude-til/manifest.json
+ls <vault-path>/.obsidian/plugins/oh-my-til/manifest.json
 ```
 
 플러그인이 설치되어 있지 않으면 `/install-plugin`을 사용하라고 안내하고 중단한다.

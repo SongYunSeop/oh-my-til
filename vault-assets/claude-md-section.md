@@ -9,7 +9,7 @@
 
 처음이라면 `/research`로 학습 로드맵을 만들고, `/backlog`로 확인한 뒤, `/til`로 하나씩 학습하세요.
 
-## MCP 도구 (claude-til 플러그인)
+## MCP 도구 (oh-my-til 플러그인)
 
 Obsidian 플러그인이 MCP 서버를 통해 vault 접근 도구를 제공합니다.
 
@@ -45,5 +45,5 @@ Obsidian 터미널은 `[text](path)` 표준 마크다운 링크를 감지하여 
 ### MCP 연결
 
 ```bash
-claude mcp add --transport http claude-til http://localhost:22360/mcp
+claude mcp add --transport http oh-my-til http://localhost:22360/mcp
 ```

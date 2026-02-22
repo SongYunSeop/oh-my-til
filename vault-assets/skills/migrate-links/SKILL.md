@@ -20,14 +20,14 @@ vault에 남아있는 `[[wikilink]]` 형식을 표준 마크다운 링크 `[text
 
 ## CLI 도구
 
-플러그인 배포 시 `.obsidian/plugins/claude-til/migrate-links.mjs`가 함께 설치된다.
+플러그인 배포 시 `.obsidian/plugins/oh-my-til/migrate-links.mjs`가 함께 설치된다.
 이 CLI는 `src/migrate-links.ts`의 테스트된 순수 함수를 번들링한 것이다.
 
 ```bash
 # vault 디렉토리에서 실행
-node .obsidian/plugins/claude-til/migrate-links.mjs . scan      # Phase 1: 스캔
-node .obsidian/plugins/claude-til/migrate-links.mjs . migrate   # Phase 2: 변환
-node .obsidian/plugins/claude-til/migrate-links.mjs . verify    # Phase 3: 검증
+node .obsidian/plugins/oh-my-til/migrate-links.mjs . scan      # Phase 1: 스캔
+node .obsidian/plugins/oh-my-til/migrate-links.mjs . migrate   # Phase 2: 변환
+node .obsidian/plugins/oh-my-til/migrate-links.mjs . verify    # Phase 3: 검증
 ```
 
 ## 변환 규칙
@@ -45,18 +45,18 @@ node .obsidian/plugins/claude-til/migrate-links.mjs . verify    # Phase 3: 검�
 
 ### Phase 1: 스캔
 
-`node .obsidian/plugins/claude-til/migrate-links.mjs . scan` 을 실행한다.
+`node .obsidian/plugins/oh-my-til/migrate-links.mjs . scan` 을 실행한다.
 
 출력 결과를 사용자에게 보여준 뒤, wikilink가 없으면 종료한다.
 wikilink가 있으면 `AskUserQuestion`으로 변환 진행 여부를 확인한다 ("변환 진행" / "취소").
 
 ### Phase 2: 변환
 
-`node .obsidian/plugins/claude-til/migrate-links.mjs . migrate` 를 실행한다.
+`node .obsidian/plugins/oh-my-til/migrate-links.mjs . migrate` 를 실행한다.
 
 ### Phase 3: 검증
 
-`node .obsidian/plugins/claude-til/migrate-links.mjs . verify` 를 실행한다.
+`node .obsidian/plugins/oh-my-til/migrate-links.mjs . verify` 를 실행한다.
 
 - 잔여 wikilink가 있으면 목록을 출력하고 "수동 확인이 필요한 wikilink가 남아있습니다" 안내
 - 잔여 wikilink가 없으면 "모든 wikilink가 변환되었습니다" 확인

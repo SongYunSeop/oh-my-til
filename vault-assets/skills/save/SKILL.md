@@ -25,7 +25,7 @@ plugin-version: "__PLUGIN_VERSION__"
 
 ## MCP 도구 활용
 
-`claude-til` MCP 서버가 연결되어 있으면 MCP 도구를 활용한다:
+`oh-my-til` MCP 서버가 연결되어 있으면 MCP 도구를 활용한다:
 
 - **저장 전**: `til_get_context`로 주제 관련 기존 TIL과 백로그를 한 번에 파악
 - **저장 전**: `til_list`로 기존 TIL 목록을 확인하여 동일/유사 주제 중복 방지. `til_list`는 JSON을 반환한다: `{ totalCount, categories: [{ name, count, files }] }`
