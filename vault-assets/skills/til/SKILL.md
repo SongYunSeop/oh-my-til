@@ -45,6 +45,20 @@ MCP 도구를 사용할 수 없는 경우, `./til/TIL MOC.md`와 `./til/{카테�
    - 백로그에서 항목을 학습할 때, `til_backlog_status`(category 지정) 응답의 `sourceUrls`를 확인한다
    - `sourceUrls`가 있으면 해당 URL들을 **우선 참조**하여 원본 콘텐츠 기반으로 학습한다
    - `sourceUrls`가 없으면 기존대로 웹 검색으로 리서치한다
+
+   #### Subagent 활용 (소스 URL 병렬 패치)
+
+   `sourceUrls`가 **2개 이상**이면 Task 도구로 패치를 병렬화한다:
+
+   1. 각 URL에 대해 패치 subagent를 **병렬 spawn**한다:
+      ```
+      Task(subagent_type="general-purpose", prompt="...", description="패치: {URL 도메인}")
+      ```
+      - 각 subagent 프롬프트: "다음 URL의 내용을 WebFetch로 읽고, 학습에 필요한 핵심 내용을 한국어로 요약해줘 (기술 용어 원어 병기). 코드 예시가 있으면 포함. URL: {url}"
+      - 모든 subagent를 **하나의 메시지에서 동시에** 호출한다
+   2. 모든 결과를 수집하여 리서치 기반으로 합산한 뒤 Phase 2로 진행한다
+
+   > **참고**: URL이 1개이면 병렬화 없이 직접 WebFetch한다.
 2. **기존 TIL이 있으면**: 사용자에게 선택지를 제시한다:
    ```
    "{주제}"에 대한 기존 TIL이 있습니다: {파일 경로}
