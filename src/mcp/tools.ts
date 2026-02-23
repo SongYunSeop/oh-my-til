@@ -19,7 +19,7 @@ import {
 	computeEnhancedStats,
 	type EnhancedStatsFileEntry,
 	type BacklogProgressEntry,
-} from "../dashboard/stats";
+} from "../core/stats";
 
 /**
  * MCP 도구를 서버에 등록한다.

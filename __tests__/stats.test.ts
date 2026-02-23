@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeStats } from "../src/dashboard/stats";
+import { computeStats } from "../src/core/stats";
 import {
 	computeStreak,
 	computeWeeklyCount,
@@ -15,8 +15,8 @@ import {
 	extractSummary,
 	extractDateOnly,
 	pickRandomReviewItems,
-} from "../src/dashboard/stats";
-import type { StatsFileEntry, EnhancedStatsFileEntry, BacklogProgressEntry } from "../src/dashboard/stats";
+} from "../src/core/stats";
+import type { StatsFileEntry, EnhancedStatsFileEntry, BacklogProgressEntry } from "../src/core/stats";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

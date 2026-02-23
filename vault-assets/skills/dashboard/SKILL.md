@@ -28,7 +28,9 @@ plugin-version: "__PLUGIN_VERSION__"
   "summary": { "totalTils": 23, "categoryCount": 5, "thisWeekCount": 3, "streak": 4 },
   "heatmap": { "cells": [{ "date": "2026-01-01", "count": 2, "level": 3 }], "maxCount": 5 },
   "categories": [{ "name": "react", "count": 5, "files": [{ "path": "til/react/hooks.md", "filename": "hooks.md", "mtime": 1740000000000 }] }],
-  "backlog": { "totalDone": 77, "totalItems": 171, "categories": [{ "category": "react", "filePath": "til/react/backlog.md", "done": 10, "total": 15 }] }
+  "backlog": { "totalDone": 77, "totalItems": 171, "categories": [{ "category": "react", "filePath": "til/react/backlog.md", "done": 10, "total": 15 }] },
+  "weeklyTrend": [{ "weekStart": "01/06", "count": 3 }, { "weekStart": "01/13", "count": 5 }],
+  "categoryDistribution": [{ "name": "react", "count": 5, "percentage": 21.7 }, { "name": "typescript", "count": 4, "percentage": 17.4 }]
 }
 ```
 
@@ -93,6 +95,12 @@ heatmap cells를 주단위로 합산하여 스파크라인 문자(`▁▂▃▅�
 3. `til_recent_context` (days: 7) — 최근 활동
 
 이 3개 응답을 종합하여 위와 동일한 형식으로 출력한다 (히트맵은 생략).
+
+## 피해야 할 실패 모드
+
+- **필드 누락**: `weeklyTrend`, `categoryDistribution` 등 MCP 응답의 모든 필드를 활용한다. 일부만 출력하면 대시보드 정보가 불완전해진다
+- **빈 데이터 미처리**: 카테고리나 백로그가 없을 때 빈 테이블을 출력하지 않고, 해당 섹션을 생략하거나 안내 메시지를 표시한다
+- **정렬 누락**: 백로그 진행률은 내림차순, 카테고리는 파일 수 내림차순으로 정렬한다
 
 ## 주의사항
 

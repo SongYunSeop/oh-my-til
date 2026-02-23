@@ -253,11 +253,11 @@ cd "$WORKTREE_PATH" && npm test && npm run build
 
 | 패턴 | 이유 |
 |------|------|
-| `src/main.ts` | 플러그인 라이프사이클 |
-| `src/settings.ts` | 설정 탭 UI |
-| `src/terminal/**` | 터미널 렌더링/PTY |
+| `src/obsidian/main.ts` | 플러그인 라이프사이클 |
+| `src/obsidian/settings.ts` | 설정 탭 UI |
+| `src/obsidian/terminal/**` | 터미널 렌더링/PTY |
 | `src/mcp/server.ts`, `src/mcp/tools.ts` | MCP 서버 런타임 |
-| `src/dashboard/**` | 대시보드 UI |
+| `src/obsidian/dashboard/**` | 대시보드 UI |
 | `vault-assets/skills/**` | 스킬 프롬프트 (Claude Code 동작) |
 | `vault-assets/rules/**` | 규칙 프롬프트 |
 | `styles.css` | UI 스타일 |

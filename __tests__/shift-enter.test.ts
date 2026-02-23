@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { handleShiftEnter } from "../src/terminal/keyboard";
+import { handleShiftEnter } from "../src/core/keyboard";
 
 describe("handleShiftEnter", () => {
 	it("Shift+Enter keydown → newline 전송, 기본 동작 차단", () => {

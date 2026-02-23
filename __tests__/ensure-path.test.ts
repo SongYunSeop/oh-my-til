@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ensurePath } from "../src/terminal/env";
+import { ensurePath } from "../src/core/env";
 
 describe("ensurePath", () => {
 	it("undefined PATH → Homebrew 경로 포함", () => {

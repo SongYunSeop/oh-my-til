@@ -53,9 +53,10 @@ src/
 │   ├── fs-adapter.ts         ← node:fs 기반 (standalone)
 │   └── obsidian-adapter.ts   ← Obsidian App 기반
 ├── mcp/                      ← MCP 서버 (포트 의존, Obsidian 무관)
+│   ├── context.ts            ← 학습 컨텍스트 도구 (topic 매칭, 카테고리 추출)
 │   ├── server.ts             ← HTTP 서버 + Streamable HTTP 트랜스포트
 │   └── tools.ts              ← MCP 도구 정의 (FileStorage + MetadataProvider 사용)
-├── skills-install.ts         ← Skill/Rule 버전 기반 자동 설치/업데이트 + CLAUDE.md MCP 섹션 관리 (공유)
+├── skills-install.ts         ← Skill 버전 기반 자동 설치/업데이트 + CLAUDE.md MCP 섹션 관리 (공유)
 ├── cli/                      ← 독립 CLI 진입점
 │   └── index.ts              ← npx oh-my-til init / serve
 └── obsidian/                 ← Obsidian 플랫폼 어댑터
@@ -71,7 +72,6 @@ src/
 
 vault-assets/             ← vault에 배포되는 파일 (esbuild text import → 런타임 설치)
 ├── skills/               ← .claude/skills/에 설치되는 스킬 소스
-├── rules/                ← .claude/rules/에 설치되는 규칙 소스
 └── claude-md-section.md  ← .claude/CLAUDE.md에 삽입되는 MCP 안내
 
 __tests__/

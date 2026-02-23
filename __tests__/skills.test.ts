@@ -242,59 +242,16 @@ describe("installFiles (skills)", () => {
 	});
 });
 
-describe("installFiles (rules)", () => {
+describe("installFiles (empty rules)", () => {
 	let vault: Vault;
-	const rules: Record<string, string> = {
-		"save-rules.md": '---\nplugin-version: "__PLUGIN_VERSION__"\n---\n# TIL 저장 규칙',
-	};
 
 	beforeEach(() => {
 		vault = new Vault();
 	});
 
-	it("rule 파일이 없으면 새로 설치한다", async () => {
-		const installed = await installFiles(vault, RULES_BASE, rules, "0.2.0");
-
-		expect(installed).toContain(".claude/rules/save-rules.md");
-		const content = await vault.adapter.read(".claude/rules/save-rules.md");
-		expect(content).toContain("# TIL 저장 규칙");
-	});
-
-	it("plugin-version이 낮은 rule은 업데이트한다", async () => {
-		vault._setFile(
-			".claude/rules/save-rules.md",
-			'---\nplugin-version: "0.1.0"\n---\n# 구버전 규칙',
-		);
-
-		const installed = await installFiles(vault, RULES_BASE, rules, "0.2.0");
-
-		expect(installed).toContain(".claude/rules/save-rules.md");
-		const content = await vault.adapter.read(".claude/rules/save-rules.md");
-		expect(content).toContain("# TIL 저장 규칙");
-	});
-
-	it("같은 버전이면 건너뛴다", async () => {
-		vault._setFile(
-			".claude/rules/save-rules.md",
-			'---\nplugin-version: "0.2.0"\n---\n# 기존 규칙',
-		);
-
-		const installed = await installFiles(vault, RULES_BASE, rules, "0.2.0");
-
-		expect(installed).not.toContain(".claude/rules/save-rules.md");
-	});
-
-	it("plugin-version이 없으면 사용자 커스터마이즈로 간주하고 건너뛴다", async () => {
-		vault._setFile(
-			".claude/rules/save-rules.md",
-			"# 사용자가 직접 작성한 규칙",
-		);
-
-		const installed = await installFiles(vault, RULES_BASE, rules, "0.2.0");
-
+	it("빈 rules 맵이면 아무것도 설치하지 않는다", async () => {
+		const installed = await installFiles(vault, RULES_BASE, {}, "0.2.0");
 		expect(installed).toEqual([]);
-		const content = await vault.adapter.read(".claude/rules/save-rules.md");
-		expect(content).toBe("# 사용자가 직접 작성한 규칙");
 	});
 });
 

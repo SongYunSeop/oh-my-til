@@ -7,7 +7,6 @@ import researchSkill from "../vault-assets/skills/research/SKILL.md";
 import saveSkill from "../vault-assets/skills/save/SKILL.md";
 import migrateLinksSkill from "../vault-assets/skills/migrate-links/SKILL.md";
 import dashboardSkill from "../vault-assets/skills/dashboard/SKILL.md";
-import saveRules from "../vault-assets/rules/save-rules.md";
 import claudeMdSection from "../vault-assets/claude-md-section.md";
 
 import {
@@ -33,9 +32,7 @@ const SKILLS: Record<string, string> = {
 	"dashboard/SKILL.md": dashboardSkill,
 };
 
-const RULES: Record<string, string> = {
-	"save-rules.md": saveRules,
-};
+const RULES: Record<string, string> = {};
 
 /**
  * 버전 관리 파일을 설치/업데이트하는 공통 로직.

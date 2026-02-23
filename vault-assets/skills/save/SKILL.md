@@ -9,7 +9,7 @@ plugin-version: "__PLUGIN_VERSION__"
 
 학습 대화의 결과물을 Obsidian 호환 TIL 마크다운으로 저장하고, 연관 파일(Daily 노트, TIL MOC, 백로그)을 빠짐없이 업데이트한다.
 
-핵심 원칙은 `.claude/rules/save-rules.md`에 항상 로드되어 있다. 이 스킬은 상세 템플릿과 워크플로우를 정의한다.
+이 스킬은 저장 원칙, 상세 템플릿, 워크플로우를 모두 포함한다.
 
 ## 활성화 조건
 
@@ -260,3 +260,27 @@ tags:
 - [ ] 저장 경로 안내함
 - [ ] 문서 리뷰 완료 (사용자 확인)
 - [ ] git commit (push 제외)
+
+## 저장 규칙 요약 (Quick Reference)
+
+### 필수 경로
+
+- TIL 파일: `./til/{카테고리}/{주제슬러그}.md` (슬러그: 영문 소문자, 하이픈 구분)
+- Daily 노트: `./Daily/YYYY-MM-DD.md`
+- TIL MOC: `./til/TIL MOC.md`
+- 백로그: `./til/{카테고리}/backlog.md`
+
+### 저장 시 필수 업데이트 항목
+
+1. TIL 파일 저장 (frontmatter: date, category, tags[til], aliases)
+2. Daily 노트에 카테고리별(`### 카테고리`) 링크 추가
+3. TIL MOC에 항목 추가
+4. 백로그에 해당 항목 있으면 `[x]` 체크 + 링크 업데이트
+5. 저장 경로 안내
+6. git commit (`📝 til: {한글 제목}({영문 제목}) - {카테고리}`, push 제외)
+
+### 주의사항
+
+- TIL 파일만 저장하고 Daily/MOC/백로그 업데이트를 빠뜨리지 않는다
+- 동일 슬러그 파일이 있으면: 심화 학습(`/til`에서 기존 TIL 기반 학습)인 경우 자동 병합(기존 내용 유지 + 보강, `updated` 날짜 추가), 그 외는 사용자에게 확인
+- 민감 정보(API 키, 내부 URL 등)는 대체값 사용

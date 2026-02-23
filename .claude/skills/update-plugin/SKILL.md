@@ -32,10 +32,18 @@ ls <vault-path>/.obsidian/plugins/oh-my-til/manifest.json
 ### 2. 최신 소스 가져오기
 
 ```bash
+# 현재 브랜치가 main인지 확인
+CURRENT_BRANCH=$(git branch --show-current)
+if [ "$CURRENT_BRANCH" != "main" ]; then
+  echo "[ERROR] 현재 브랜치가 main이 아닙니다: $CURRENT_BRANCH"
+  echo "main 브랜치에서 실행하세요: git checkout main"
+  exit 1
+fi
+
 git pull origin main
 ```
 
-충돌이 발생하면 사용자에게 알린다.
+현재 브랜치가 main이 아니면 사용자에게 안내하고 중단한다. 충돌이 발생하면 사용자에게 알린다.
 
 ### 3. 배포
 
