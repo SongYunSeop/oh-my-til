@@ -30,6 +30,22 @@ plugin-version: "__PLUGIN_VERSION__"
 2. 해당 주제를 이해하기 위해 필요한 개념, 용어, 선행 지식을 파악한다
 3. 개념 간 의존 관계를 분석한다 (A를 알아야 B를 이해할 수 있다)
 
+#### Subagent 활용 (병렬 리서치)
+
+주제가 넓거나 다룰 영역이 여러 개일 때, Task 도구로 리서치를 병렬화한다:
+
+1. 주제를 3~5개 소주제(sub-topic)로 분해한다
+   - 예: "Kubernetes devops" → "Pod/Container 기초", "Service/Networking", "Storage/Volume", "Deployment 전략", "모니터링/로깅"
+2. 각 소주제에 대해 Task 도구로 리서치 subagent를 **병렬 spawn**한다:
+   ```
+   Task(subagent_type="general-purpose", prompt="...", description="리서치: {소주제}")
+   ```
+   - 각 subagent에게 전달할 프롬프트: "'{소주제}'에 대해 웹 검색으로 조사하여 다음을 정리해줘: (1) 핵심 개념 3~5개와 각 1줄 설명, (2) 관련 기술 용어, (3) 참고할 만한 URL 2~3개. 한국어로 작성하되 기술 용어는 원어 병기."
+   - 모든 subagent를 **하나의 메시지에서 동시에** 호출하여 병렬 실행한다
+3. 모든 subagent 결과를 수집한 뒤, 소주제 간 의존 관계를 분석하여 Phase 2의 학습 순서 정렬에 반영한다
+
+> **참고**: 소주제가 2개 이하이거나 주제가 충분히 좁으면 병렬화 없이 직접 조사한다.
+
 ### Phase 2: 백로그 정리
 
 1. 파악한 개념들을 학습 순서대로 정렬한다 (선행 지식 → 핵심 개념 → 심화)
