@@ -249,9 +249,9 @@ describe("installFiles (agents)", () => {
 		"til-researcher.md": '---\nplugin-version: "__PLUGIN_VERSION__"\n---\n# til-researcher',
 		"til-fetcher.md": '---\nplugin-version: "__PLUGIN_VERSION__"\n---\n# til-fetcher',
 		"til-quality-checker.md": '---\nplugin-version: "__PLUGIN_VERSION__"\n---\n# til-quality-checker',
-		"til-consistency-checker.md": '---\nplugin-version: "__PLUGIN_VERSION__"\n---\n# til-consistency-checker',
 		"til-file-updater.md": '---\nplugin-version: "__PLUGIN_VERSION__"\n---\n# til-file-updater',
 		"til-research-reviewer.md": '---\nplugin-version: "__PLUGIN_VERSION__"\n---\n# til-research-reviewer',
+		"til-cross-linker.md": '---\nplugin-version: "__PLUGIN_VERSION__"\n---\n# til-cross-linker',
 	};
 
 	beforeEach(() => {
@@ -264,9 +264,9 @@ describe("installFiles (agents)", () => {
 		expect(installed).toContain(".claude/agents/til-researcher.md");
 		expect(installed).toContain(".claude/agents/til-fetcher.md");
 		expect(installed).toContain(".claude/agents/til-quality-checker.md");
-		expect(installed).toContain(".claude/agents/til-consistency-checker.md");
 		expect(installed).toContain(".claude/agents/til-file-updater.md");
 		expect(installed).toContain(".claude/agents/til-research-reviewer.md");
+		expect(installed).toContain(".claude/agents/til-cross-linker.md");
 		expect(installed).toHaveLength(6);
 
 		const content = await vault.adapter.read(".claude/agents/til-researcher.md");

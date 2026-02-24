@@ -12,9 +12,9 @@ import claudeMdSection from "../vault-assets/claude-md-section.md";
 import tilResearcherAgent from "../vault-assets/agents/til-researcher.md";
 import tilFetcherAgent from "../vault-assets/agents/til-fetcher.md";
 import tilQualityCheckerAgent from "../vault-assets/agents/til-quality-checker.md";
-import tilConsistencyCheckerAgent from "../vault-assets/agents/til-consistency-checker.md";
 import tilFileUpdaterAgent from "../vault-assets/agents/til-file-updater.md";
 import tilResearchReviewerAgent from "../vault-assets/agents/til-research-reviewer.md";
+import tilCrossLinkerAgent from "../vault-assets/agents/til-cross-linker.md";
 
 import {
 	resolveVersionPlaceholder,
@@ -46,9 +46,9 @@ const AGENTS: Record<string, string> = {
 	"til-researcher.md": tilResearcherAgent,
 	"til-fetcher.md": tilFetcherAgent,
 	"til-quality-checker.md": tilQualityCheckerAgent,
-	"til-consistency-checker.md": tilConsistencyCheckerAgent,
 	"til-file-updater.md": tilFileUpdaterAgent,
 	"til-research-reviewer.md": tilResearchReviewerAgent,
+	"til-cross-linker.md": tilCrossLinkerAgent,
 };
 
 /**
