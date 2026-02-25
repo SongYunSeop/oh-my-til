@@ -1,6 +1,6 @@
 import { FsStorage, FsMetadata } from "../adapters/fs-adapter";
 import { TILMcpServer } from "../mcp/server";
-import { installSkills } from "../skills-install";
+import { installPlugin } from "../plugin-install";
 import { installObsidianPlugin } from "./obsidian-install";
 import { parseArgs, expandTilde } from "../core/cli";
 import * as path from "path";
@@ -62,7 +62,7 @@ async function main(): Promise<void> {
 
 		const storage = new FsStorage(basePath);
 		console.log(`Initializing oh-my-til in ${basePath}...`);
-		await installSkills(storage, VERSION);
+		await installPlugin(storage, VERSION);
 		console.log("\nInstalled:");
 		console.log("  - .claude/skills/ (6 skills)");
 		console.log("  - .claude/rules/ (1 rule)");

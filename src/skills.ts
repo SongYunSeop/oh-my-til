@@ -1,1 +1,1 @@
-export * from "./skills-install";
+export * from "./plugin-install";

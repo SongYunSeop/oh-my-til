@@ -5,7 +5,7 @@ import { TILSettingTab, DEFAULT_SETTINGS } from "./settings";
 import type { TILSettings } from "./settings";
 import { TILWatcher } from "./watcher";
 import { TILMcpServer } from "../mcp/server";
-import { installSkills } from "../skills-install";
+import { installPlugin } from "../plugin-install";
 import { parseBacklogItems, extractTopicFromPath } from "../core/backlog";
 import { ObsidianStorage, ObsidianMetadata } from "../adapters/obsidian-adapter";
 
@@ -45,9 +45,9 @@ export default class TILPlugin extends Plugin {
 
 		this.addSettingTab(new TILSettingTab(this.app, this));
 
-		// skill 자동 설치/업데이트 (.claude/skills/oh-my-til/)
+		// 플러그인 에셋 자동 설치/업데이트 (skills, agents, CLAUDE.md)
 		const storage = new ObsidianStorage(this.app);
-		installSkills(storage, this.manifest.version);
+		installPlugin(storage, this.manifest.version);
 
 		// 시작 시 대시보드 자동 열기 (워크스페이스 복원 이후 포커스 확보)
 		if (this.settings.openDashboardOnStartup) {

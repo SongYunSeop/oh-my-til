@@ -98,9 +98,9 @@ async function installFiles(
 }
 
 /**
- * vault의 .claude/skills/ 에 skill 파일과 .claude/rules/ 에 rule 파일을 설치/업데이트한다.
+ * vault에 플러그인 에셋(skills, agents, CLAUDE.md 섹션)을 설치/업데이트한다.
  */
-export async function installSkills(storage: FileStorage, pluginVersion: string): Promise<void> {
+export async function installPlugin(storage: FileStorage, pluginVersion: string): Promise<void> {
 	// 병렬 실행 전에 공유 부모 디렉토리 생성 (race condition 방지)
 	if (!(await storage.exists(".claude"))) {
 		await storage.mkdir(".claude");

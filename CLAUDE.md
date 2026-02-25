@@ -56,7 +56,7 @@ src/
 │   ├── context.ts            ← 학습 컨텍스트 도구 (topic 매칭, 카테고리 추출)
 │   ├── server.ts             ← HTTP 서버 + Streamable HTTP 트랜스포트
 │   └── tools.ts              ← MCP 도구 정의 (FileStorage + MetadataProvider 사용)
-├── skills-install.ts         ← Skill 버전 기반 자동 설치/업데이트 + CLAUDE.md MCP 섹션 관리 (공유)
+├── plugin-install.ts         ← 플러그인 에셋 자동 설치/업데이트 (skills, agents, CLAUDE.md 섹션) (공유)
 ├── cli/                      ← 독립 CLI 진입점
 │   ├── index.ts              ← npx oh-my-til init / serve
 │   └── obsidian-install.ts   ← Obsidian 플러그인 자동 설치 (Electron 감지, node-pty 재빌드)
