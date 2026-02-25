@@ -42,7 +42,6 @@ const context = await esbuild.context({
 	platform: "node",
 	loader: {
 		".md": "text",
-		".sh": "text",
 	},
 });
 

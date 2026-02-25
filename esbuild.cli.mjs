@@ -17,7 +17,6 @@ await esbuild.build({
 	},
 	loader: {
 		".md": "text",
-		".sh": "text",
 	},
 	define: {
 		__CLI_VERSION__: JSON.stringify(pkg.version),

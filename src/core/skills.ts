@@ -9,7 +9,6 @@ export const MCP_MARKER_END = "<!-- oh-my-til:mcp-tools:end -->";
 export const SKILLS_BASE = ".claude/skills";
 export const RULES_BASE = ".claude/rules";
 export const AGENTS_BASE = ".claude/agents";
-export const HOOKS_BASE = ".claude/hooks";
 export const OLD_SKILLS_BASE = ".claude/skills/claude-til";
 
 /**
