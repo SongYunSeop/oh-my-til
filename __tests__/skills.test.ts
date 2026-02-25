@@ -428,3 +428,221 @@ describe("cleanupOldSkills", () => {
 		expect(removed).toEqual([]);
 	});
 });
+
+// --- installHooks / installHooksConfig 로직 재현 ---
+
+const HOOKS_BASE = ".claude/hooks";
+
+const HOOKS: Record<string, string> = {
+	"session-memory-save.sh": "#!/bin/bash\n# session-memory-save",
+	"session-memory-load.sh": "#!/bin/bash\n# session-memory-load",
+	"notify-complete.sh": "#!/bin/bash\n# notify-complete",
+	"pre-compact.sh": "#!/bin/bash\n# pre-compact",
+};
+
+const HOOKS_CONFIG: Record<string, Array<Record<string, unknown>>> = {
+	SessionEnd: [{
+		hooks: [{ type: "command", command: "bash .claude/hooks/session-memory-save.sh", timeout: 30 }],
+	}],
+	SessionStart: [{
+		matcher: "startup|compact",
+		hooks: [{ type: "command", command: "bash .claude/hooks/session-memory-load.sh" }],
+	}],
+	Notification: [{
+		matcher: "idle_prompt",
+		hooks: [{ type: "command", command: "bash .claude/hooks/notify-complete.sh", async: true }],
+	}],
+	PreCompact: [{
+		hooks: [{ type: "command", command: "bash .claude/hooks/pre-compact.sh" }],
+	}],
+};
+
+async function installHooks(vault: Vault): Promise<string[]> {
+	const installed: string[] = [];
+	if (!(await vault.adapter.exists(HOOKS_BASE))) {
+		await vault.adapter.mkdir(HOOKS_BASE);
+	}
+	for (const [name, content] of Object.entries(HOOKS)) {
+		const fullPath = `${HOOKS_BASE}/${name}`;
+		await vault.adapter.write(fullPath, content);
+		installed.push(fullPath);
+	}
+	return installed;
+}
+
+async function installHooksConfig(vault: Vault): Promise<boolean> {
+	const settingsPath = ".claude/settings.json";
+	let settings: Record<string, unknown> = {};
+
+	if (await vault.adapter.exists(settingsPath)) {
+		const content = await vault.adapter.read(settingsPath);
+		if (content) {
+			try {
+				settings = JSON.parse(content) as Record<string, unknown>;
+			} catch {
+				return false;
+			}
+		}
+	}
+
+	const hooks = (settings.hooks ?? {}) as Record<string, unknown[]>;
+	let changed = false;
+
+	for (const [event, entries] of Object.entries(HOOKS_CONFIG)) {
+		const existing = hooks[event] as Array<{ hooks?: Array<{ command?: string }> }> | undefined;
+		const alreadyInstalled = existing?.some((entry) =>
+			entry.hooks?.some((h) => h.command?.includes(".claude/hooks/")),
+		);
+
+		if (!alreadyInstalled) {
+			hooks[event] = [...(existing ?? []), ...entries];
+			changed = true;
+		}
+	}
+
+	if (changed) {
+		settings.hooks = hooks;
+		await vault.adapter.write(settingsPath, JSON.stringify(settings, null, "\t") + "\n");
+	}
+	return changed;
+}
+
+describe("installHooks (scripts)", () => {
+	let vault: Vault;
+
+	beforeEach(() => {
+		vault = new Vault();
+	});
+
+	it("hook 스크립트 4개를 .claude/hooks/에 설치한다", async () => {
+		const installed = await installHooks(vault);
+
+		expect(installed).toHaveLength(4);
+		expect(installed).toContain(".claude/hooks/session-memory-save.sh");
+		expect(installed).toContain(".claude/hooks/session-memory-load.sh");
+		expect(installed).toContain(".claude/hooks/notify-complete.sh");
+		expect(installed).toContain(".claude/hooks/pre-compact.sh");
+
+		const content = await vault.adapter.read(".claude/hooks/session-memory-save.sh");
+		expect(content).toContain("#!/bin/bash");
+	});
+
+	it("기존 스크립트가 있으면 덮어쓴다", async () => {
+		vault._setFile(".claude/hooks/notify-complete.sh", "old content");
+
+		await installHooks(vault);
+
+		const content = await vault.adapter.read(".claude/hooks/notify-complete.sh");
+		expect(content).toContain("#!/bin/bash");
+		expect(content).not.toContain("old content");
+	});
+});
+
+describe("installHooksConfig (settings.json)", () => {
+	let vault: Vault;
+
+	beforeEach(() => {
+		vault = new Vault();
+	});
+
+	it("settings.json이 없으면 새로 생성한다", async () => {
+		const changed = await installHooksConfig(vault);
+
+		expect(changed).toBe(true);
+		const content = await vault.adapter.read(".claude/settings.json");
+		const settings = JSON.parse(content);
+		expect(settings.hooks.SessionEnd).toHaveLength(1);
+		expect(settings.hooks.SessionStart).toHaveLength(1);
+		expect(settings.hooks.Notification).toHaveLength(1);
+		expect(settings.hooks.PreCompact).toHaveLength(1);
+		expect(settings.hooks.SessionEnd[0].hooks[0].command).toBe("bash .claude/hooks/session-memory-save.sh");
+	});
+
+	it("기존 settings.json의 다른 설정을 보존한다", async () => {
+		vault._setFile(".claude/settings.json", JSON.stringify({
+			allowedTools: ["Read", "Write"],
+			customKey: true,
+		}));
+
+		await installHooksConfig(vault);
+
+		const content = await vault.adapter.read(".claude/settings.json");
+		const settings = JSON.parse(content);
+		expect(settings.allowedTools).toEqual(["Read", "Write"]);
+		expect(settings.customKey).toBe(true);
+		expect(settings.hooks.SessionEnd).toHaveLength(1);
+	});
+
+	it("이미 oh-my-til hook이 등록되어 있으면 건너뛴다", async () => {
+		vault._setFile(".claude/settings.json", JSON.stringify({
+			hooks: {
+				SessionEnd: [{
+					hooks: [{ type: "command", command: "bash .claude/hooks/session-memory-save.sh" }],
+				}],
+				SessionStart: [{
+					hooks: [{ type: "command", command: "bash .claude/hooks/session-memory-load.sh" }],
+				}],
+				Notification: [{
+					hooks: [{ type: "command", command: "bash .claude/hooks/notify-complete.sh" }],
+				}],
+				PreCompact: [{
+					hooks: [{ type: "command", command: "bash .claude/hooks/pre-compact.sh" }],
+				}],
+			},
+		}));
+
+		const changed = await installHooksConfig(vault);
+		expect(changed).toBe(false);
+	});
+
+	it("사용자 hook과 공존한다 (기존 hook 보존 + oh-my-til hook 추가)", async () => {
+		vault._setFile(".claude/settings.json", JSON.stringify({
+			hooks: {
+				SessionEnd: [{
+					hooks: [{ type: "command", command: "echo 'user hook'" }],
+				}],
+			},
+		}));
+
+		await installHooksConfig(vault);
+
+		const content = await vault.adapter.read(".claude/settings.json");
+		const settings = JSON.parse(content);
+		// 사용자 hook + oh-my-til hook = 2개
+		expect(settings.hooks.SessionEnd).toHaveLength(2);
+		expect(settings.hooks.SessionEnd[0].hooks[0].command).toBe("echo 'user hook'");
+		expect(settings.hooks.SessionEnd[1].hooks[0].command).toBe("bash .claude/hooks/session-memory-save.sh");
+	});
+
+	it("JSON 파싱 실패 시 기존 파일을 보존한다", async () => {
+		vault._setFile(".claude/settings.json", "{ invalid json }}}");
+
+		const changed = await installHooksConfig(vault);
+
+		expect(changed).toBe(false);
+		const content = await vault.adapter.read(".claude/settings.json");
+		expect(content).toBe("{ invalid json }}}");
+	});
+
+	it("일부 이벤트만 등록된 경우 누락된 이벤트만 추가한다", async () => {
+		vault._setFile(".claude/settings.json", JSON.stringify({
+			hooks: {
+				SessionEnd: [{
+					hooks: [{ type: "command", command: "bash .claude/hooks/session-memory-save.sh" }],
+				}],
+			},
+		}));
+
+		const changed = await installHooksConfig(vault);
+
+		expect(changed).toBe(true);
+		const content = await vault.adapter.read(".claude/settings.json");
+		const settings = JSON.parse(content);
+		// SessionEnd는 기존 유지 (1개)
+		expect(settings.hooks.SessionEnd).toHaveLength(1);
+		// 나머지는 새로 추가
+		expect(settings.hooks.SessionStart).toHaveLength(1);
+		expect(settings.hooks.Notification).toHaveLength(1);
+		expect(settings.hooks.PreCompact).toHaveLength(1);
+	});
+});
