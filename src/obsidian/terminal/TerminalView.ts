@@ -233,8 +233,8 @@ export class TerminalView extends ItemView {
 					: "clear && claude\r";
 				setTimeout(() => {
 					this.ptyProcess?.write(cmd);
-					// Claude 초기화 후 대기 명령어 전송
-					setTimeout(() => this.flushPendingCommands(), 2000);
+					// 프롬프트 감지 기반 flush (타임아웃 10초 폴백)
+					this.waitForClaudeReady(() => this.flushPendingCommands());
 				}, 300);
 			} else {
 				setTimeout(() => this.flushPendingCommands(), 100);
@@ -244,6 +244,31 @@ export class TerminalView extends ItemView {
 			this.terminal.write("\r\n\x1b[31mError: 터미널 시작에 실패했습니다.\x1b[0m\r\n");
 			this.terminal.write(`\r\n${error}\r\n`);
 		}
+	}
+
+	private waitForClaudeReady(callback: () => void): void {
+		const TIMEOUT = 10_000;
+		let resolved = false;
+		// Claude Code 프롬프트 패턴: 줄 끝에 > 또는 ❯ (ANSI 이스케이프 이후)
+		const CLAUDE_PROMPT_RE = /(?:^|\n)\s*[>❯]\s*$/;
+
+		const disposable = this.terminal?.onData((data: string) => {
+			if (!resolved && CLAUDE_PROMPT_RE.test(data)) {
+				resolved = true;
+				clearTimeout(timer);
+				disposable?.dispose();
+				// 프롬프트 출력 후 약간의 여유
+				setTimeout(callback, 200);
+			}
+		});
+
+		const timer = setTimeout(() => {
+			if (!resolved) {
+				resolved = true;
+				disposable?.dispose();
+				callback();
+			}
+		}, TIMEOUT);
 	}
 
 	private flushPendingCommands(): void {

@@ -65,37 +65,51 @@ async function installFiles(
 	pluginVersion: string,
 	label: string,
 ): Promise<void> {
-	for (const [relativePath, content] of Object.entries(files)) {
+	// 필요한 디렉토리를 사전에 수집하여 중복 없이 생성
+	const dirs = new Set<string>();
+	for (const relativePath of Object.keys(files)) {
 		const fullPath = `${basePath}/${relativePath}`;
-
-		if (await storage.exists(fullPath)) {
-			const existing = await storage.readFile(fullPath);
-			const installedVersion = extractPluginVersion(existing ?? "");
-
-			// plugin-version이 없으면 사용자 커스터마이즈 → 건너뜀
-			if (!installedVersion) continue;
-			// 현재 버전이 더 높지 않으면 건너뜀
-			if (!isNewerVersion(pluginVersion, installedVersion)) continue;
-		}
-
-		// 디렉토리 생성
-		const dir = fullPath.substring(0, fullPath.lastIndexOf("/"));
+		dirs.add(fullPath.substring(0, fullPath.lastIndexOf("/")));
+	}
+	for (const dir of dirs) {
 		if (!(await storage.exists(dir))) {
 			await storage.mkdir(dir);
 		}
-
-		await storage.writeFile(fullPath, resolveVersionPlaceholder(content, pluginVersion));
-		console.log(`Oh My TIL: ${label} 설치됨 → ${fullPath}`);
 	}
+
+	await Promise.all(
+		Object.entries(files).map(async ([relativePath, content]) => {
+			const fullPath = `${basePath}/${relativePath}`;
+
+			if (await storage.exists(fullPath)) {
+				const existing = await storage.readFile(fullPath);
+				const installedVersion = extractPluginVersion(existing ?? "");
+
+				// plugin-version이 없으면 사용자 커스터마이즈 → 건너뜀
+				if (!installedVersion) return;
+				// 현재 버전이 더 높지 않으면 건너뜀
+				if (!isNewerVersion(pluginVersion, installedVersion)) return;
+			}
+
+			await storage.writeFile(fullPath, resolveVersionPlaceholder(content, pluginVersion));
+			console.log(`Oh My TIL: ${label} 설치됨 → ${fullPath}`);
+		}),
+	);
 }
 
 /**
  * vault의 .claude/skills/ 에 skill 파일과 .claude/rules/ 에 rule 파일을 설치/업데이트한다.
  */
 export async function installSkills(storage: FileStorage, pluginVersion: string): Promise<void> {
-	await installFiles(storage, SKILLS_BASE, SKILLS, pluginVersion, "skill");
-	await installFiles(storage, RULES_BASE, RULES, pluginVersion, "rule");
-	await installFiles(storage, AGENTS_BASE, AGENTS, pluginVersion, "agent");
+	// 병렬 실행 전에 공유 부모 디렉토리 생성 (race condition 방지)
+	if (!(await storage.exists(".claude"))) {
+		await storage.mkdir(".claude");
+	}
+	await Promise.all([
+		installFiles(storage, SKILLS_BASE, SKILLS, pluginVersion, "skill"),
+		installFiles(storage, RULES_BASE, RULES, pluginVersion, "rule"),
+		installFiles(storage, AGENTS_BASE, AGENTS, pluginVersion, "agent"),
+	]);
 
 	await installClaudeMdSection(storage, pluginVersion);
 	await cleanupOldSkills(storage);

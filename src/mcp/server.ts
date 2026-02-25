@@ -74,13 +74,19 @@ export class TILMcpServer {
 		}
 
 		if (req.url === "/mcp" || req.url?.startsWith("/mcp?")) {
+			const mcpServer = new McpServer({
+				name: "oh-my-til",
+				version: this.version,
+			});
+			registerTools(mcpServer, this.storage, this.metadata, this.tilPath);
+			const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+
+			const cleanup = async () => {
+				await transport.close();
+				await mcpServer.close();
+			};
+
 			try {
-				const mcpServer = new McpServer({
-					name: "oh-my-til",
-					version: this.version,
-				});
-				registerTools(mcpServer, this.storage, this.metadata, this.tilPath);
-				const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
 				await mcpServer.connect(transport);
 				await transport.handleRequest(req, res);
 			} catch (err) {
@@ -88,6 +94,14 @@ export class TILMcpServer {
 				if (!res.headersSent) {
 					res.writeHead(500, { "Content-Type": "application/json" });
 					res.end(JSON.stringify({ error: "Internal error" }));
+				}
+			} finally {
+				// POST(stateless)는 handleRequest 후 즉시 정리.
+				// GET/SSE는 응답 스트림이 끝날 때 정리.
+				if (res.writableEnded) {
+					await cleanup();
+				} else {
+					res.on("close", () => void cleanup());
 				}
 			}
 			return;
@@ -99,6 +113,7 @@ export class TILMcpServer {
 
 	async stop(): Promise<void> {
 		if (this.httpServer) {
+			this.httpServer.closeAllConnections();
 			return new Promise<void>((resolve) => {
 				this.httpServer!.close(() => {
 					console.log("Oh My TIL: MCP 서버 종료");

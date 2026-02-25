@@ -83,12 +83,17 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 			const results: string[] = [];
 			const lowerQuery = query.toLowerCase();
 
-			for (const file of files) {
-				const text = await storage.readFile(file.path);
-				if (text !== null && text.toLowerCase().includes(lowerQuery)) {
-					results.push(file.path);
+			const BATCH_SIZE = 20;
+			for (let i = 0; i < files.length && results.length < 50; i += BATCH_SIZE) {
+				const batch = files.slice(i, i + BATCH_SIZE);
+				const texts = await Promise.all(batch.map((f) => storage.readFile(f.path)));
+				for (let j = 0; j < batch.length; j++) {
+					const text = texts[j];
+					if (text !== null && text.toLowerCase().includes(lowerQuery)) {
+						results.push(batch[j]!.path);
+					}
+					if (results.length >= 50) break;
 				}
-				if (results.length >= 50) break;
 			}
 			const text = results.length > 0
 				? `${results.length}개 파일에서 발견:\n${results.join("\n")}`
@@ -213,30 +218,37 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 			// 1단계: 경로 매칭
 			const pathMatches = findPathMatches(allPaths, topic, tilPath);
 
-			// 2단계: 내용 매칭 (경로 매칭에 포함되지 않은 파일만)
+			// 2단계: 내용 매칭 (경로 매칭에 포함되지 않은 파일만, 배치 병렬 I/O)
 			const pathMatchSet = new Set(pathMatches);
 			const contentMatches: string[] = [];
 			const lowerTopic = topic.toLowerCase();
-			for (const file of allFiles) {
-				if (pathMatchSet.has(file.path)) continue;
-				if (!file.path.startsWith(tilPath + "/")) continue;
-				if (file.name === "backlog.md") continue;
-				const text = await storage.readFile(file.path);
-				if (text !== null && text.toLowerCase().includes(lowerTopic)) {
-					contentMatches.push(file.path);
+			const candidates = allFiles.filter((f) =>
+				!pathMatchSet.has(f.path) && f.path.startsWith(tilPath + "/") && f.name !== "backlog.md",
+			);
+			const BATCH_SIZE = 20;
+			for (let i = 0; i < candidates.length && pathMatches.length + contentMatches.length < 20; i += BATCH_SIZE) {
+				const batch = candidates.slice(i, i + BATCH_SIZE);
+				const texts = await Promise.all(batch.map((f) => storage.readFile(f.path)));
+				for (let j = 0; j < batch.length; j++) {
+					const text = texts[j];
+					if (text !== null && text.toLowerCase().includes(lowerTopic)) {
+						contentMatches.push(batch[j]!.path);
+					}
+					if (pathMatches.length + contentMatches.length >= 20) break;
 				}
-				if (pathMatches.length + contentMatches.length >= 20) break;
 			}
 
-			// 3단계: metadata enrichment
-			const resolvedLinks = await metadata.getResolvedLinks();
-			const matchedFiles: TilFileContext[] = [];
+			// 3단계: metadata enrichment (병렬 조회)
+			const allMatchedPaths = [...pathMatches, ...contentMatches];
+			const [resolvedLinks, ...fileMetas] = await Promise.all([
+				metadata.getResolvedLinks(),
+				...allMatchedPaths.map((p) => metadata.getFileMetadata(p)),
+			]);
 
-			for (const filePath of [...pathMatches, ...contentMatches]) {
-				const fileMeta = await metadata.getFileMetadata(filePath);
-				// existence check: if metadata returns null and readFile also returns null, skip
-				const exists = fileMeta !== null || (await storage.readFile(filePath)) !== null;
-				if (!exists) continue;
+			const matchedFiles: TilFileContext[] = [];
+			for (let i = 0; i < allMatchedPaths.length; i++) {
+				const filePath = allMatchedPaths[i]!;
+				const fileMeta = fileMetas[i] ?? null;
 
 				const headings = fileMeta?.headings ?? [];
 				const outgoingLinks = fileMeta?.outgoingLinks ?? [];

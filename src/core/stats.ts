@@ -180,9 +180,9 @@ function startOfDay(ts: number): number {
  * 오늘부터 역산하여 연속으로 TIL을 작성한 일수를 반환한다.
  * mtime이 아닌 ctime을 사용하여 동기화/인덱싱에 의한 오염을 방지한다.
  */
-export function computeStreak(files: EnhancedStatsFileEntry[], tilPath: string, now?: number): number {
+export function computeStreak(files: EnhancedStatsFileEntry[], tilPath: string, now?: number, _prefilteredFiles?: EnhancedStatsFileEntry[]): number {
 	const currentTime = now ?? Date.now();
-	const tilFiles = filterTilFiles(files, tilPath);
+	const tilFiles = _prefilteredFiles ?? filterTilFiles(files, tilPath);
 
 	if (tilFiles.length === 0) return 0;
 
@@ -215,10 +215,10 @@ export function computeStreak(files: EnhancedStatsFileEntry[], tilPath: string, 
 /**
  * 최근 7일간 작성된 TIL 파일 수를 계산한다 (frontmatter date 기준).
  */
-export function computeWeeklyCount(files: EnhancedStatsFileEntry[], tilPath: string, now?: number): number {
+export function computeWeeklyCount(files: EnhancedStatsFileEntry[], tilPath: string, now?: number, _prefilteredFiles?: EnhancedStatsFileEntry[]): number {
 	const currentTime = now ?? Date.now();
 	const cutoff = startOfDay(currentTime) - 6 * DAY_MS; // 오늘 포함 7일
-	const tilFiles = filterTilFiles(files, tilPath);
+	const tilFiles = _prefilteredFiles ?? filterTilFiles(files, tilPath);
 	return tilFiles.filter((f) => parseDateStr(getCreatedDate(f)) >= cutoff).length;
 }
 
@@ -226,9 +226,9 @@ export function computeWeeklyCount(files: EnhancedStatsFileEntry[], tilPath: str
  * 365일간의 활동 히트맵 데이터를 생성한다 (ctime 기준).
  * level 0-4는 maxCount 기준으로 분배한다.
  */
-export function computeHeatmapData(files: EnhancedStatsFileEntry[], tilPath: string, now?: number): HeatmapData {
+export function computeHeatmapData(files: EnhancedStatsFileEntry[], tilPath: string, now?: number, _prefilteredFiles?: EnhancedStatsFileEntry[]): HeatmapData {
 	const currentTime = now ?? Date.now();
-	const tilFiles = filterTilFiles(files, tilPath);
+	const tilFiles = _prefilteredFiles ?? filterTilFiles(files, tilPath);
 	const todayStart = startOfDay(currentTime);
 
 	// 365일간의 날짜별 카운트 (datetime에서 날짜만 추출)
@@ -272,8 +272,8 @@ function computeLevel(count: number, maxCount: number): 0 | 1 | 2 | 3 | 4 {
 /**
  * 카테고리별 파일 목록을 포함한 분류를 반환한다.
  */
-export function computeEnhancedCategories(files: EnhancedStatsFileEntry[], tilPath: string): EnhancedCategory[] {
-	const tilFiles = filterTilFiles(files, tilPath);
+export function computeEnhancedCategories(files: EnhancedStatsFileEntry[], tilPath: string, _prefilteredFiles?: EnhancedStatsFileEntry[]): EnhancedCategory[] {
+	const tilFiles = _prefilteredFiles ?? filterTilFiles(files, tilPath);
 	const categoryMap = new Map<string, EnhancedCategoryFile[]>();
 
 	for (const f of tilFiles) {
@@ -382,9 +382,10 @@ export function computeWeeklyTrend(
 	tilPath: string,
 	weekCount = 16,
 	now?: number,
+	_prefilteredFiles?: EnhancedStatsFileEntry[],
 ): WeeklyTrendEntry[] {
 	const currentTime = now ?? Date.now();
-	const tilFiles = filterTilFiles(files, tilPath);
+	const tilFiles = _prefilteredFiles ?? filterTilFiles(files, tilPath);
 	const todayStart = startOfDay(currentTime);
 
 	// Find Monday of current week
@@ -424,8 +425,9 @@ export function computeWeeklyTrend(
 export function computeCategoryDistribution(
 	files: EnhancedStatsFileEntry[],
 	tilPath: string,
+	_prefilteredFiles?: EnhancedStatsFileEntry[],
 ): CategoryDistribution[] {
-	const tilFiles = filterTilFiles(files, tilPath);
+	const tilFiles = _prefilteredFiles ?? filterTilFiles(files, tilPath);
 	const total = tilFiles.length;
 	if (total === 0) return [];
 
@@ -534,22 +536,22 @@ export function computeEnhancedStats(
 	now?: number,
 ): EnhancedTILStats {
 	const tilFiles = filterTilFiles(files, tilPath);
-	const categories = computeEnhancedCategories(files, tilPath);
+	const categories = computeEnhancedCategories(files, tilPath, tilFiles);
 
 	const summary: SummaryCards = {
 		totalTils: tilFiles.length,
 		categoryCount: categories.length,
-		thisWeekCount: computeWeeklyCount(files, tilPath, now),
-		streak: computeStreak(files, tilPath, now),
+		thisWeekCount: computeWeeklyCount(files, tilPath, now, tilFiles),
+		streak: computeStreak(files, tilPath, now, tilFiles),
 	};
 
 	return {
 		summary,
-		heatmap: computeHeatmapData(files, tilPath, now),
+		heatmap: computeHeatmapData(files, tilPath, now, tilFiles),
 		categories,
 		backlog: computeDashboardBacklog(backlogEntries),
-		weeklyTrend: computeWeeklyTrend(files, tilPath, 16, now),
-		categoryDistribution: computeCategoryDistribution(files, tilPath),
+		weeklyTrend: computeWeeklyTrend(files, tilPath, 16, now, tilFiles),
+		categoryDistribution: computeCategoryDistribution(files, tilPath, tilFiles),
 	};
 }
 
