@@ -434,18 +434,12 @@ describe("cleanupOldSkills", () => {
 const HOOKS_BASE = ".claude/hooks";
 
 const HOOKS: Record<string, string> = {
-	"session-memory-load.sh": "#!/bin/bash\n# session-memory-load",
 	"notify-complete.sh": "#!/bin/bash\n# notify-complete",
 	"pre-compact.sh": "#!/bin/bash\n# pre-compact",
 };
 
 const HOOKS_CONFIG: Record<string, Array<Record<string, unknown>>> = {
-	SessionStart: [{
-		matcher: "startup|compact",
-		hooks: [{ type: "command", command: "bash .claude/hooks/session-memory-load.sh" }],
-	}],
 	Notification: [{
-		matcher: "idle_prompt",
 		hooks: [{ type: "command", command: "bash .claude/hooks/notify-complete.sh", async: true }],
 	}],
 	PreCompact: [{
@@ -510,15 +504,14 @@ describe("installHooks (scripts)", () => {
 		vault = new Vault();
 	});
 
-	it("hook 스크립트 3개를 .claude/hooks/에 설치한다", async () => {
+	it("hook 스크립트 2개를 .claude/hooks/에 설치한다", async () => {
 		const installed = await installHooks(vault);
 
-		expect(installed).toHaveLength(3);
-		expect(installed).toContain(".claude/hooks/session-memory-load.sh");
+		expect(installed).toHaveLength(2);
 		expect(installed).toContain(".claude/hooks/notify-complete.sh");
 		expect(installed).toContain(".claude/hooks/pre-compact.sh");
 
-		const content = await vault.adapter.read(".claude/hooks/session-memory-load.sh");
+		const content = await vault.adapter.read(".claude/hooks/notify-complete.sh");
 		expect(content).toContain("#!/bin/bash");
 	});
 
@@ -546,11 +539,10 @@ describe("installHooksConfig (settings.json)", () => {
 		expect(changed).toBe(true);
 		const content = await vault.adapter.read(".claude/settings.json");
 		const settings = JSON.parse(content);
-		expect(settings.hooks.SessionEnd).toBeUndefined();
-		expect(settings.hooks.SessionStart).toHaveLength(1);
+		expect(settings.hooks.SessionStart).toBeUndefined();
 		expect(settings.hooks.Notification).toHaveLength(1);
 		expect(settings.hooks.PreCompact).toHaveLength(1);
-		expect(settings.hooks.SessionStart[0].hooks[0].command).toBe("bash .claude/hooks/session-memory-load.sh");
+		expect(settings.hooks.Notification[0].hooks[0].command).toBe("bash .claude/hooks/notify-complete.sh");
 	});
 
 	it("기존 settings.json의 다른 설정을 보존한다", async () => {
@@ -565,15 +557,12 @@ describe("installHooksConfig (settings.json)", () => {
 		const settings = JSON.parse(content);
 		expect(settings.allowedTools).toEqual(["Read", "Write"]);
 		expect(settings.customKey).toBe(true);
-		expect(settings.hooks.SessionStart).toHaveLength(1);
+		expect(settings.hooks.Notification).toHaveLength(1);
 	});
 
 	it("이미 oh-my-til hook이 등록되어 있으면 건너뛴다", async () => {
 		vault._setFile(".claude/settings.json", JSON.stringify({
 			hooks: {
-				SessionStart: [{
-					hooks: [{ type: "command", command: "bash .claude/hooks/session-memory-load.sh" }],
-				}],
 				Notification: [{
 					hooks: [{ type: "command", command: "bash .claude/hooks/notify-complete.sh" }],
 				}],
@@ -590,7 +579,7 @@ describe("installHooksConfig (settings.json)", () => {
 	it("사용자 hook과 공존한다 (기존 hook 보존 + oh-my-til hook 추가)", async () => {
 		vault._setFile(".claude/settings.json", JSON.stringify({
 			hooks: {
-				SessionStart: [{
+				Notification: [{
 					hooks: [{ type: "command", command: "echo 'user hook'" }],
 				}],
 			},
@@ -600,10 +589,11 @@ describe("installHooksConfig (settings.json)", () => {
 
 		const content = await vault.adapter.read(".claude/settings.json");
 		const settings = JSON.parse(content);
-		// 사용자 hook + oh-my-til hook = 2개
-		expect(settings.hooks.SessionStart).toHaveLength(2);
-		expect(settings.hooks.SessionStart[0].hooks[0].command).toBe("echo 'user hook'");
-		expect(settings.hooks.SessionStart[1].hooks[0].command).toBe("bash .claude/hooks/session-memory-load.sh");
+		// 사용자 hook 1개 (oh-my-til 감지되지 않으므로 추가)
+		// → 기존 사용자 hook + oh-my-til hook = 2개
+		expect(settings.hooks.Notification).toHaveLength(2);
+		expect(settings.hooks.Notification[0].hooks[0].command).toBe("echo 'user hook'");
+		expect(settings.hooks.Notification[1].hooks[0].command).toBe("bash .claude/hooks/notify-complete.sh");
 	});
 
 	it("JSON 파싱 실패 시 기존 파일을 보존한다", async () => {
@@ -619,8 +609,8 @@ describe("installHooksConfig (settings.json)", () => {
 	it("일부 이벤트만 등록된 경우 누락된 이벤트만 추가한다", async () => {
 		vault._setFile(".claude/settings.json", JSON.stringify({
 			hooks: {
-				SessionStart: [{
-					hooks: [{ type: "command", command: "bash .claude/hooks/session-memory-load.sh" }],
+				Notification: [{
+					hooks: [{ type: "command", command: "bash .claude/hooks/notify-complete.sh" }],
 				}],
 			},
 		}));
@@ -630,10 +620,9 @@ describe("installHooksConfig (settings.json)", () => {
 		expect(changed).toBe(true);
 		const content = await vault.adapter.read(".claude/settings.json");
 		const settings = JSON.parse(content);
-		// SessionStart는 기존 유지 (1개)
-		expect(settings.hooks.SessionStart).toHaveLength(1);
-		// 나머지는 새로 추가
+		// Notification은 기존 유지 (1개)
 		expect(settings.hooks.Notification).toHaveLength(1);
+		// PreCompact는 새로 추가
 		expect(settings.hooks.PreCompact).toHaveLength(1);
 	});
 });
