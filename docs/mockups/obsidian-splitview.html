@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Obsidian Split View Mockup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #dcddde; font-size: 14px; }
+
+    .obs-window {
+      max-width: 1100px;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      border: 1px solid #333;
+    }
+
+    .obs-titlebar {
+      background: #181818;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .obs-titlebar-text { flex:1; text-align:center; font-size:12px; color:#666; margin-right:52px; }
+
+    .obs-body { display: flex; background: #1e1e1e; min-height: 520px; }
+
+    /* Ribbon */
+    .obs-ribbon {
+      width: 44px;
+      background: #181818;
+      border-right: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 8px;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .ribbon-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 4px; color: #666; }
+    .ribbon-icon.active { color: #7C3AED; }
+    .ribbon-spacer { flex: 1; }
+
+    /* Content */
+    .obs-content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    /* Tabs */
+    .obs-tabs {
+      height: 36px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 8px;
+    }
+    .obs-tab {
+      height: 30px; padding: 0 14px; display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: #888; background: transparent;
+      border-radius: 6px 6px 0 0; border: 1px solid transparent; border-bottom: none;
+      position: relative;
+    }
+    .obs-tab.active { background: #1e1e1e; border-color: #2a2a2a; color: #dcddde; }
+    .obs-tab.active::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:1px; background:#1e1e1e; }
+    .obs-tab svg { opacity: 0.6; }
+    .obs-tab.active svg { opacity: 1; }
+
+    /* Split panes */
+    .split-view { display: flex; flex: 1; min-height: 0; }
+
+    /* Editor pane */
+    .editor-pane {
+      flex: 1;
+      padding: 20px 24px;
+      overflow-y: auto;
+      border-right: 1px solid #2a2a2a;
+      line-height: 1.7;
+    }
+    .editor-pane h1 { font-size: 1.4em; margin-bottom: 12px; color: #e4e4ef; }
+    .editor-pane h2 { font-size: 1.1em; margin: 18px 0 8px; color: #e4e4ef; border-bottom: 1px solid #2a2a2a; padding-bottom: 4px; }
+    .frontmatter {
+      background: #181818;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      font-family: 'Menlo', monospace;
+      color: #999;
+    }
+    .fm-key { color: #56b6c2; }
+    .fm-val { color: #dcddde; }
+    .tag { display: inline-block; background: rgba(124,58,237,0.15); color: #9b6cf7; padding: 1px 8px; border-radius: 4px; font-size: 12px; margin-right: 4px; }
+    .editor-p { color: #b0b0c0; font-size: 0.92em; margin-bottom: 10px; }
+    .editor-code {
+      background: #12121e;
+      border: 1px solid #2a2a42;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: 'Menlo', monospace;
+      font-size: 12px;
+      color: #e4e4ef;
+      margin: 8px 0 12px;
+      line-height: 1.6;
+    }
+    .editor-strong { color: #e4e4ef; font-weight: 600; }
+    .editor-link { color: #56b6c2; text-decoration: underline; }
+    .code-kw { color: #9b6cf7; }
+    .code-str { color: #2d8a4e; }
+    .code-cm { color: #6b6b85; }
+    .editor-list { margin: 6px 0 10px 18px; color: #b0b0c0; font-size: 0.92em; }
+    .editor-list li { margin-bottom: 4px; }
+
+    /* Terminal pane */
+    .terminal-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .terminal-pane-tabs {
+      height: 30px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 11px;
+      color: #666;
+      gap: 12px;
+    }
+    .terminal-pane-tab { color: #999; }
+    .terminal-pane-tab.active { color: #dcddde; }
+    .terminal {
+      flex: 1;
+      padding: 14px 16px;
+      font-family: 'Menlo', 'SF Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #c0c0c0;
+      overflow-y: auto;
+    }
+    .prompt { color: #7C3AED; font-weight: bold; }
+    .dim { color: #6b6b85; font-style: italic; font-size: 11px; }
+    .bold { font-weight: bold; color: #e4e4ef; }
+    .block { margin-top: 10px; }
+
+    /* Status bar */
+    .obs-statusbar {
+      height: 24px;
+      background: #181818;
+      border-top: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 11px;
+      color: #555;
+      gap: 16px;
+    }
+    .obs-statusbar-spacer { flex: 1; }
+  </style>
+</head>
+<body>
+
+<div class="obs-window">
+  <div class="obs-titlebar">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+    <div class="obs-titlebar-text">my-til - Obsidian v1.8.9</div>
+  </div>
+
+  <div class="obs-body">
+    <div class="obs-ribbon">
+      <div class="ribbon-icon active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </div>
+      <div class="ribbon-spacer"></div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </div>
+    </div>
+
+    <div class="obs-content">
+      <div class="obs-tabs">
+        <div class="obs-tab active">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          rust-ownership.md
+        </div>
+        <div class="obs-tab">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+          Claude Code
+        </div>
+      </div>
+
+      <div class="split-view">
+        <!-- Editor -->
+        <div class="editor-pane">
+          <div class="frontmatter">
+            <div><span class="fm-key">tags</span>: <span class="tag">rust</span> <span class="tag">ownership</span></div>
+            <div><span class="fm-key">created</span>: <span class="fm-val">2025-02-25</span></div>
+            <div><span class="fm-key">status</span>: <span class="fm-val">complete</span></div>
+          </div>
+
+          <h1>Rust Ownership and Borrowing Rules</h1>
+
+          <h2>Key Concepts</h2>
+          <p class="editor-p">Rust's ownership system guarantees <span class="editor-strong">memory safety at compile time</span>. Every value has exactly one owner, and when the owner goes out of scope, the value is automatically dropped.</p>
+
+          <h2>Ownership Rules</h2>
+          <ul class="editor-list">
+            <li>Each value has exactly <span class="editor-strong">one owner</span></li>
+            <li>There can only be one owner at a time</li>
+            <li>When the owner goes out of scope, the value is <span class="editor-strong">dropped</span></li>
+          </ul>
+
+          <div class="editor-code">
+            <div><span class="code-kw">let</span> s1 = <span class="code-str">String</span>::from("hello");</div>
+            <div><span class="code-kw">let</span> s2 = s1; <span class="code-cm">// move</span></div>
+            <div><span class="code-cm">// s1 is no longer valid</span></div>
+          </div>
+
+          <h2>Borrowing</h2>
+          <p class="editor-p">To reference a value without taking ownership, use <span class="editor-strong">borrowing</span> (<code>&</code>).</p>
+          <ul class="editor-list">
+            <li><code>&T</code> — immutable reference (multiple allowed)</li>
+            <li><code>&mut T</code> — mutable reference (only one at a time)</li>
+          </ul>
+
+          <p class="editor-p" style="margin-top: 14px; font-size: 0.85em; color: #6b6b85;">
+            See also: <span class="editor-link">Lifetime Elision Rules</span> · <span class="editor-link">Smart Pointers</span>
+          </p>
+        </div>
+
+        <!-- Terminal -->
+        <div class="terminal-pane">
+          <div class="terminal-pane-tabs">
+            <span class="terminal-pane-tab active">Claude Code</span>
+          </div>
+          <div class="terminal">
+            <div><span class="prompt">&#x276F;</span> /til rust ownership</div>
+
+            <div class="block">
+              <div class="dim">Searching learning context...</div>
+              <div class="dim">Found: backlog.md (8/18 completed)</div>
+            </div>
+
+            <div class="block">
+              <div class="bold">Rust Ownership</div>
+              <div style="margin-top: 4px;">Every value has exactly one owner.<br>When the owner goes out of scope, the value is dropped.</div>
+            </div>
+
+            <div class="block" style="background:#1a1a1a; padding:8px 12px; border-radius:6px;">
+              <div>let s1 = String::from("hi");</div>
+              <div>let s2 = s1; <span class="dim">// moved</span></div>
+            </div>
+
+            <div class="block">
+              <div class="bold">Quiz passed!</div>
+              <div style="margin-top:4px;" class="dim">Move semantics confirmed.</div>
+            </div>
+
+            <div class="block">
+              <div class="bold">Borrowing Rules</div>
+              <div style="margin-top:4px;">&amp;T immutable ref (N allowed)<br>&amp;mut T mutable ref (only 1)</div>
+            </div>
+
+            <div class="block">
+              <div class="bold">TIL saved</div>
+              <div class="dim" style="margin-top:2px;">
+                til/rust/rust-ownership.md<br>
+                backlog: 9/18 completed
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="obs-statusbar">
+        <span>185 words</span>
+        <span>rust-ownership.md</span>
+        <div class="obs-statusbar-spacer"></div>
+        <span>Oh My TIL v1.0.0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

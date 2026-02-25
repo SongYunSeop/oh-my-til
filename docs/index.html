@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oh My TIL — AI-Powered Learning Workflow</title>
+  <meta name="description" content="Claude Code plugin for TIL learning workflow. Works as a standalone CLI or Obsidian plugin with embedded terminal.">
+  <meta property="og:title" content="Oh My TIL — AI-Powered Learning Workflow">
+  <meta property="og:description" content="Claude Code plugin for TIL learning workflow. Standalone CLI or Obsidian plugin.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://songyunseop.github.io/oh-my-til">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">Oh My TIL</a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#demo">Demo</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#install">Install</a>
+        <a href="ko/" class="nav-lang">KO</a>
+        <a href="https://github.com/SongYunSeop/oh-my-til" class="nav-github" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">v1.0 &mdash; Open Source</div>
+      <h1>Oh My TIL</h1>
+      <p class="hero-tagline">AI-powered <strong>Today I Learned</strong> workflow.<br>Research, learn, and build your knowledge base with Claude Code.</p>
+      <div class="hero-actions">
+        <div class="hero-install" onclick="copyInstall(this)" role="button" tabindex="0">
+          <code>npx oh-my-til init ~/my-til</code>
+          <span class="copy-hint">Click to copy</span>
+        </div>
+        <a href="https://github.com/SongYunSeop/oh-my-til" class="btn btn-secondary" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2>Everything you need to learn effectively</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F4BB;</div>
+          <h3>Embedded Terminal</h3>
+          <p>Claude Code terminal in Obsidian sidebar. Or use standalone CLI &mdash; no Obsidian required.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F50C;</div>
+          <h3>Built-in MCP Server</h3>
+          <p>Claude Code accesses your vault directly via HTTP. Context-aware research and learning.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F4CA;</div>
+          <h3>Learning Dashboard</h3>
+          <p>TIL statistics, category breakdown, streaks, and heatmap at a glance.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x26A1;</div>
+          <h3>Auto-installed Skills</h3>
+          <p><code>/til</code>, <code>/research</code>, <code>/backlog</code>, <code>/save</code> &mdash; ready out of the box.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F517;</div>
+          <h3>Smart Link Detection</h3>
+          <p>Markdown links in the terminal are clickable. CJK-aware width calculation.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F4C2;</div>
+          <h3>Backlog System</h3>
+          <p>Research creates backlogs. Track what to learn next with progress tracking.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section class="demo" id="demo">
+    <div class="container">
+      <h2>See it in action</h2>
+      <p class="demo-subtitle">Claude Code researches topics, guides interactive learning, and saves structured TIL notes.</p>
+
+      <div class="demo-row-label">Terminal Skills</div>
+      <div class="demo-grid demo-grid-3">
+        <div class="demo-item">
+          <div class="demo-label">/til &mdash; Interactive Learning</div>
+          <img src="screenshots/terminal-til.png" alt="Oh My TIL — /til interactive learning session" loading="lazy">
+        </div>
+        <div class="demo-item">
+          <div class="demo-label">/research &mdash; Backlog Generation</div>
+          <img src="screenshots/terminal-research.png" alt="Oh My TIL — /research backlog generation" loading="lazy">
+        </div>
+        <div class="demo-item">
+          <div class="demo-label">/backlog &mdash; Progress Tracking</div>
+          <img src="screenshots/terminal-backlog.png" alt="Oh My TIL — /backlog progress tracking" loading="lazy">
+        </div>
+      </div>
+
+      <div class="demo-row-label">Obsidian Integration</div>
+      <div class="demo-grid demo-grid-2">
+        <div class="demo-item">
+          <div class="demo-label">Dashboard &mdash; Stats, Heatmap, Categories</div>
+          <img src="screenshots/dashboard.png" alt="Oh My TIL — Learning Dashboard in Obsidian" loading="lazy">
+        </div>
+        <div class="demo-item">
+          <div class="demo-label">Split View &mdash; Note + Terminal</div>
+          <img src="screenshots/splitview.png" alt="Oh My TIL — Split view with note and terminal" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Loop -->
+  <section class="loop" id="workflow">
+    <div class="container">
+      <h2>The Learning Loop</h2>
+      <p class="loop-subtitle">Two ways in, one continuous cycle.</p>
+
+      <div class="loop-flow">
+        <!-- Entry -->
+        <div class="flow-row">
+          <div class="flow-node flow-node-accent">
+            <code>claude</code>
+            <p>Start Claude Code</p>
+          </div>
+        </div>
+
+        <!-- Branch connectors -->
+        <div class="flow-branch-lines">
+          <div class="flow-branch-stem"></div>
+          <div class="flow-branch-bar"></div>
+          <div class="flow-branch-arm-l"></div>
+          <div class="flow-branch-arm-r"></div>
+        </div>
+
+        <!-- Two entry paths -->
+        <div class="flow-branch">
+          <div class="flow-branch-item">
+            <div class="flow-branch-label">Quick start</div>
+            <div class="flow-node">
+              <code>/til topic</code>
+              <p>Research + learn + save<br>in one session</p>
+            </div>
+          </div>
+          <div class="flow-branch-item">
+            <div class="flow-branch-label">Deep dive</div>
+            <div class="flow-node">
+              <code>/research topic</code>
+              <p>Create structured<br>learning backlog</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Merge connectors -->
+        <div class="flow-merge-lines">
+          <div class="flow-merge-arm-l"></div>
+          <div class="flow-merge-arm-r"></div>
+          <div class="flow-merge-bar"></div>
+          <div class="flow-merge-stem"></div>
+        </div>
+
+        <!-- Knowledge Base -->
+        <div class="flow-row">
+          <div class="flow-node flow-node-green">
+            <div class="flow-node-emoji">&#x1F4DA;</div>
+            <p><strong>Knowledge Base</strong><br>TIL notes &bull; Daily notes &bull; MOC</p>
+          </div>
+        </div>
+
+        <div class="flow-arrow">&#x25BC;</div>
+
+        <!-- Backlog cycle -->
+        <div class="flow-cycle">
+          <div class="flow-cycle-label">Backlog cycle &mdash; repeat until done</div>
+          <div class="flow-cycle-row">
+            <div class="flow-node">
+              <code>/backlog</code>
+              <p>Review progress<br>Pick next topic</p>
+            </div>
+            <div class="flow-cycle-arrow">&#x2192;</div>
+            <div class="flow-node">
+              <code>/til topic</code>
+              <p>Learn the topic<br>interactively</p>
+            </div>
+            <div class="flow-cycle-arrow">&#x2192;</div>
+            <div class="flow-node flow-node-green">
+              <div class="flow-node-emoji">&#x2705;</div>
+              <p>Save TIL<br>Check off backlog</p>
+            </div>
+          </div>
+          <div class="flow-cycle-back">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15A9 9 0 0 0 21 12 9 9 0 0 0 5.64 5.64L1 10"/></svg>
+            Next topic from backlog
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section class="install" id="install">
+    <div class="container">
+      <h2>Get started in seconds</h2>
+      <div class="install-options">
+        <div class="install-card">
+          <h3>Standalone CLI</h3>
+          <p>No Obsidian needed. Just Node.js and Claude Code.</p>
+          <div class="code-block">
+            <pre><code><span class="c-comment"># Initialize</span>
+npx oh-my-til init ~/my-til
+
+<span class="c-comment"># Start learning</span>
+cd ~/my-til && claude
+
+<span class="c-comment"># (Optional) MCP server</span>
+npx oh-my-til serve ~/my-til</code></pre>
+          </div>
+        </div>
+        <div class="install-card">
+          <h3>Obsidian Plugin</h3>
+          <p>Embedded terminal + file watcher + dashboard.</p>
+          <div class="code-block">
+            <pre><code><span class="c-comment"># Auto-installs plugin</span>
+npx oh-my-til init ~/vault
+
+<span class="c-comment"># Enable in Obsidian settings</span>
+<span class="c-comment"># Open terminal from palette</span></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="install-prereq">
+        <strong>Prerequisites:</strong> <a href="https://nodejs.org" target="_blank" rel="noopener">Node.js</a> 18+ &bull; <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code CLI</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="https://github.com/SongYunSeop/oh-my-til" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/SongYunSeop/oh-my-til/releases" target="_blank" rel="noopener">Releases</a>
+        <a href="https://github.com/SongYunSeop/oh-my-til/issues" target="_blank" rel="noopener">Issues</a>
+      </div>
+      <p class="footer-copy">MIT License &copy; 2025 <a href="https://github.com/SongYunSeop" target="_blank" rel="noopener">SongYunSeop</a></p>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img src="" alt="">
+  </div>
+
+  <script>
+    function copyInstall(el) {
+      const text = 'npx oh-my-til init ~/my-til';
+      navigator.clipboard.writeText(text).then(() => {
+        const hint = el.querySelector('.copy-hint');
+        hint.textContent = 'Copied!';
+        setTimeout(() => { hint.textContent = 'Click to copy'; }, 2000);
+      });
+    }
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = lightbox.querySelector('img');
+
+    document.querySelectorAll('.demo-item img').forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('active');
+      });
+    });
+
+    lightbox.addEventListener('click', () => {
+      lightbox.classList.remove('active');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') lightbox.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

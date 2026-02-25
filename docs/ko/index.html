@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oh My TIL — AI 기반 학습 워크플로우</title>
+  <meta name="description" content="Claude Code 기반 TIL 학습 워크플로우 플러그인. 독립 CLI 또는 Obsidian 플러그인으로 사용 가능.">
+  <meta property="og:title" content="Oh My TIL — AI 기반 학습 워크플로우">
+  <meta property="og:description" content="Claude Code 기반 TIL 학습 워크플로우 플러그인. 독립 CLI 또는 Obsidian 플러그인.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://songyunseop.github.io/oh-my-til/ko">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">Oh My TIL</a>
+      <div class="nav-links">
+        <a href="#features">기능</a>
+        <a href="#demo">데모</a>
+        <a href="#workflow">워크플로우</a>
+        <a href="#install">설치</a>
+        <a href="../" class="nav-lang">EN</a>
+        <a href="https://github.com/SongYunSeop/oh-my-til" class="nav-github" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">v1.0 &mdash; 오픈소스</div>
+      <h1>Oh My TIL</h1>
+      <p class="hero-tagline">AI 기반 <strong>Today I Learned</strong> 워크플로우.<br>Claude Code로 리서치하고, 배우고, 지식 베이스를 쌓으세요.</p>
+      <div class="hero-actions">
+        <div class="hero-install" onclick="copyInstall(this)" role="button" tabindex="0">
+          <code>npx oh-my-til init ~/my-til</code>
+          <span class="copy-hint">클릭하여 복사</span>
+        </div>
+        <a href="https://github.com/SongYunSeop/oh-my-til" class="btn btn-secondary" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2>효과적인 학습에 필요한 모든 것</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F4BB;</div>
+          <h3>임베디드 터미널</h3>
+          <p>Obsidian 사이드바에 Claude Code 터미널을 임베딩. 독립 CLI로도 사용 가능 &mdash; Obsidian 불필요.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F50C;</div>
+          <h3>내장 MCP 서버</h3>
+          <p>Claude Code가 HTTP를 통해 vault에 직접 접근. 컨텍스트 기반 리서치와 학습.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F4CA;</div>
+          <h3>학습 대시보드</h3>
+          <p>TIL 통계, 카테고리 분석, 스트릭, 히트맵을 한눈에 확인.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x26A1;</div>
+          <h3>자동 설치 스킬</h3>
+          <p><code>/til</code>, <code>/research</code>, <code>/backlog</code>, <code>/save</code> &mdash; 설치 즉시 사용 가능.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F517;</div>
+          <h3>스마트 링크 감지</h3>
+          <p>터미널의 마크다운 링크를 클릭 가능. CJK 너비 계산 지원.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F4C2;</div>
+          <h3>백로그 시스템</h3>
+          <p>리서치가 백로그를 생성. 진행률 추적으로 다음에 배울 것을 관리.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section class="demo" id="demo">
+    <div class="container">
+      <h2>실제 동작 화면</h2>
+      <p class="demo-subtitle">Claude Code가 주제를 리서치하고, 대화형 학습을 안내하며, 구조화된 TIL 노트를 저장합니다.</p>
+
+      <div class="demo-row-label">터미널 스킬</div>
+      <div class="demo-grid demo-grid-3">
+        <div class="demo-item">
+          <div class="demo-label">/til &mdash; 대화형 학습</div>
+          <img src="../screenshots/terminal-til.png" alt="Oh My TIL — /til 대화형 학습 세션" loading="lazy">
+        </div>
+        <div class="demo-item">
+          <div class="demo-label">/research &mdash; 백로그 생성</div>
+          <img src="../screenshots/terminal-research.png" alt="Oh My TIL — /research 백로그 생성" loading="lazy">
+        </div>
+        <div class="demo-item">
+          <div class="demo-label">/backlog &mdash; 진행률 추적</div>
+          <img src="../screenshots/terminal-backlog.png" alt="Oh My TIL — /backlog 진행률 추적" loading="lazy">
+        </div>
+      </div>
+
+      <div class="demo-row-label">Obsidian 통합</div>
+      <div class="demo-grid demo-grid-2">
+        <div class="demo-item">
+          <div class="demo-label">대시보드 &mdash; 통계, 히트맵, 카테고리</div>
+          <img src="../screenshots/dashboard.png" alt="Oh My TIL — Obsidian 학습 대시보드" loading="lazy">
+        </div>
+        <div class="demo-item">
+          <div class="demo-label">분할 뷰 &mdash; 노트 + 터미널</div>
+          <img src="../screenshots/splitview.png" alt="Oh My TIL — 노트와 터미널 분할 뷰" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Loop -->
+  <section class="loop" id="workflow">
+    <div class="container">
+      <h2>학습 루프</h2>
+      <p class="loop-subtitle">두 가지 진입점, 하나의 순환 사이클.</p>
+
+      <div class="loop-flow">
+        <!-- Entry -->
+        <div class="flow-row">
+          <div class="flow-node flow-node-accent">
+            <code>claude</code>
+            <p>Claude Code 시작</p>
+          </div>
+        </div>
+
+        <!-- Branch connectors -->
+        <div class="flow-branch-lines">
+          <div class="flow-branch-stem"></div>
+          <div class="flow-branch-bar"></div>
+          <div class="flow-branch-arm-l"></div>
+          <div class="flow-branch-arm-r"></div>
+        </div>
+
+        <!-- Two entry paths -->
+        <div class="flow-branch">
+          <div class="flow-branch-item">
+            <div class="flow-branch-label">빠른 시작</div>
+            <div class="flow-node">
+              <code>/til topic</code>
+              <p>리서치 + 학습 + 저장을<br>한 세션에서</p>
+            </div>
+          </div>
+          <div class="flow-branch-item">
+            <div class="flow-branch-label">심화 학습</div>
+            <div class="flow-node">
+              <code>/research topic</code>
+              <p>구조화된 학습<br>백로그 생성</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Merge connectors -->
+        <div class="flow-merge-lines">
+          <div class="flow-merge-arm-l"></div>
+          <div class="flow-merge-arm-r"></div>
+          <div class="flow-merge-bar"></div>
+          <div class="flow-merge-stem"></div>
+        </div>
+
+        <!-- Knowledge Base -->
+        <div class="flow-row">
+          <div class="flow-node flow-node-green">
+            <div class="flow-node-emoji">&#x1F4DA;</div>
+            <p><strong>지식 베이스</strong><br>TIL 노트 &bull; 데일리 노트 &bull; MOC</p>
+          </div>
+        </div>
+
+        <div class="flow-arrow">&#x25BC;</div>
+
+        <!-- Backlog cycle -->
+        <div class="flow-cycle">
+          <div class="flow-cycle-label">백로그 사이클 &mdash; 완료할 때까지 반복</div>
+          <div class="flow-cycle-row">
+            <div class="flow-node">
+              <code>/backlog</code>
+              <p>진행률 확인<br>다음 주제 선택</p>
+            </div>
+            <div class="flow-cycle-arrow">&#x2192;</div>
+            <div class="flow-node">
+              <code>/til topic</code>
+              <p>주제를 대화형으로<br>학습</p>
+            </div>
+            <div class="flow-cycle-arrow">&#x2192;</div>
+            <div class="flow-node flow-node-green">
+              <div class="flow-node-emoji">&#x2705;</div>
+              <p>TIL 저장<br>백로그 체크</p>
+            </div>
+          </div>
+          <div class="flow-cycle-back">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15A9 9 0 0 0 21 12 9 9 0 0 0 5.64 5.64L1 10"/></svg>
+            백로그에서 다음 주제
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section class="install" id="install">
+    <div class="container">
+      <h2>몇 초 만에 시작하기</h2>
+      <div class="install-options">
+        <div class="install-card">
+          <h3>독립 CLI</h3>
+          <p>Obsidian 없이 사용. Node.js와 Claude Code만 있으면 됩니다.</p>
+          <div class="code-block">
+            <pre><code><span class="c-comment"># 초기화</span>
+npx oh-my-til init ~/my-til
+
+<span class="c-comment"># 학습 시작</span>
+cd ~/my-til && claude
+
+<span class="c-comment"># (선택) MCP 서버</span>
+npx oh-my-til serve ~/my-til</code></pre>
+          </div>
+        </div>
+        <div class="install-card">
+          <h3>Obsidian 플러그인</h3>
+          <p>임베디드 터미널 + 파일 감시 + 대시보드.</p>
+          <div class="code-block">
+            <pre><code><span class="c-comment"># 플러그인 자동 설치</span>
+npx oh-my-til init ~/vault
+
+<span class="c-comment"># Obsidian 설정에서 활성화</span>
+<span class="c-comment"># 커맨드 팔레트로 터미널 열기</span></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="install-prereq">
+        <strong>필요 환경:</strong> <a href="https://nodejs.org" target="_blank" rel="noopener">Node.js</a> 18+ &bull; <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code CLI</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="https://github.com/SongYunSeop/oh-my-til" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/SongYunSeop/oh-my-til/releases" target="_blank" rel="noopener">릴리즈</a>
+        <a href="https://github.com/SongYunSeop/oh-my-til/issues" target="_blank" rel="noopener">이슈</a>
+      </div>
+      <p class="footer-copy">MIT License &copy; 2025 <a href="https://github.com/SongYunSeop" target="_blank" rel="noopener">SongYunSeop</a></p>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img src="" alt="">
+  </div>
+
+  <script>
+    function copyInstall(el) {
+      const text = 'npx oh-my-til init ~/my-til';
+      navigator.clipboard.writeText(text).then(() => {
+        const hint = el.querySelector('.copy-hint');
+        hint.textContent = '복사됨!';
+        setTimeout(() => { hint.textContent = '클릭하여 복사'; }, 2000);
+      });
+    }
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = lightbox.querySelector('img');
+
+    document.querySelectorAll('.demo-item img').forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('active');
+      });
+    });
+
+    lightbox.addEventListener('click', () => {
+      lightbox.classList.remove('active');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') lightbox.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

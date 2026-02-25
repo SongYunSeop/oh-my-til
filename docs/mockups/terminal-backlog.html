@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>/backlog mockup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a0a; font-family: -apple-system, sans-serif; }
+
+    .window {
+      max-width: 800px;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      border: 1px solid #333;
+    }
+
+    .titlebar {
+      background: #181818;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .titlebar-text { flex:1; text-align:center; font-size:12px; color:#666; margin-right:52px; }
+
+    .terminal {
+      padding: 16px 20px;
+      font-family: 'Menlo', 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #c0c0c0;
+      background: #1e1e1e;
+    }
+
+    .prompt { color: #7C3AED; font-weight: bold; }
+    .cmd { color: #e4e4ef; }
+    .dim { color: #6b6b85; font-style: italic; font-size: 12px; }
+    .bold { font-weight: bold; color: #e4e4ef; }
+    .bar-done { color: #c0c0c0; }
+    .bar-todo { color: #363636; }
+
+    .output { margin-top: 12px; }
+
+    table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+    th { text-align: left; color: #888; font-weight: 600; font-size: 12px; padding: 4px 12px 4px 0; border-bottom: 1px solid #363636; }
+    td { padding: 5px 12px 5px 0; border-bottom: 1px solid #2a2a2a; white-space: nowrap; color: #c0c0c0; }
+    td:last-child { font-family: 'Menlo', monospace; font-size: 12px; letter-spacing: -0.5px; }
+
+    .summary { margin-top: 12px; font-size: 12px; color: #6b6b85; font-style: italic; }
+    .summary strong { color: #e4e4ef; font-style: normal; }
+  </style>
+</head>
+<body>
+
+<div class="window">
+  <div class="titlebar">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+    <div class="titlebar-text">Claude Code</div>
+  </div>
+
+  <div class="terminal">
+    <div><span class="prompt">&#x276F;</span> <span class="cmd">/backlog</span></div>
+
+    <div class="output">
+      <div class="bold" style="font-size: 14px; margin-bottom: 8px;">Learning Backlog Overview</div>
+
+      <table>
+        <thead>
+          <tr><th>Category</th><th>Progress</th><th>Done</th><th>Last Activity</th><th>Bar</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="bold">typescript</td><td>73%</td><td>16/22</td><td class="dim">2025-02-25</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;</span></td></tr>
+          <tr><td class="bold">react</td><td>60%</td><td>12/20</td><td class="dim">2025-02-24</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;</span></td></tr>
+          <tr><td class="bold">rust</td><td>44%</td><td>8/18</td><td class="dim">2025-02-24</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td></tr>
+          <tr><td class="bold">kubernetes</td><td>47%</td><td>7/15</td><td class="dim">2025-02-21</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td></tr>
+          <tr><td class="bold">prompt-engineering</td><td>43%</td><td>6/14</td><td class="dim">2025-02-23</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td></tr>
+          <tr><td class="bold">node</td><td>42%</td><td>5/12</td><td class="dim">2025-02-20</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td></tr>
+          <tr><td class="bold">mcp</td><td>40%</td><td>4/10</td><td class="dim">2025-02-25</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td></tr>
+          <tr><td class="bold">tooling</td><td>38%</td><td>3/8</td><td class="dim">2025-02-22</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td></tr>
+          <tr><td class="bold">css</td><td>43%</td><td>3/7</td><td class="dim">2025-02-18</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td></tr>
+          <tr><td class="bold">git</td><td>40%</td><td>2/5</td><td class="dim">2025-02-15</td><td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="summary">
+        <strong>142</strong> total items, <strong>68</strong> completed (48%)
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

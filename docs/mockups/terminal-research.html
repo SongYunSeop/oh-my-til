@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>/research mockup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a0a; font-family: -apple-system, sans-serif; }
+
+    .window {
+      max-width: 800px;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      border: 1px solid #333;
+    }
+
+    .titlebar {
+      background: #181818; height: 38px;
+      display: flex; align-items: center; padding: 0 14px; gap: 8px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .titlebar-text { flex:1; text-align:center; font-size:12px; color:#666; margin-right:52px; }
+
+    .terminal {
+      padding: 16px 20px;
+      font-family: 'Menlo', 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px; line-height: 1.65; color: #c0c0c0; background: #1e1e1e;
+    }
+
+    .prompt { color: #7C3AED; font-weight: bold; }
+    .cmd { color: #e4e4ef; }
+    .dim { color: #6b6b85; font-style: italic; font-size: 12px; }
+    .bold { font-weight: bold; color: #e4e4ef; }
+    .sep { border: none; border-top: 1px solid #363636; margin: 14px 0; }
+    .block { margin-top: 14px; }
+    .step-label { color: #e4e4ef; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .done { color: #888; }
+    .item { margin-left: 8px; }
+  </style>
+</head>
+<body>
+<div class="window">
+  <div class="titlebar">
+    <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+    <div class="titlebar-text">Claude Code</div>
+  </div>
+  <div class="terminal">
+    <div><span class="prompt">&#x276F;</span> <span class="cmd">/research prompt engineering</span></div>
+    <div class="block">
+      <div class="dim">Analyzing existing knowledge base...</div>
+      <div class="dim">Found 6 TILs in prompt-engineering/</div>
+      <div class="dim">Searching web for latest techniques...</div>
+    </div>
+    <hr class="sep">
+    <div class="block">
+      <div class="step-label">Step 1 &mdash; Knowledge Gap Analysis</div>
+      <div style="margin-top:6px;">
+        <span class="done">&#x2714;</span> Already learned: Temperature, Few-shot, Chain-of-Thought<br>
+        &#x25CB; 8 core topics not yet covered<br>
+        &#x25CB; 4 recent techniques (2025) recommended
+      </div>
+    </div>
+    <div class="block">
+      <div class="step-label">Step 2 &mdash; Backlog Generation</div>
+      <div style="margin-top:6px;">
+        <div class="bold">Prompt Engineering Learning Backlog</div>
+        <div style="margin-top:8px;">
+          <div style="color:#888; font-weight:600;">Prerequisites (3/5)</div>
+          <div class="item">
+            <span class="done">&#x2714;</span> <span style="color:#6b6b85;">Temperature and Top-p Settings &mdash; done</span><br>
+            <span class="done">&#x2714;</span> <span style="color:#6b6b85;">Few-shot Prompting &mdash; done</span><br>
+            <span class="done">&#x2714;</span> <span style="color:#6b6b85;">Chain-of-Thought &mdash; done</span><br>
+            &#x25CB; Prompt Elements (Role, Context, Format)<br>
+            &#x25CB; Output Formatting and Structured Output
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <div style="color:#888; font-weight:600;">Core Concepts (0/6)</div>
+          <div class="item">
+            &#x25CB; Self-Consistency and Ensemble Methods<br>
+            &#x25CB; Tree-of-Thought Prompting<br>
+            &#x25CB; ReAct (Reasoning + Acting) Pattern<br>
+            &#x25CB; Meta-Prompting and Prompt Chaining<br>
+            &#x25CB; Constitutional AI Prompting<br>
+            &#x25CB; Multi-modal Prompting (Vision + Text)
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="block">
+      <div class="step-label">Step 3 &mdash; Files Created</div>
+      <div style="margin-top:6px;">
+        &#x2714; til/prompt-engineering/backlog.md <span class="dim">(14 items)</span>
+      </div>
+    </div>
+    <div class="block">
+      <div class="dim">Backlog saved. Run /backlog prompt-engineering to review.</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

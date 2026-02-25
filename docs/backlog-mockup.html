@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backlog Mockup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #dcddde;
+      font-size: 14px;
+    }
+
+    /* Obsidian window */
+    .obs-window {
+      max-width: 960px;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      border: 1px solid #333;
+    }
+
+    /* macOS Titlebar */
+    .obs-titlebar {
+      background: #181818;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .obs-titlebar-text {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-right: 52px;
+    }
+
+    /* Main layout */
+    .obs-body {
+      display: flex;
+      background: #1e1e1e;
+      min-height: 620px;
+    }
+
+    /* Left icon ribbon */
+    .obs-ribbon {
+      width: 44px;
+      background: #181818;
+      border-right: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 8px;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .ribbon-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      color: #666;
+    }
+    .ribbon-icon.active { color: #7C3AED; }
+    .ribbon-spacer { flex: 1; }
+
+    /* Content area */
+    .obs-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Tab bar */
+    .obs-tabs {
+      height: 36px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 8px;
+    }
+    .obs-tab {
+      height: 30px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #888;
+      background: transparent;
+      border-radius: 6px 6px 0 0;
+      border: 1px solid transparent;
+      border-bottom: none;
+      position: relative;
+    }
+    .obs-tab.active {
+      background: #1e1e1e;
+      border-color: #2a2a2a;
+      color: #dcddde;
+    }
+    .obs-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #1e1e1e;
+    }
+    .obs-tab svg { opacity: 0.6; }
+    .obs-tab.active svg { opacity: 1; }
+
+    /* Status bar */
+    .obs-statusbar {
+      height: 24px;
+      background: #181818;
+      border-top: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 11px;
+      color: #555;
+      gap: 16px;
+    }
+    .obs-statusbar-spacer { flex: 1; }
+
+    /* Terminal content */
+    .terminal {
+      padding: 16px 20px;
+      font-family: 'Menlo', 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e4e4ef;
+      background: #1e1e1e;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .prompt { color: #7C3AED; font-weight: bold; }
+    .cmd { color: #e4e4ef; }
+    .dim { color: #6b6b85; }
+    .accent { color: #9b6cf7; }
+    .green { color: #2d8a4e; }
+    .yellow { color: #febc2e; }
+    .cyan { color: #56b6c2; }
+    .link { color: #56b6c2; text-decoration: underline; }
+    .bold { font-weight: bold; }
+    .bar-done { color: #7C3AED; }
+    .bar-todo { color: #363636; }
+
+    .output { margin-top: 12px; }
+    .section-title { color: #e4e4ef; font-weight: bold; margin-top: 16px; margin-bottom: 4px; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 8px 0;
+    }
+    th {
+      text-align: left;
+      color: #999;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 4px 12px 4px 0;
+      border-bottom: 1px solid #363636;
+    }
+    td {
+      padding: 5px 12px 5px 0;
+      border-bottom: 1px solid #2a2a42;
+      white-space: nowrap;
+    }
+    td:last-child { font-family: 'Menlo', monospace; font-size: 12px; letter-spacing: -0.5px; }
+
+    .summary {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #262626;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #999;
+    }
+    .summary strong { color: #e4e4ef; }
+
+    .separator { border: none; border-top: 1px solid #363636; margin: 12px 0; }
+
+    /* Category detail */
+    .cat-detail { margin-top: 16px; }
+    .cat-detail h3 { color: #e4e4ef; font-size: 13px; margin-bottom: 6px; }
+    .cat-detail h4 { color: #999; font-size: 12px; margin-top: 10px; margin-bottom: 4px; }
+    .item { font-size: 12.5px; line-height: 1.7; }
+    .item-done { color: #6b6b85; }
+    .check-done { color: #2d8a4e; }
+    .check-todo { color: #6b6b85; }
+  </style>
+</head>
+<body>
+
+<div class="obs-window">
+  <!-- macOS Titlebar -->
+  <div class="obs-titlebar">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+    <div class="obs-titlebar-text">my-til - Obsidian v1.8.9</div>
+  </div>
+
+  <div class="obs-body">
+    <!-- Left icon ribbon -->
+    <div class="obs-ribbon">
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+      </div>
+      <div class="ribbon-spacer"></div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      </div>
+      <!-- Terminal (active) -->
+      <div class="ribbon-icon active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </div>
+    </div>
+
+    <div class="obs-content">
+      <!-- Tab bar -->
+      <div class="obs-tabs">
+        <div class="obs-tab active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+          Claude Code
+        </div>
+      </div>
+
+      <!-- Terminal -->
+      <div class="terminal">
+        <div><span class="prompt">&#x276F;</span> <span class="cmd">/backlog</span></div>
+
+        <div class="output">
+          <div class="bold" style="font-size: 14px; margin-bottom: 8px;">학습 백로그 현황</div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>카테고리</th>
+                <th>진행률</th>
+                <th>완료</th>
+                <th>최근 학습</th>
+                <th>진행바</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="link">typescript</span></td>
+                <td class="accent">73%</td>
+                <td>16/22</td>
+                <td class="dim">2025-02-25</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">react</span></td>
+                <td class="accent">60%</td>
+                <td>12/20</td>
+                <td class="dim">2025-02-24</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">rust</span></td>
+                <td class="accent">44%</td>
+                <td>8/18</td>
+                <td class="dim">2025-02-24</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">kubernetes</span></td>
+                <td class="accent">47%</td>
+                <td>7/15</td>
+                <td class="dim">2025-02-21</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">prompt-engineering</span></td>
+                <td class="accent">43%</td>
+                <td>6/14</td>
+                <td class="dim">2025-02-23</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">node</span></td>
+                <td class="accent">42%</td>
+                <td>5/12</td>
+                <td class="dim">2025-02-20</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">mcp</span></td>
+                <td class="accent">40%</td>
+                <td>4/10</td>
+                <td class="dim">2025-02-25</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">tooling</span></td>
+                <td class="accent">38%</td>
+                <td>3/8</td>
+                <td class="dim">2025-02-22</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">css</span></td>
+                <td class="accent">43%</td>
+                <td>3/7</td>
+                <td class="dim">2025-02-18</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">git</span></td>
+                <td class="accent">40%</td>
+                <td>2/5</td>
+                <td class="dim">2025-02-15</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">docker</span></td>
+                <td class="accent">25%</td>
+                <td>1/4</td>
+                <td class="dim">2025-02-12</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">database</span></td>
+                <td class="accent">25%</td>
+                <td>1/4</td>
+                <td class="dim">2025-02-08</td>
+                <td><span class="bar-done">&#x2588;&#x2588;&#x2588;</span><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">testing</span></td>
+                <td class="dim">0%</td>
+                <td class="dim">0/2</td>
+                <td class="dim">-</td>
+                <td><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+              <tr>
+                <td><span class="link">security</span></td>
+                <td class="dim">0%</td>
+                <td class="dim">0/1</td>
+                <td class="dim">-</td>
+                <td><span class="bar-todo">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="summary">
+            총 <strong>142</strong>개 항목 중 <strong>68</strong>개 완료 (<span class="accent">48%</span>)
+          </div>
+        </div>
+
+        <hr class="separator">
+
+        <div><span class="prompt">&#x276F;</span> <span class="cmd">/backlog rust</span></div>
+
+        <div class="cat-detail">
+          <h3><span class="link">rust</span> 백로그 (8/18 완료, 44%)</h3>
+
+          <h4>선행 지식 (3/4)</h4>
+          <div class="item item-done"><span class="check-done">(x)</span> <span class="link">Cargo와 프로젝트 구조</span></div>
+          <div class="item item-done"><span class="check-done">(x)</span> <span class="link">기본 타입과 변수 바인딩</span></div>
+          <div class="item item-done"><span class="check-done">(x)</span> <span class="link">Pattern Matching과 enum</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">Error Handling (Result, Option)</span></div>
+
+          <h4>핵심 개념 (4/8)</h4>
+          <div class="item item-done"><span class="check-done">(x)</span> <span class="link">Ownership과 Borrowing 규칙</span></div>
+          <div class="item item-done"><span class="check-done">(x)</span> <span class="link">Lifetime Elision Rules</span></div>
+          <div class="item item-done"><span class="check-done">(x)</span> <span class="link">Trait과 Generics</span></div>
+          <div class="item item-done"><span class="check-done">(x)</span> <span class="link">Smart Pointers (Box, Rc, Arc)</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">Closures와 Fn traits</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">Iterators와 zero-cost abstractions</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">Concurrency (Send, Sync, Mutex)</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">Unsafe Rust와 FFI</span></div>
+
+          <h4>심화 (1/6)</h4>
+          <div class="item item-done"><span class="check-done">(x)</span> <span class="link">Macro 기초 (macro_rules!)</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">Procedural Macros</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">Async/Await와 Tokio 런타임</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">Pin과 Unpin</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">WASM 컴파일과 wasm-bindgen</span></div>
+          <div class="item"><span class="check-todo">( )</span> <span class="link">no_std 임베디드 개발</span></div>
+        </div>
+      </div>
+
+      <!-- Status bar -->
+      <div class="obs-statusbar">
+        <span>Claude Code</span>
+        <div class="obs-statusbar-spacer"></div>
+        <span>139 words</span>
+        <span>Oh My TIL v1.0.0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

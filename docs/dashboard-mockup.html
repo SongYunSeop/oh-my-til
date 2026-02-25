@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIL Dashboard — Mockup</title>
+  <style>
+    /* Obsidian dark theme variables */
+    :root {
+      --background-primary: #1e1e1e;
+      --background-secondary: #262626;
+      --background-modifier-border: #363636;
+      --background-modifier-hover: #2e2e2e;
+      --text-normal: #dcddde;
+      --text-muted: #999;
+      --text-faint: #666;
+      --text-accent: #7C3AED;
+      --text-on-accent: #fff;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: #0a0a0a;
+      color: var(--text-normal);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Obsidian window */
+    .obs-window {
+      max-width: 960px;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      border: 1px solid #333;
+    }
+
+    /* macOS Titlebar */
+    .obs-titlebar {
+      background: #181818;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      border-bottom: 1px solid #2a2a2a;
+      -webkit-app-region: drag;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .obs-titlebar-text {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-right: 52px;
+    }
+
+    /* Main layout: sidebar + content */
+    .obs-body {
+      display: flex;
+      background: var(--background-primary);
+      min-height: 600px;
+    }
+
+    /* Left icon ribbon */
+    .obs-ribbon {
+      width: 44px;
+      background: #181818;
+      border-right: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 8px;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .ribbon-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      color: #666;
+      cursor: pointer;
+    }
+    .ribbon-icon:hover { background: #2a2a2a; color: #999; }
+    .ribbon-icon.active { color: var(--text-accent); }
+    .ribbon-spacer { flex: 1; }
+
+    /* Content area */
+    .obs-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Tab bar */
+    .obs-tabs {
+      height: 36px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 8px;
+    }
+    .obs-tab {
+      height: 30px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #888;
+      background: transparent;
+      border-radius: 6px 6px 0 0;
+      border: 1px solid transparent;
+      border-bottom: none;
+      cursor: pointer;
+      position: relative;
+    }
+    .obs-tab.active {
+      background: var(--background-primary);
+      border-color: #2a2a2a;
+      color: var(--text-normal);
+    }
+    .obs-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--background-primary);
+    }
+    .obs-tab svg { opacity: 0.6; }
+    .obs-tab.active svg { opacity: 1; }
+
+    /* Status bar */
+    .obs-statusbar {
+      height: 24px;
+      background: #181818;
+      border-top: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 11px;
+      color: #555;
+      gap: 16px;
+    }
+    .obs-statusbar-spacer { flex: 1; }
+
+    /* Dashboard content */
+    .dashboard {
+      padding: 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .dashboard-header h2 { font-size: 1.3em; font-weight: 700; }
+    .refresh-btn {
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    /* Summary Cards */
+    .cards-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--background-secondary);
+      border-radius: 8px;
+      padding: 14px 18px;
+      flex: 1;
+      text-align: center;
+    }
+    .card-value {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: var(--text-accent);
+      line-height: 1.2;
+    }
+    .card-label {
+      font-size: 0.8em;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Section */
+    .section { margin-bottom: 24px; }
+    .section h3 {
+      font-size: 0.95em;
+      color: var(--text-normal);
+      margin-bottom: 12px;
+    }
+
+    /* Review */
+    .review-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .review-header h3 { margin: 0; }
+    .review-cards { display: flex; gap: 10px; }
+    .review-card {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 6px;
+      background: var(--background-secondary);
+      border-left: 3px solid var(--text-accent);
+    }
+    .review-card-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .review-card-type {
+      font-size: 0.7em;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: var(--text-accent);
+      color: var(--text-on-accent);
+      letter-spacing: 0.03em;
+    }
+    .review-card-type--backlog { background: var(--text-muted); }
+    .review-card-badge {
+      font-size: 0.75em;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--background-modifier-border);
+      color: var(--text-muted);
+    }
+    .review-card-title {
+      font-weight: 500;
+      font-size: 0.9em;
+      color: var(--text-normal);
+    }
+
+    /* Heatmap */
+    .heatmap-body { display: flex; gap: 4px; width: fit-content; margin: 0 auto; }
+    .heatmap-day-labels {
+      display: grid;
+      grid-template-rows: repeat(7, 12px);
+      gap: 2px;
+      padding-top: 17px;
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 12px;
+      text-align: right;
+      min-width: 24px;
+    }
+    .heatmap-scroll { flex: 1; min-width: 0; }
+    .heatmap-months {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 12px;
+      gap: 2px;
+      font-size: 10px;
+      color: var(--text-muted);
+      height: 16px;
+      line-height: 16px;
+      margin-bottom: 1px;
+    }
+    .heatmap-grid {
+      display: grid;
+      grid-template-rows: repeat(7, 12px);
+      grid-auto-flow: column;
+      grid-auto-columns: 12px;
+      gap: 2px;
+    }
+    .heatmap-grid > div {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+    .hl-0 { background: var(--background-modifier-border); }
+    .hl-1 { background: color-mix(in srgb, var(--text-accent) 25%, var(--background-primary)); }
+    .hl-2 { background: color-mix(in srgb, var(--text-accent) 50%, var(--background-primary)); }
+    .hl-3 { background: color-mix(in srgb, var(--text-accent) 75%, var(--background-primary)); }
+    .hl-4 { background: var(--text-accent); }
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      justify-content: flex-end;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+    .heatmap-legend-cell { width: 12px; height: 12px; border-radius: 2px; }
+
+    /* Recent */
+    .recent-list { display: flex; flex-direction: column; gap: 8px; }
+    .recent-card {
+      padding: 10px 12px;
+      border-radius: 6px;
+      background: var(--background-secondary);
+    }
+    .recent-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .recent-card-title { font-weight: 500; color: var(--text-normal); }
+    .recent-card-badge {
+      font-size: 0.75em;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--background-modifier-border);
+      color: var(--text-muted);
+    }
+    .recent-card-date { font-size: 0.75em; color: var(--text-faint); margin-left: auto; }
+    .recent-card-summary { font-size: 0.82em; color: var(--text-muted); line-height: 1.4; }
+
+    /* Categories */
+    .categories { display: flex; flex-direction: column; gap: 4px; }
+    .cat-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 6px;
+    }
+    .cat-chevron { font-size: 0.7em; color: var(--text-muted); width: 12px; }
+    .cat-name { font-weight: 500; }
+    .cat-count { font-size: 0.85em; color: var(--text-muted); text-align: right; }
+    .cat-bar-container {
+      grid-column: 1 / -1;
+      height: 4px;
+      background: var(--background-modifier-border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .cat-bar {
+      height: 100%;
+      background: var(--text-accent);
+      border-radius: 2px;
+    }
+
+    /* Backlog overall */
+    .backlog-overall { margin-bottom: 16px; }
+    .backlog-overall-text { font-size: 0.85em; color: var(--text-muted); margin-bottom: 6px; }
+    .progress-bar-bg {
+      height: 8px;
+      background: var(--background-modifier-border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--text-accent);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="obs-window">
+  <!-- macOS Titlebar -->
+  <div class="obs-titlebar">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+    <div class="obs-titlebar-text">my-til - Obsidian v1.8.9</div>
+  </div>
+
+  <div class="obs-body">
+    <!-- Left icon ribbon -->
+    <div class="obs-ribbon">
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+      </div>
+      <div class="ribbon-spacer"></div>
+      <div class="ribbon-icon active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+      </div>
+      <div class="ribbon-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </div>
+    </div>
+
+    <div class="obs-content">
+      <!-- Tab bar -->
+      <div class="obs-tabs">
+        <div class="obs-tab active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          TIL Dashboard
+        </div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="dashboard">
+        <div class="dashboard-header">
+          <h2>TIL Dashboard</h2>
+          <button class="refresh-btn">&#x21BB;</button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="cards-row">
+          <div class="card">
+            <div class="card-value">127</div>
+            <div class="card-label">Total TILs</div>
+          </div>
+          <div class="card">
+            <div class="card-value">14</div>
+            <div class="card-label">Categories</div>
+          </div>
+          <div class="card">
+            <div class="card-value">8</div>
+            <div class="card-label">This Week</div>
+          </div>
+          <div class="card">
+            <div class="card-value">31d</div>
+            <div class="card-label">Streak</div>
+          </div>
+        </div>
+
+        <!-- Review -->
+        <div class="section">
+          <div class="review-header">
+            <h3>Review</h3>
+            <button class="refresh-btn" style="font-size:14px">&#x1F500;</button>
+          </div>
+          <div class="review-cards">
+            <div class="review-card">
+              <div class="review-card-header">
+                <span class="review-card-type">TIL</span>
+                <span class="review-card-badge">rust</span>
+              </div>
+              <div class="review-card-title">Ownership and Borrowing Rules</div>
+            </div>
+            <div class="review-card">
+              <div class="review-card-header">
+                <span class="review-card-type review-card-type--backlog">Backlog</span>
+                <span class="review-card-badge">kubernetes</span>
+              </div>
+              <div class="review-card-title">Pod Scheduling and Affinity Rules</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heatmap -->
+        <div class="section">
+          <h3>Activity</h3>
+          <div class="heatmap-body">
+            <div class="heatmap-day-labels">
+              <div></div><div>Mon</div><div></div><div>Wed</div><div></div><div>Fri</div><div></div>
+            </div>
+            <div class="heatmap-scroll">
+              <div class="heatmap-months" id="months"></div>
+              <div class="heatmap-grid" id="heatmap"></div>
+            </div>
+          </div>
+          <div class="heatmap-legend">
+            <span>Less</span>
+            <div class="heatmap-legend-cell hl-0"></div>
+            <div class="heatmap-legend-cell hl-1"></div>
+            <div class="heatmap-legend-cell hl-2"></div>
+            <div class="heatmap-legend-cell hl-3"></div>
+            <div class="heatmap-legend-cell hl-4"></div>
+            <span>More</span>
+          </div>
+        </div>
+
+        <!-- Recent -->
+        <div class="section">
+          <h3>Recent</h3>
+          <div class="recent-list">
+            <div class="recent-card">
+              <div class="recent-card-header">
+                <span class="recent-card-title">MCP Streamable HTTP Transport</span>
+                <span class="recent-card-badge">mcp</span>
+                <span class="recent-card-date">2025-02-25</span>
+              </div>
+              <div class="recent-card-summary">Implementing MCP SDK's Streamable HTTP transport. Session management, reconnection logic, SSE fallback patterns.</div>
+            </div>
+            <div class="recent-card">
+              <div class="recent-card-header">
+                <span class="recent-card-title">Rust Lifetime Elision Rules</span>
+                <span class="recent-card-badge">rust</span>
+                <span class="recent-card-date">2025-02-24</span>
+              </div>
+              <div class="recent-card-summary">Three rules the compiler uses to infer lifetimes automatically. Cases requiring explicit lifetimes and the meaning of 'static.</div>
+            </div>
+            <div class="recent-card">
+              <div class="recent-card-header">
+                <span class="recent-card-title">LLM Settings Guide</span>
+                <span class="recent-card-badge">prompt-engineering</span>
+                <span class="recent-card-date">2025-02-23</span>
+              </div>
+              <div class="recent-card-summary">Temperature, Top-p, Top-k, Max Tokens, Stop Sequences — roles and optimal settings for LLM API parameters.</div>
+            </div>
+            <div class="recent-card">
+              <div class="recent-card-header">
+                <span class="recent-card-title">esbuild Plugin API</span>
+                <span class="recent-card-badge">tooling</span>
+                <span class="recent-card-date">2025-02-22</span>
+              </div>
+              <div class="recent-card-summary">Writing custom plugins with esbuild's onResolve/onLoad hooks. Text loader and virtual module patterns.</div>
+            </div>
+            <div class="recent-card">
+              <div class="recent-card-header">
+                <span class="recent-card-title">K8s ConfigMap vs Secret</span>
+                <span class="recent-card-badge">kubernetes</span>
+                <span class="recent-card-date">2025-02-21</span>
+              </div>
+              <div class="recent-card-summary">Differences between ConfigMap and Secret. Env vars vs volume mounts comparison. GitOps with sealed-secrets.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="section">
+          <h3>Categories</h3>
+          <div class="backlog-overall">
+            <div class="backlog-overall-text">Backlog: 68/142 (48%)</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: 48%"></div>
+            </div>
+          </div>
+          <div class="categories">
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">typescript</span><span class="cat-count">24 TILs · 16/22 (73%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:73%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">react</span><span class="cat-count">19 TILs · 12/20 (60%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:60%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">rust</span><span class="cat-count">15 TILs · 8/18 (44%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:44%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">kubernetes</span><span class="cat-count">13 TILs · 7/15 (47%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:47%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">prompt-engineering</span><span class="cat-count">11 TILs · 6/14 (43%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:43%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">node</span><span class="cat-count">10 TILs · 5/12 (42%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:42%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">mcp</span><span class="cat-count">8 TILs · 4/10 (40%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:40%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">tooling</span><span class="cat-count">7 TILs · 3/8 (38%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:38%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">css</span><span class="cat-count">6 TILs · 3/7 (43%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:43%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">git</span><span class="cat-count">5 TILs · 2/5 (40%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:40%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">docker</span><span class="cat-count">4 TILs · 1/4 (25%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:25%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">database</span><span class="cat-count">3 TILs · 1/4 (25%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:25%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">testing</span><span class="cat-count">1 TILs · 0/2 (0%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:0%"></div></div>
+            </div>
+            <div>
+              <div class="cat-header"><span class="cat-chevron">&#x25B6;</span><span class="cat-name">security</span><span class="cat-count">1 TILs · 0/1 (0%)</span></div>
+              <div class="cat-bar-container"><div class="cat-bar" style="width:0%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status bar -->
+      <div class="obs-statusbar">
+        <span>127 TILs</span>
+        <span>14 categories</span>
+        <div class="obs-statusbar-spacer"></div>
+        <span>Oh My TIL v1.0.0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Generate realistic heatmap data (52 weeks)
+  // Use seeded random for consistent screenshots
+  let seed = 42;
+  function seededRandom() {
+    seed = (seed * 16807 + 0) % 2147483647;
+    return (seed - 1) / 2147483646;
+  }
+
+  const grid = document.getElementById('heatmap');
+  const monthsEl = document.getElementById('months');
+  const totalWeeks = 52;
+  const totalCells = totalWeeks * 7;
+
+  const now = new Date(2025, 1, 25); // Fixed date for consistent screenshots
+  const startDate = new Date(now);
+  startDate.setDate(startDate.getDate() - totalCells + 1);
+  startDate.setDate(startDate.getDate() - startDate.getDay());
+
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let lastMonth = -1;
+  let lastLabelCol = -4;
+
+  for (let i = 0; i < totalCells; i++) {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + i);
+
+    const weekIdx = Math.floor(i / 7);
+    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+
+    if (i % 7 === 0) {
+      const month = d.getMonth();
+      if (month !== lastMonth && (weekIdx - lastLabelCol) >= 3) {
+        const label = document.createElement('div');
+        label.textContent = monthNames[month];
+        label.style.whiteSpace = 'nowrap';
+        label.style.overflow = 'visible';
+        monthsEl.appendChild(label);
+        lastMonth = month;
+        lastLabelCol = weekIdx;
+      } else {
+        monthsEl.appendChild(document.createElement('div'));
+        if (month !== lastMonth) lastMonth = month;
+      }
+    }
+
+    let level = 0;
+    if (d <= now) {
+      const recency = 1 - (totalCells - i) / totalCells;
+      const rand = seededRandom();
+      const base = 0.15 + recency * 0.55;
+      if (isWeekend) {
+        if (rand < base * 0.5) level = 1;
+        if (rand < base * 0.25) level = 2;
+        if (rand < base * 0.08) level = 3;
+      } else {
+        if (rand < base) level = 1;
+        if (rand < base * 0.65) level = 2;
+        if (rand < base * 0.35) level = 3;
+        if (rand < base * 0.15) level = 4;
+      }
+      if (totalCells - i <= 31 && !isWeekend) {
+        level = Math.max(level, Math.floor(seededRandom() * 3) + 1);
+      }
+      if (totalCells - i <= 31 && isWeekend) {
+        level = Math.max(level, seededRandom() < 0.6 ? 1 : 0);
+      }
+    }
+
+    const cell = document.createElement('div');
+    cell.className = `hl-${level}`;
+    grid.appendChild(cell);
+  }
+</script>
+</body>
+</html>
