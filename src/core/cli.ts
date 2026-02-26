@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as os from "os";
 
-const VALUE_OPTIONS = new Set(["port", "til-path"]);
+const VALUE_OPTIONS = new Set(["port", "til-path", "out", "title", "subtitle", "github"]);
 const BOOLEAN_OPTIONS = new Set(["no-obsidian"]);
 
 /**
