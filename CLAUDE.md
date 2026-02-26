@@ -45,6 +45,8 @@ src/
 │   ├── env.ts                ← ensurePath(): macOS Homebrew PATH 보정
 │   ├── skills.ts             ← 버전 비교/플레이스홀더 치환 순수 함수
 │   ├── cli.ts                ← CLI 인자 파싱 순수 함수 (parseArgs)
+│   ├── markdown.ts           ← 마크다운 → HTML 변환 순수 함수 (외부 의존성 없음)
+│   ├── profile.ts            ← 정적 사이트 페이지 생성 (프로필, TIL 페이지, 카테고리 인덱스)
 │   └── index.ts              ← barrel export
 ├── ports/                    ← 어댑터 인터페이스
 │   ├── storage.ts            ← FileStorage 인터페이스
@@ -58,7 +60,7 @@ src/
 │   └── tools.ts              ← MCP 도구 정의 (FileStorage + MetadataProvider 사용)
 ├── plugin-install.ts         ← 플러그인 에셋 자동 설치/업데이트 (skills, agents, CLAUDE.md 섹션) (공유)
 ├── cli/                      ← 독립 CLI 진입점
-│   ├── index.ts              ← npx oh-my-til init / serve
+│   ├── index.ts              ← npx oh-my-til init / serve / deploy
 │   └── obsidian-install.ts   ← Obsidian 플러그인 자동 설치 (Electron 감지, node-pty 재빌드)
 └── obsidian/                 ← Obsidian 플랫폼 어댑터
     ├── main.ts               ← TILPlugin 진입점 (터미널 뷰 + MCP + 대시보드 + watcher + skill 설치)
@@ -93,7 +95,9 @@ __tests__/
 ├── migrate-links.test.ts ← Wikilink → 마크다운 링크 변환 테스트
 ├── adapters.test.ts      ← fs-adapter / obsidian-adapter 포트 구현 테스트
 ├── cli.test.ts           ← CLI 인자 파싱 (positional + options + boolean 플래그) 테스트
-└── obsidian-install.test.ts ← Obsidian 플러그인 설치 순수 함수 (아티팩트, 버전 검증) 테스트
+├── obsidian-install.test.ts ← Obsidian 플러그인 설치 순수 함수 (아티팩트, 버전 검증) 테스트
+├── markdown.test.ts      ← 마크다운 → HTML 변환 순수 함수 테스트
+└── profile.test.ts       ← 정적 사이트 페이지 생성 (프로필, TIL, 카테고리 인덱스) 테스트
 ```
 
 ## 빌드
@@ -117,6 +121,8 @@ npx oh-my-til init ~/my-til                     # 디렉토리 생성 + 스킬/�
 npx oh-my-til init ~/my-til --no-obsidian       # Obsidian 플러그인 설치 건너뛰기
 npx oh-my-til serve ~/my-til                    # MCP 서버 독립 실행
 npx oh-my-til serve ~/my-til --port 3000 --til-path my-til
+npx oh-my-til deploy ~/my-til                   # TIL 정적 사이트 생성 (_site/)
+npx oh-my-til deploy ~/my-til --out docs --title "My TIL" --github https://github.com/user
 ELECTRON_VERSION=37.10.2 npx oh-my-til init ~/vault  # Electron 버전 수동 지정
 ```
 

@@ -354,7 +354,11 @@ export function extractSummary(content: string, maxLength = 120): string {
 		paragraphLines.push(cleaned);
 	}
 
-	const text = paragraphLines.join(" ");
+	let text = paragraphLines.join(" ");
+	// 마크다운 링크 [text](url) → text, 이미지 ![alt](url) → alt
+	text = text.replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1");
+	// 위키링크 [[target|display]] → display, [[target]] → target
+	text = text.replace(/\[\[([^|\]]*\|)?([^\]]*)\]\]/g, "$2");
 	if (text.length <= maxLength) return text;
 	return text.slice(0, maxLength - 1) + "\u2026";
 }
