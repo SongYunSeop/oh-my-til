@@ -16,6 +16,8 @@ import tilFileUpdaterAgent from "../vault-assets/agents/til-file-updater.md";
 import tilResearchReviewerAgent from "../vault-assets/agents/til-research-reviewer.md";
 import tilCrossLinkerAgent from "../vault-assets/agents/til-cross-linker.md";
 
+import notifyCompleteHook from "../vault-assets/hooks/notify-complete.sh";
+
 import {
 	resolveVersionPlaceholder,
 	extractPluginVersion,
@@ -24,6 +26,7 @@ import {
 	SKILLS_BASE,
 	RULES_BASE,
 	AGENTS_BASE,
+	HOOKS_BASE,
 	OLD_SKILLS_BASE,
 	MCP_MARKER_START,
 	MCP_MARKER_END,
@@ -49,6 +52,20 @@ const AGENTS: Record<string, string> = {
 	"til-file-updater.md": tilFileUpdaterAgent,
 	"til-research-reviewer.md": tilResearchReviewerAgent,
 	"til-cross-linker.md": tilCrossLinkerAgent,
+};
+
+const HOOKS: Record<string, string> = {
+	"notify-complete.sh": notifyCompleteHook,
+};
+
+/**
+ * Claude Code hooks 설정 (.claude/settings.json에 등록할 hook 규칙).
+ */
+const HOOKS_CONFIG: Record<string, Array<Record<string, unknown>>> = {
+	Notification: [{
+		matcher: "idle_prompt",
+		hooks: [{ type: "command", command: "bash .claude/hooks/notify-complete.sh", async: true }],
+	}],
 };
 
 /**
@@ -109,10 +126,70 @@ export async function installPlugin(storage: FileStorage, pluginVersion: string)
 		installFiles(storage, SKILLS_BASE, SKILLS, pluginVersion, "skill"),
 		installFiles(storage, RULES_BASE, RULES, pluginVersion, "rule"),
 		installFiles(storage, AGENTS_BASE, AGENTS, pluginVersion, "agent"),
+		installHooks(storage),
 	]);
 
 	await installClaudeMdSection(storage, pluginVersion);
 	await cleanupOldSkills(storage);
+}
+
+/**
+ * hook 스크립트를 .claude/hooks/에 설치하고, .claude/settings.json에 hook 규칙을 등록한다.
+ * 스크립트는 항상 덮어쓰고, settings.json은 기존 설정을 보존하며 추가만 한다.
+ */
+async function installHooks(storage: FileStorage): Promise<void> {
+	if (!(await storage.exists(HOOKS_BASE))) {
+		await storage.mkdir(HOOKS_BASE);
+	}
+
+	await Promise.all(
+		Object.entries(HOOKS).map(([name, content]) =>
+			storage.writeFile(`${HOOKS_BASE}/${name}`, content),
+		),
+	);
+
+	await installHooksConfig(storage);
+}
+
+/**
+ * .claude/settings.json에 oh-my-til hook 규칙을 등록한다.
+ * 이미 등록된 hook은 건너뛰고, 기존 사용자 설정을 보존한다.
+ */
+async function installHooksConfig(storage: FileStorage): Promise<void> {
+	const settingsPath = ".claude/settings.json";
+	let settings: Record<string, unknown> = {};
+
+	if (await storage.exists(settingsPath)) {
+		const content = await storage.readFile(settingsPath);
+		if (content) {
+			try {
+				settings = JSON.parse(content) as Record<string, unknown>;
+			} catch {
+				return;
+			}
+		}
+	}
+
+	const hooks = (settings.hooks ?? {}) as Record<string, unknown[]>;
+	let changed = false;
+
+	for (const [event, entries] of Object.entries(HOOKS_CONFIG)) {
+		const existing = hooks[event] as Array<{ hooks?: Array<{ command?: string }> }> | undefined;
+		const alreadyInstalled = existing?.some((entry) =>
+			entry.hooks?.some((h) => h.command?.includes(".claude/hooks/")),
+		);
+
+		if (!alreadyInstalled) {
+			hooks[event] = [...(existing ?? []), ...entries];
+			changed = true;
+		}
+	}
+
+	if (changed) {
+		settings.hooks = hooks;
+		await storage.writeFile(settingsPath, JSON.stringify(settings, null, "\t") + "\n");
+		console.log("Oh My TIL: hooks 설정 등록됨 → .claude/settings.json");
+	}
 }
 
 /**
