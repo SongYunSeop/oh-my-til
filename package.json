@@ -22,7 +22,8 @@
 		"deploy": "bash scripts/deploy.sh",
 		"check": "vitest run && node esbuild.config.mjs production && tsc --noEmit",
 		"test": "vitest run",
-		"migrate-links": "npx tsx scripts/migrate-links.ts"
+		"migrate-links": "npx tsx scripts/migrate-links.ts",
+		"sync-version": "node scripts/sync-version.mjs"
 	},
 	"keywords": [
 		"claude",
