@@ -260,3 +260,15 @@ export function renderMarkdown(md: string): string {
 	const tokens = tokenize(body);
 	return renderTokens(tokens);
 }
+
+/**
+ * 정적 사이트용 내부 링크 변환.
+ * HTML 내 `til/{category}/{slug}.md` 링크를 `../{category}/{slug}.html`로 변환한다.
+ * TIL 페이지가 `{category}/{slug}.html`에 위치하므로 `../`로 루트까지 올라간 뒤 재진입.
+ */
+export function rewriteTilLinks(html: string): string {
+	return html.replace(
+		/href="til\/([^"]+)\.md"/g,
+		(_match, pathWithoutExt: string) => `href="../${pathWithoutExt}.html"`,
+	);
+}

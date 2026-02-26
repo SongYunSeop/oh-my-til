@@ -6,7 +6,7 @@ import { parseArgs, expandTilde } from "../core/cli";
 import { extractCategory } from "../core/context";
 import { extractSummary, computeHeatmapData, computeStreak } from "../core/stats";
 import type { EnhancedStatsFileEntry } from "../core/stats";
-import { renderMarkdown } from "../core/markdown";
+import { renderMarkdown, rewriteTilLinks } from "../core/markdown";
 import {
 	generateProfileHtml,
 	generateTilPageHtml,
@@ -216,7 +216,7 @@ async function main(): Promise<void> {
 			const fmDate = meta?.frontmatter?.["date"];
 			const createdDate = typeof fmDate === "string" ? fmDate.slice(0, 10) : new Date(file.ctime).toISOString().slice(0, 10);
 
-			const contentHtml = renderMarkdown(content);
+			const contentHtml = rewriteTilLinks(renderMarkdown(content));
 			const summary = extractSummary(content);
 
 			tilPageEntries.push({ title, category, slug, createdDate, contentHtml, summary });

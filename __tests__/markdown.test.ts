@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderMarkdown, escapeHtml, stripFrontmatter, renderInline } from "../src/core/markdown";
+import { renderMarkdown, escapeHtml, stripFrontmatter, renderInline, rewriteTilLinks } from "../src/core/markdown";
 
 describe("escapeHtml", () => {
 	it("HTML 특수문자를 이스케이프한다", () => {
@@ -203,5 +203,34 @@ World`;
 		const html = renderMarkdown(md);
 		expect(html).toContain("<pre><code>");
 		expect(html).not.toContain("language-");
+	});
+});
+
+describe("rewriteTilLinks", () => {
+	it("til/{category}/{slug}.md 링크를 ../{category}/{slug}.html로 변환한다", () => {
+		const html = '<a href="til/anki/spaced-repetition.md">Spaced Repetition</a>';
+		expect(rewriteTilLinks(html)).toBe('<a href="../anki/spaced-repetition.html">Spaced Repetition</a>');
+	});
+
+	it("다른 카테고리 링크도 동일하게 변환한다", () => {
+		const html = '<a href="til/javascript/closure.md">클로저</a>';
+		expect(rewriteTilLinks(html)).toBe('<a href="../javascript/closure.html">클로저</a>');
+	});
+
+	it("여러 링크를 한번에 변환한다", () => {
+		const html = '<a href="til/anki/cards.md">Cards</a> and <a href="til/react/hooks.md">Hooks</a>';
+		const result = rewriteTilLinks(html);
+		expect(result).toContain('href="../anki/cards.html"');
+		expect(result).toContain('href="../react/hooks.html"');
+	});
+
+	it("외부 링크는 변환하지 않는다", () => {
+		const html = '<a href="https://example.com/til/test.md">External</a>';
+		expect(rewriteTilLinks(html)).toBe(html);
+	});
+
+	it("til/ 접두어가 없는 .md 링크는 변환하지 않는다", () => {
+		const html = '<a href="notes/readme.md">Notes</a>';
+		expect(rewriteTilLinks(html)).toBe(html);
 	});
 });
