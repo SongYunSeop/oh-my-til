@@ -14,7 +14,7 @@
 - `vault_get_active_file` — 현재 파일
 - `til_list` — TIL 목록 + 카테고리 분류 (search 필터 지원)
 - `til_exists` — TIL 파일 존재 여부 확인
-- `til_save_note` — TIL 노트 저장 (frontmatter/경로 규칙 보장)
+- `til_save_note` — TIL 노트 저장 (frontmatter/경로 규칙 보장, category·aliases 지원)
 - `til_get_context` — 주제 관련 컨텍스트
 - `til_recent_context` — 최근 학습 흐름
 - `til_backlog_status` — 백로그 진행률

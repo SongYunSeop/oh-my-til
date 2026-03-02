@@ -449,6 +449,83 @@ describe("til_list (search)", () => {
 	});
 });
 
+// --- til_save_note frontmatter 생성 로직 재현 ---
+
+function buildTilFrontmatter(opts: {
+	title: string;
+	date?: string;
+	tags?: string[];
+	fmCategory?: string;
+	category: string;
+	aliases?: string[];
+}): string {
+	const noteDate = opts.date || new Date().toISOString().slice(0, 10);
+	const fmLines = ["---", `title: "${opts.title.replace(/"/g, '\\"')}"`, `date: ${noteDate}`];
+	const effectiveCategory = opts.fmCategory ?? opts.category;
+	fmLines.push(`category: ${effectiveCategory}`);
+	if (opts.tags && opts.tags.length > 0) {
+		fmLines.push("tags:");
+		for (const tag of opts.tags) {
+			fmLines.push(`  - ${tag}`);
+		}
+	}
+	if (opts.aliases && opts.aliases.length > 0) {
+		fmLines.push(`aliases: [${opts.aliases.map((a) => `"${a.replace(/"/g, '\\"')}"`).join(", ")}]`);
+	}
+	fmLines.push("---", "");
+	return fmLines.join("\n");
+}
+
+describe("til_save_note (frontmatter)", () => {
+	it("category가 frontmatter에 포함된다", () => {
+		const fm = buildTilFrontmatter({ title: "제네릭", category: "typescript" });
+		expect(fm).toContain("category: typescript");
+	});
+
+	it("fmCategory가 있으면 category 대신 사용된다", () => {
+		const fm = buildTilFrontmatter({ title: "제네릭", category: "typescript", fmCategory: "타입스크립트" });
+		expect(fm).toContain("category: 타입스크립트");
+		expect(fm).not.toContain("category: typescript");
+	});
+
+	it("fmCategory가 없으면 category 파라미터가 사용된다", () => {
+		const fm = buildTilFrontmatter({ title: "Hooks", category: "react" });
+		expect(fm).toContain("category: react");
+	});
+
+	it("aliases가 frontmatter에 포함된다", () => {
+		const fm = buildTilFrontmatter({ title: "제네릭", category: "typescript", aliases: ["제네릭", "Generics"] });
+		expect(fm).toContain('aliases: ["제네릭", "Generics"]');
+	});
+
+	it("aliases가 없으면 frontmatter에 포함되지 않는다", () => {
+		const fm = buildTilFrontmatter({ title: "Hooks", category: "react" });
+		expect(fm).not.toContain("aliases");
+	});
+
+	it("aliases에 따옴표가 있으면 이스케이프된다", () => {
+		const fm = buildTilFrontmatter({ title: "Test", category: "test", aliases: ['say "hello"'] });
+		expect(fm).toContain('aliases: ["say \\"hello\\""]');
+	});
+
+	it("tags + category + aliases가 모두 포함된 완전한 frontmatter", () => {
+		const fm = buildTilFrontmatter({
+			title: "제네릭 기초",
+			category: "typescript",
+			date: "2026-03-02",
+			tags: ["til", "typescript"],
+			aliases: ["제네릭 기초", "Generics Basics"],
+		});
+		expect(fm).toContain("---");
+		expect(fm).toContain('title: "제네릭 기초"');
+		expect(fm).toContain("date: 2026-03-02");
+		expect(fm).toContain("category: typescript");
+		expect(fm).toContain("  - til");
+		expect(fm).toContain("  - typescript");
+		expect(fm).toContain('aliases: ["제네릭 기초", "Generics Basics"]');
+	});
+});
+
 describe("vault_get_active_file", () => {
 	it("열린 파일이 없으면 null을 반환한다", () => {
 		const app = createApp({});

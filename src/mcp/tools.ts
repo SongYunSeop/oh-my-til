@@ -535,19 +535,26 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 				content: z.string().describe("노트 본문 (마크다운)"),
 				tags: z.array(z.string()).optional().describe("태그 목록 (예: [\"typescript\", \"basics\"])"),
 				date: z.string().optional().describe("작성일 (YYYY-MM-DD, 생략 시 오늘)"),
+				fmCategory: z.string().optional().describe("frontmatter category 값 (생략 시 category 파라미터 사용)"),
+				aliases: z.array(z.string()).optional().describe("aliases 목록 (예: [\"한글 제목\", \"English Title\"])"),
 			}),
 		},
-		async ({ category, slug, title, content, tags, date }) => {
+		async ({ category, slug, title, content, tags, date, fmCategory, aliases }) => {
 			const path = `${tilPath}/${category}/${slug}.md`;
 			const noteDate = date || new Date().toISOString().slice(0, 10);
 
 			// frontmatter 생성
 			const fmLines = ["---", `title: "${title.replace(/"/g, '\\"')}"`, `date: ${noteDate}`];
+			const effectiveCategory = fmCategory ?? category;
+			fmLines.push(`category: ${effectiveCategory}`);
 			if (tags && tags.length > 0) {
 				fmLines.push("tags:");
 				for (const tag of tags) {
 					fmLines.push(`  - ${tag}`);
 				}
+			}
+			if (aliases && aliases.length > 0) {
+				fmLines.push(`aliases: [${aliases.map((a) => `"${a.replace(/"/g, '\\"')}"`).join(", ")}]`);
 			}
 			fmLines.push("---", "");
 

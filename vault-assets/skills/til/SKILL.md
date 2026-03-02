@@ -12,16 +12,17 @@ plugin-version: "__PLUGIN_VERSION__"
 ## MCP 도구
 
 - `til_list`: 기존 TIL 확인 (동일/유사 주제 감지)
+- `til_exists`: TIL 파일 존재 여부 빠른 확인
 - `til_get_context`: 관련 TIL·백로그 파악, 링크 후보
 - `vault_get_active_file`: 사용자가 보는 파일 확인
 
 ## Phase 1: 주제 리서치
 
-1. `til_get_context`로 기존 TIL 확인. MCP 불가 시 `til_list` 폴백
+1. `til_exists(category, slug)`로 빠른 존재 확인 → 있으면 심화/신규 선택지 제시
+2. `til_get_context`로 기존 TIL 확인. MCP 불가 시 `til_list` 폴백
    - 백로그 항목 학습 시 `til_backlog_status`(category) → `sections[].items[].sourceUrls` 참조
      - URL 1개: `WebFetch`로 직접 패치
      - URL 2개 이상: `til-fetcher` subagent **1개**에 모든 URL 전달
-2. 기존 TIL 있으면: 심화 학습 / 새로 작성 선택지 제시
 3. 기존 TIL 없으면: 웹 검색으로 조사
 4. 핵심 개념, 예시, 관련 자료 수집 → 요약
 
