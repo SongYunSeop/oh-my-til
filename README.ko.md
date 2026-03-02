@@ -177,6 +177,10 @@ src/
 │   ├── keyboard.ts          # Shift+Enter → \n (멀티라인 지원)
 │   ├── env.ts               # macOS PATH 보정 (Homebrew)
 │   ├── skills.ts            # 버전 비교/플레이스홀더 치환 순수 함수
+│   ├── cli.ts               # CLI 인자 파싱 순수 함수
+│   ├── config.ts            # 설정 파일 파싱/로딩 순수 함수
+│   ├── markdown.ts          # 마크다운 → HTML 변환 (외부 의존성 없음)
+│   ├── profile.ts           # 정적 사이트 페이지 생성 (프로필, TIL 페이지, 카테고리 인덱스)
 │   └── index.ts             # barrel export
 ├── ports/                   # 어댑터 인터페이스
 │   ├── storage.ts           # FileStorage 인터페이스
@@ -185,10 +189,12 @@ src/
 │   ├── fs-adapter.ts        # node:fs 기반 (standalone)
 │   └── obsidian-adapter.ts  # Obsidian App 기반
 ├── mcp/                     # MCP 서버 (포트 의존, Obsidian 무관)
+│   ├── context.ts           # 학습 컨텍스트 도구 (topic 매칭, 카테고리 추출)
 │   ├── server.ts            # HTTP 서버 + Streamable HTTP 트랜스포트
 │   └── tools.ts             # MCP 도구 정의 (FileStorage + MetadataProvider 사용)
+├── plugin-install.ts        # 플러그인 에셋 자동 설치/업데이트 (skills, agents, CLAUDE.md 섹션)
 ├── cli/                     # 독립 CLI 진입점
-│   ├── index.ts             # npx oh-my-til init / serve
+│   ├── index.ts             # npx oh-my-til init / serve / deploy
 │   └── obsidian-install.ts  # Obsidian 플러그인 자동 설치 (Electron 감지, node-pty 재빌드)
 └── obsidian/                # Obsidian 플랫폼 어댑터
     ├── main.ts              # 플러그인 진입점

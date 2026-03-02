@@ -33,7 +33,7 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <div class="hero-badge">v0.11.1 &mdash; 오픈소스</div>
+      <div class="hero-badge">v0.12.3 &mdash; 오픈소스</div>
       <h1>Oh My TIL</h1>
       <p class="hero-tagline">AI 기반 <strong>Today I Learned</strong> 워크플로우.<br>Claude Code로 리서치하고, 배우고, 지식 베이스를 쌓으세요.</p>
       <div class="hero-actions">
@@ -70,9 +70,14 @@
           <p>TIL 통계, 카테고리 분석, 스트릭, 히트맵을 한눈에 확인.</p>
         </div>
         <div class="feature-card">
+          <div class="feature-icon">&#x1F501;</div>
+          <h3>간격 반복 복습 (SRS)</h3>
+          <p>SM-2 알고리즘으로 TIL 복습 스케줄링. Anki 스타일 <code>/til-review</code> 평가.</p>
+        </div>
+        <div class="feature-card">
           <div class="feature-icon">&#x26A1;</div>
           <h3>자동 설치 스킬</h3>
-          <p><code>/til</code>, <code>/research</code>, <code>/backlog</code>, <code>/save</code> &mdash; 설치 즉시 사용 가능.</p>
+          <p><code>/til</code>, <code>/research</code>, <code>/backlog</code>, <code>/save</code>, <code>/til-review</code>, <code>/dashboard</code> &mdash; 설치 즉시 사용 가능.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">&#x1F517;</div>
@@ -178,6 +183,28 @@
           <div class="flow-node flow-node-green">
             <div class="flow-node-emoji">&#x1F4DA;</div>
             <p><strong>지식 베이스</strong><br>TIL 노트 &bull; 데일리 노트 &bull; MOC</p>
+          </div>
+        </div>
+
+        <div class="flow-arrow">&#x25BC;</div>
+
+        <!-- Review cycle -->
+        <div class="flow-cycle">
+          <div class="flow-cycle-label">복습 사이클 &mdash; 간격 반복 (SM-2)</div>
+          <div class="flow-cycle-row">
+            <div class="flow-node">
+              <code>/til-review</code>
+              <p>오늘 복습 카드<br>Anki 스타일 평가</p>
+            </div>
+            <div class="flow-cycle-arrow">&#x2192;</div>
+            <div class="flow-node flow-node-green">
+              <div class="flow-node-emoji">&#x1F4C8;</div>
+              <p>SM-2 재스케줄링<br>다음 복습일 설정</p>
+            </div>
+          </div>
+          <div class="flow-cycle-back">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15A9 9 0 0 0 21 12 9 9 0 0 0 5.64 5.64L1 10"/></svg>
+            예정일에 다음 복습
           </div>
         </div>
 

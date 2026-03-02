@@ -177,6 +177,10 @@ src/
 │   ├── keyboard.ts          # Shift+Enter → \n (multiline support)
 │   ├── env.ts               # macOS PATH resolution (Homebrew)
 │   ├── skills.ts            # Version comparison / placeholder substitution
+│   ├── cli.ts               # CLI argument parsing (pure functions)
+│   ├── config.ts            # Config file parsing/loading (pure functions)
+│   ├── markdown.ts          # Markdown → HTML conversion (no external deps)
+│   ├── profile.ts           # Static site page generation (profile, TIL pages, category index)
 │   └── index.ts             # Barrel export
 ├── ports/                   # Adapter interfaces
 │   ├── storage.ts           # FileStorage interface
@@ -185,10 +189,12 @@ src/
 │   ├── fs-adapter.ts        # node:fs based (standalone)
 │   └── obsidian-adapter.ts  # Obsidian App based
 ├── mcp/                     # MCP server (port-dependent, Obsidian-free)
+│   ├── context.ts           # Learning context tools (topic matching, category extraction)
 │   ├── server.ts            # HTTP server + Streamable HTTP transport
 │   └── tools.ts             # MCP tool definitions (FileStorage + MetadataProvider)
+├── plugin-install.ts        # Plugin asset auto-install/update (skills, agents, CLAUDE.md section)
 ├── cli/                     # Standalone CLI entry point
-│   ├── index.ts             # npx oh-my-til init / serve
+│   ├── index.ts             # npx oh-my-til init / serve / deploy
 │   └── obsidian-install.ts  # Auto-install Obsidian plugin (Electron detection, node-pty rebuild)
 └── obsidian/                # Obsidian platform adapter
     ├── main.ts              # Plugin entry point
