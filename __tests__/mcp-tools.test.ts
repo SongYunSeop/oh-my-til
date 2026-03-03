@@ -12,6 +12,11 @@ import {
 	type TopicContextResult,
 } from "../src/mcp/context";
 import { computeBacklogProgress, parseBacklogSections } from "../src/backlog";
+import {
+	filterDueCards,
+	computeReviewStats,
+	type SrsFileEntry,
+} from "../src/core/srs";
 
 // MCP 도구의 핵심 로직을 직접 테스트한다.
 // 실제 McpServer 없이 vault 접근 로직만 검증.
@@ -446,6 +451,97 @@ describe("til_list (search)", () => {
 		const result = groupFilesByCategory(filtered, tilPath);
 
 		expect(Object.keys(result)).toHaveLength(0);
+	});
+});
+
+// --- til_review_list include_content 로직 재현 ---
+
+function makeSrsFiles(
+	entries: Array<{ path: string; title?: string; frontmatter?: Record<string, unknown> }>,
+): SrsFileEntry[] {
+	return entries.map((e) => ({
+		path: e.path,
+		extension: e.path.split(".").pop() ?? "",
+		title: e.title ?? e.path.split("/").pop()?.replace(/\.md$/, "") ?? "",
+		frontmatter: e.frontmatter ?? {},
+	}));
+}
+
+describe("til_review_list (include_content)", () => {
+	const tilPath = "til";
+	// 과거 날짜로 설정하여 모두 복습 대상이 되도록
+	const dueFrontmatter = {
+		next_review: "2026-01-01",
+		interval: 1,
+		ease_factor: 2.5,
+		repetitions: 1,
+		last_review: "2025-12-31",
+	};
+
+	it("include_content=true일 때 각 카드에 content 필드가 포함된다", async () => {
+		const files: Record<string, string> = {
+			"til/typescript/generics.md": "# Generics\n제네릭 내용",
+			"til/react/hooks.md": "# Hooks\n훅 내용",
+		};
+		const app = createApp(files);
+
+		const srsFiles = makeSrsFiles([
+			{ path: "til/typescript/generics.md", title: "Generics", frontmatter: { ...dueFrontmatter } },
+			{ path: "til/react/hooks.md", title: "Hooks", frontmatter: { ...dueFrontmatter } },
+		]);
+
+		const cards = filterDueCards(srsFiles, tilPath);
+
+		// include_content=true 로직 재현 (tools.ts의 Promise.all + storage.readFile)
+		const contents = await Promise.all(
+			cards.map((card) => {
+				const file = app.vault.getAbstractFileByPath(card.path);
+				return file instanceof TFile ? app.vault.read(file) : Promise.resolve(null);
+			}),
+		);
+		const cardsWithContent = cards.map((card, i) => ({
+			...card,
+			content: contents[i] ?? "",
+		}));
+
+		expect(cardsWithContent.length).toBe(2);
+		for (const card of cardsWithContent) {
+			expect(card).toHaveProperty("content");
+			expect(typeof card.content).toBe("string");
+			expect(card.content.length).toBeGreaterThan(0);
+		}
+	});
+
+	it("include_content=false(또는 미지정)일 때 content 필드가 없다", () => {
+		const srsFiles = makeSrsFiles([
+			{ path: "til/typescript/generics.md", title: "Generics", frontmatter: { ...dueFrontmatter } },
+		]);
+
+		const cards = filterDueCards(srsFiles, tilPath);
+
+		// include_content가 없으면 cards를 그대로 반환
+		for (const card of cards) {
+			expect(card).not.toHaveProperty("content");
+		}
+	});
+
+	it("삭제된 파일(content가 null)은 빈 문자열로 대체된다", () => {
+		const srsFiles = makeSrsFiles([
+			{ path: "til/typescript/generics.md", title: "Generics", frontmatter: { ...dueFrontmatter } },
+			{ path: "til/deleted/missing.md", title: "Missing", frontmatter: { ...dueFrontmatter } },
+		]);
+
+		const cards = filterDueCards(srsFiles, tilPath);
+
+		// null 값을 포함한 contents 배열 시뮬레이션
+		const contents: (string | null)[] = ["# Generics\n내용", null];
+		const cardsWithContent = cards.map((card, i) => ({
+			...card,
+			content: contents[i] ?? "",
+		}));
+
+		expect(cardsWithContent[0]!.content).toBe("# Generics\n내용");
+		expect(cardsWithContent[1]!.content).toBe("");
 	});
 });
 

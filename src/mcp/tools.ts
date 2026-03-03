@@ -406,13 +406,14 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_review_list",
 		{
 			title: "Review List",
-			description: "오늘 복습할 TIL 카드 목록과 통계를 반환합니다",
+			description: "오늘 복습할 TIL 카드 목록과 통계를 반환합니다. include_content=true로 노트 내용을 함께 가져오면 vault_read_note 호출을 줄일 수 있습니다.",
 			inputSchema: z.object({
 				category: z.string().optional().describe("특정 카테고리만 필터링"),
 				limit: z.number().min(1).max(100).optional().describe("최대 카드 수 (기본 20)"),
+				include_content: z.boolean().optional().describe("true면 각 카드의 노트 내용을 함께 반환 (기본 false)"),
 			}),
 		},
-		async ({ category, limit }) => {
+		async ({ category, limit, include_content }) => {
 			const allFiles = await storage.listFiles();
 			const srsFiles: SrsFileEntry[] = [];
 
@@ -443,6 +444,16 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 			const cards = filterDueCards(srsFiles, tilPath, undefined, effectiveLimit);
 			const stats = computeReviewStats(srsFiles, tilPath);
 			const remaining = Math.max(0, stats.dueToday - cards.length);
+
+			if (include_content) {
+				const contents = await Promise.all(cards.map((card) => storage.readFile(card.path)));
+				const cardsWithContent = cards.map((card, i) => ({
+					...card,
+					content: contents[i] ?? "",
+				}));
+				const data = { cards: cardsWithContent, stats, remaining };
+				return { content: [{ type: "text" as const, text: JSON.stringify(data) }] };
+			}
 
 			const data = { cards, stats, remaining };
 			return { content: [{ type: "text" as const, text: JSON.stringify(data) }] };
