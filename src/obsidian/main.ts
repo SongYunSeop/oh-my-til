@@ -30,7 +30,7 @@ export default class TILPlugin extends Plugin {
 
 		this.addCommand({
 			id: "open-til-terminal",
-			name: "터미널 열기",
+			name: "Open Terminal",
 			callback: () => {
 				this.openTerminal();
 			},
@@ -38,7 +38,7 @@ export default class TILPlugin extends Plugin {
 
 		this.addCommand({
 			id: "open-til-dashboard",
-			name: "학습 대시보드 열기",
+			name: "Open Learning Dashboard",
 			callback: () => {
 				this.openDashboard();
 			},
@@ -99,7 +99,7 @@ export default class TILPlugin extends Plugin {
 						const notice = new Notice("", 0);
 						notice.noticeEl.empty();
 						notice.noticeEl.createEl("span", {
-							text: `"${displayName}" 주제가 backlog에 있습니다.`,
+							text: `"${displayName}" is in your backlog.`,
 						});
 						const btnContainer = notice.noticeEl.createDiv({
 							cls: "notice-actions",
@@ -108,7 +108,7 @@ export default class TILPlugin extends Plugin {
 						btnContainer.style.gap = "8px";
 						btnContainer.style.marginTop = "8px";
 						const startBtn = btnContainer.createEl("button", {
-							text: "실행",
+							text: "Start",
 							cls: "mod-cta",
 						});
 						startBtn.addEventListener("click", async () => {
@@ -124,7 +124,7 @@ export default class TILPlugin extends Plugin {
 							}
 						});
 						const laterBtn = btnContainer.createEl("button", {
-							text: "나중에",
+							text: "Later",
 						});
 						laterBtn.addEventListener("click", () => {
 							notice.hide();

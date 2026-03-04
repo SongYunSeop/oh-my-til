@@ -5,9 +5,7 @@ import tilSkill from "../skills/til/SKILL.md";
 import backlogSkill from "../skills/backlog/SKILL.md";
 import researchSkill from "../skills/research/SKILL.md";
 import saveSkill from "../skills/save/SKILL.md";
-import migrateLinksSkill from "../skills/migrate-links/SKILL.md";
 import dashboardSkill from "../skills/dashboard/SKILL.md";
-import setupPagesSkill from "../skills/setup-pages/SKILL.md";
 import omtSetupSkill from "../skills/omt-setup/SKILL.md";
 import tilReviewSkill from "../skills/til-review/SKILL.md";
 import claudeMdSection from "../vault-assets/claude-md-section.md";
@@ -37,9 +35,7 @@ const SKILLS: Record<string, string> = {
 	"backlog/SKILL.md": backlogSkill,
 	"research/SKILL.md": researchSkill,
 	"save/SKILL.md": saveSkill,
-	"migrate-links/SKILL.md": migrateLinksSkill,
 	"dashboard/SKILL.md": dashboardSkill,
-	"setup-pages/SKILL.md": setupPagesSkill,
 	"omt-setup/SKILL.md": omtSetupSkill,
 	"til-review/SKILL.md": tilReviewSkill,
 };
@@ -105,7 +101,7 @@ async function installFiles(
 			}
 
 			await storage.writeFile(fullPath, resolveVersionPlaceholder(content, pluginVersion));
-			console.log(`Oh My TIL: ${label} 설치됨 → ${fullPath}`);
+			console.log(`Oh My TIL: ${label} installed → ${fullPath}`);
 		}),
 	);
 }
@@ -184,7 +180,7 @@ async function installHooksConfig(storage: FileStorage): Promise<void> {
 	if (changed) {
 		settings.hooks = hooks;
 		await storage.writeFile(settingsPath, JSON.stringify(settings, null, "\t") + "\n");
-		console.log("Oh My TIL: hooks 설정 등록됨 → .claude/settings.json");
+		console.log("Oh My TIL: hooks config registered → .claude/settings.json");
 	}
 }
 
@@ -221,7 +217,7 @@ async function installClaudeMdSection(storage: FileStorage, pluginVersion: strin
 		await storage.writeFile(filePath, section + "\n");
 	}
 
-	console.log("Oh My TIL: CLAUDE.md에 MCP 도구 안내 추가됨");
+	console.log("Oh My TIL: MCP tools guide added to CLAUDE.md");
 }
 
 /**
@@ -239,7 +235,7 @@ async function cleanupOldSkills(storage: FileStorage): Promise<void> {
 		const version = extractPluginVersion(content ?? "");
 		if (version) {
 			await storage.remove(oldPath);
-			console.log(`Oh My TIL: 이전 skill 삭제 → ${oldPath}`);
+			console.log(`Oh My TIL: old skill removed → ${oldPath}`);
 		}
 	}
 }

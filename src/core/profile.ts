@@ -626,7 +626,7 @@ export function generateTilPageHtml(data: TilPageData, config: ProfileConfig): s
     ${data.contentHtml}
   </article>
   ${data.relatedTils && data.relatedTils.length > 0 ? `<div class="related-section">
-    <h2>${escapeHtml(data.category)}의 다른 TIL</h2>
+    <h2>Other TILs in ${escapeHtml(data.category)}</h2>
     <ul class="til-list">
       ${data.relatedTils.map((t) => `<li><a href="${escapeHtml(t.slug)}.html"><span class="til-title">${escapeHtml(t.title)}</span></a></li>`).join("\n")}
     </ul>
@@ -823,7 +823,7 @@ export function renderHeatmapHtml(cells: HeatmapCell[], streak: number, totalTil
 	});
 	const monthLabelsHtml = monthLabelHtmlParts.join("");
 
-	// 요일 레이블: Mon, Wed, Fri のみ表示
+	// 요일 레이블: Mon, Wed, Fri만 표시
 	// 행 순서: row0=Mon, row1=Tue, row2=Wed, row3=Thu, row4=Fri, row5=Sat, row6=Sun
 	const dayLabelRows = ["Mon", "", "Wed", "", "Fri", "", ""];
 	const dayLabelsHtml = dayLabelRows

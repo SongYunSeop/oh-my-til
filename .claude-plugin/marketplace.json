@@ -11,7 +11,7 @@
     {
       "name": "oh-my-til",
       "source": "./",
-      "description": "Claude Code 기반 TIL 학습 워크플로우 플러그인 — 리서치, 백로그, 간격 반복 복습, 대시보드",
+      "description": "Claude Code plugin for TIL learning workflow — research, backlog, spaced repetition review, dashboard",
       "category": "learning"
     }
   ]

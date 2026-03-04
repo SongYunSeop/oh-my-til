@@ -1,68 +1,67 @@
 ---
 name: til-review
-description: "SRS 기반 TIL 복습 세션 (간격 반복 학습)"
-argument-hint: "[카테고리]"
+description: "SRS-based TIL review session (spaced repetition)"
+argument-hint: "[category]"
 plugin-version: "__PLUGIN_VERSION__"
 ---
 
 # Review Skill
 
-SRS(간격 반복) 기반 TIL 복습 세션. SM-2 알고리즘으로 복습 일정을 관리한다.
+SRS (spaced repetition) based TIL review session. Manages review schedule with the SM-2 algorithm.
 
-## MCP 도구
+## MCP Tools
 
-- `til_review_list`: 오늘 복습 대상 카드 목록 + 통계 (`include_content: true`로 노트 내용 함께 로드)
-- `til_review_update`: 복습 결과 기록 (grade 0-5) 또는 복습 해제
+- `til_review_list`: List of cards due for review today + stats (load note content with `include_content: true`)
+- `til_review_update`: Record review result (grade 0-5) or remove from review
 
-## Step 1: 복습 카드 로드
+## Step 1: Load Review Cards
 
-`til_review_list` 호출 (`include_content: true`, 카테고리 인자 있으면 전달).
+Call `til_review_list` (`include_content: true`, pass category argument if provided).
 
-- 카드 0개 → "오늘 복습 없음" 안내 + 미등록 TIL 등록 제안 (Step 5로)
-- 카드 있음 → 목록 표시 + Step 2로
+- 0 cards → Show "No reviews today" + suggest registering untracked TILs (go to Step 5)
+- Cards found → Display list + proceed to Step 2
 
-## Step 2: 평가 모드 선택
+## Step 2: Select Evaluation Mode
 
-`AskUserQuestion`으로 선택:
-- "간단 모드 (Again / Good)"
-- "상세 모드 (Again / Hard / Good / Easy)"
+Select via `AskUserQuestion`:
+- "Simple mode (Again / Good)"
+- "Detailed mode (Again / Hard / Good / Easy)"
 
-## Step 3: 카드별 복습 루프
+## Step 3: Per-Card Review Loop
 
-각 카드에 대해:
+For each card:
 
-1. 제목·카테고리·복습 정보(반복 횟수, EF, 연체일) 표시
-2. Step 1에서 이미 로드된 `content` 사용 (추가 MCP 호출 불필요)
-3. 핵심 내용을 질문 형식으로 제시 (내용 기반으로 1~2개 질문 생성)
-4. 사용자 답변 대기
-5. 피드백 제공 (정답/보충 설명)
-6. `AskUserQuestion`으로 평가 입력:
-   - 간단 모드: "Good (기억남)" / "Again (모름)" / "건너뛰기" / "복습 중단"
-   - 상세 모드: "Again (실패)" / "Hard (어렵게 정답)" / "Good (정상)" / "Easy (완벽)"
-   - grade 매핑: Again=1, Hard=3, Good=4, Easy=5
-   - "건너뛰기" 선택 시 이 카드는 평가하지 않고 다음으로
-   - "복습 중단" 선택 시 Step 4로 이동
-   - 상세 모드에서 건너뛰기/중단: "Other" 선택 후 "건너뛰기" 또는 "복습 중단" 입력
-7. 건너뛰기가 아닌 경우 `til_review_update` (action: "review", grade) 호출
-8. 결과 요약 (다음 복습일, interval) 표시
+1. Display title, category, review info (repetition count, EF, days overdue)
+2. Use `content` already loaded in Step 1 (no additional MCP calls needed)
+3. Present key content as questions (generate 1-2 questions based on content)
+4. Wait for user answer
+5. Provide feedback (correct answer / supplementary explanation)
+6. Input evaluation via `AskUserQuestion`:
+   - Simple mode: "Good (Remembered)" / "Again (Forgot)" / "Skip" / "Stop Review"
+   - Detailed mode: "Again (Failed)" / "Hard (Struggled)" / "Good (Normal)" / "Easy (Perfect)"
+   - Grade mapping: Again=1, Hard=3, Good=4, Easy=5
+   - "Skip": do not evaluate this card, move to next
+   - "Stop Review": move to Step 4
+   - Skip/Stop in detailed mode: select "Other" then type "Skip" or "Stop Review"
+7. If not skipped, call `til_review_update` (action: "review", grade)
+8. Display result summary (next review date, interval)
 
-## Step 4: 완료 통계
+## Step 4: Completion Stats
 
-모든 카드 완료 후:
-- 복습한 카드 수, 평균 grade
-- remaining > 0이면 "N개 더 남음, 내일 이어서" 안내
-- `til_review_list` 재호출하여 최신 통계 표시
+After all cards are done:
+- Number of cards reviewed, average grade
+- If remaining > 0, show "N more remaining, continue tomorrow"
+- Re-call `til_review_list` to display latest stats
 
-## Step 5: TIL 등록 (선택)
+## Step 5: Register TILs (Optional)
 
-카드가 없을 때 또는 사용자 요청 시:
-- `til_list`로 전체 TIL 목록 표시
-- 사용자가 복습 대상에 추가할 파일 선택
-- 선택된 파일마다 `til_review_update` (action: "review", grade: 4) 호출
+When no cards exist or user requests:
+- Display full TIL list via `til_list`
+- User selects files to add to review
+- Call `til_review_update` (action: "review", grade: 4) for each selected file
 
-## 규칙
+## Rules
 
-- 한 세션 최대 20개 (과부하 방지)
-- 연체 카드 우선 (가장 급한 것 먼저)
-- 복습 해제: 사용자가 "이 카드 제거"하면 `til_review_update` (action: "remove") 호출
-- 한국어 진행, 기술 용어 원어 병기
+- Max 20 cards per session (prevent overload)
+- Prioritize overdue cards (most urgent first)
+- Remove from review: if user says "remove this card", call `til_review_update` (action: "remove")

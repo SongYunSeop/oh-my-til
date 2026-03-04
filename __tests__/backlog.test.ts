@@ -156,7 +156,7 @@ describe("formatProgressBar", () => {
 
 describe("formatBacklogTable", () => {
 	it("빈 배열이면 안내 메시지를 반환한다", () => {
-		expect(formatBacklogTable([])).toBe("백로그 항목이 없습니다");
+		expect(formatBacklogTable([])).toBe("No backlog items found");
 	});
 
 	it("카테고리를 마크다운 링크로 출력한다", () => {
@@ -186,7 +186,7 @@ describe("formatBacklogTable", () => {
 			{ category: "b", filePath: "til/b/backlog.md", done: 2, total: 5 },
 		];
 		const result = formatBacklogTable(categories);
-		expect(result).toContain("총 10개 항목 중 5개 완료 (50%)");
+		expect(result).toContain("5 of 10 items completed (50%)");
 	});
 
 	it("진행바를 포함한다", () => {

@@ -151,7 +151,7 @@ export class DashboardView extends ItemView {
 		if (stats.summary.totalTils === 0) {
 			content.createDiv({
 				cls: "oh-my-til-dashboard-empty",
-				text: "TIL 파일이 없습니다. 터미널에서 /til 스킬을 실행해보세요.",
+				text: "No TILs yet. Run /til to get started!",
 			});
 		}
 	}
@@ -207,7 +207,7 @@ export class DashboardView extends ItemView {
 		header.createEl("h3", { text: "Review" });
 		const refreshBtn = header.createEl("button", {
 			cls: "oh-my-til-review-refresh-btn clickable-icon",
-			attr: { "aria-label": "Pick another" },
+			attr: { "aria-label": "Shuffle review picks" },
 		});
 		setIcon(refreshBtn, "shuffle");
 		refreshBtn.addEventListener("click", () => {
@@ -287,7 +287,7 @@ export class DashboardView extends ItemView {
 		];
 
 		if (summary.reviewDueCount !== undefined && summary.reviewDueCount > 0) {
-			cards.push({ value: String(summary.reviewDueCount), label: "Review Due" });
+			cards.push({ value: String(summary.reviewDueCount), label: "Reviews Due" });
 		}
 
 		for (const card of cards) {

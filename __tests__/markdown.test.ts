@@ -245,7 +245,7 @@ describe("rewriteTilLinks", () => {
 		it("존재하지 않는 파일은 missing-link 클래스를 부여한다", () => {
 			const html = '<a href="til/anki/unknown-topic.md">Unknown</a>';
 			const result = rewriteTilLinks(html, existing);
-			expect(result).toBe('<a class="missing-link" title="아직 작성되지 않은 문서">Unknown</a>');
+			expect(result).toBe('<a class="missing-link" title="Document not yet written">Unknown</a>');
 			expect(result).not.toContain("href");
 		});
 

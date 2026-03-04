@@ -45,19 +45,19 @@ export class TILMcpServer {
 			});
 
 			this.httpServer.on("listening", () => {
-				console.log(`Oh My TIL: MCP 서버 시작 (http://localhost:${this.port})`);
+				console.log(`Oh My TIL: MCP server started (http://localhost:${this.port})`);
 				resolve();
 			});
 
 			this.httpServer.on("error", (err: NodeJS.ErrnoException) => {
 				if (err.code === "EADDRINUSE") {
-					const msg = `Oh My TIL: 포트 ${this.port}이 이미 사용 중입니다. 설정에서 MCP 포트를 변경해주세요.`;
+					const msg = `Oh My TIL: Port ${this.port} is already in use. Please change the MCP port in settings.`;
 					this.options?.onError?.(msg);
 					console.error(msg);
 				} else {
-					const msg = `Oh My TIL: MCP 서버 시작 실패 — ${err.message}`;
+					const msg = `Oh My TIL: MCP server failed to start — ${err.message}`;
 					this.options?.onError?.(msg);
-					console.error("Oh My TIL: MCP 서버 에러", err);
+					console.error("Oh My TIL: MCP server error", err);
 				}
 				reject(err);
 			});
@@ -90,7 +90,7 @@ export class TILMcpServer {
 				await mcpServer.connect(transport);
 				await transport.handleRequest(req, res);
 			} catch (err) {
-				console.error("Oh My TIL: MCP 요청 처리 실패", err);
+				console.error("Oh My TIL: MCP request handling failed", err);
 				if (!res.headersSent) {
 					res.writeHead(500, { "Content-Type": "application/json" });
 					res.end(JSON.stringify({ error: "Internal error" }));
@@ -116,7 +116,7 @@ export class TILMcpServer {
 			this.httpServer.closeAllConnections();
 			return new Promise<void>((resolve) => {
 				this.httpServer!.close(() => {
-					console.log("Oh My TIL: MCP 서버 종료");
+					console.log("Oh My TIL: MCP server stopped");
 					this.httpServer = null;
 					resolve();
 				});

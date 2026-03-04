@@ -45,8 +45,8 @@ export class TILSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Shell 경로")
-			.setDesc("터미널에서 사용할 셸 실행 파일 경로")
+			.setName("Shell path")
+			.setDesc("Path to the shell executable used in the terminal")
 			.addText((text) =>
 				text
 					.setPlaceholder("/bin/zsh")
@@ -58,8 +58,8 @@ export class TILSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Claude 자동 실행")
-			.setDesc("터미널이 열릴 때 자동으로 'claude' 명령을 실행합니다")
+			.setName("Auto-launch Claude")
+			.setDesc("Automatically launch Claude Code when the terminal panel opens")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(this.plugin.settings.autoLaunchClaude)
@@ -70,8 +70,8 @@ export class TILSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("이전 세션 이어가기")
-			.setDesc("터미널 시작 시 마지막 Claude 대화를 이어갑니다 (--continue)")
+			.setName("Resume last session")
+			.setDesc("Resume the previous Claude Code session when the terminal starts")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(this.plugin.settings.resumeLastSession)
@@ -82,8 +82,8 @@ export class TILSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Claude 추가 인자")
-			.setDesc("Claude Code 실행 시 추가할 CLI 인자 (예: --model sonnet --verbose)")
+			.setName("Additional Claude arguments")
+			.setDesc("Extra CLI arguments to pass when launching Claude Code (e.g. --model sonnet --verbose)")
 			.addText((text) =>
 				text
 					.setPlaceholder("--model sonnet")
@@ -95,8 +95,8 @@ export class TILSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("글꼴 크기")
-			.setDesc("터미널 글꼴 크기 (px)")
+			.setName("Font size")
+			.setDesc("Terminal font size in pixels")
 			.addSlider((slider) =>
 				slider
 					.setLimits(10, 24, 1)
@@ -109,11 +109,11 @@ export class TILSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("글꼴")
-			.setDesc("터미널 글꼴 (시스템에 설치된 폰트만 적용, 변경 후 터미널 재시작 필요)")
+			.setName("Font family")
+			.setDesc("Terminal font (only system-installed fonts will work; restart the terminal after changing)")
 			.addDropdown((dropdown) => {
 				const presets: Record<string, string> = {
-					'Menlo, Monaco, "Courier New", monospace': "Menlo (기본값)",
+					'Menlo, Monaco, "Courier New", monospace': "Menlo (default)",
 					'"SF Mono", Menlo, Monaco, monospace': "SF Mono",
 					'"Fira Code", "Fira Mono", monospace': "Fira Code",
 					'"JetBrains Mono", monospace': "JetBrains Mono",
@@ -128,7 +128,7 @@ export class TILSettingTab extends PluginSettingTab {
 				}
 				const currentValue = this.plugin.settings.fontFamily;
 				if (!(currentValue in presets)) {
-					dropdown.addOption(currentValue, `커스텀: ${currentValue}`);
+					dropdown.addOption(currentValue, `Custom: ${currentValue}`);
 				}
 				dropdown
 					.setValue(currentValue)
@@ -139,8 +139,8 @@ export class TILSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("행간")
-			.setDesc("터미널 행간 (1.0 = 기본, 1.2 = 넓게)")
+			.setName("Line height")
+			.setDesc("Terminal line height (1.0 = default, 1.2 = spacious)")
 			.addSlider((slider) =>
 				slider
 					.setLimits(1.0, 2.0, 0.1)
@@ -152,11 +152,11 @@ export class TILSettingTab extends PluginSettingTab {
 					})
 			);
 
-		containerEl.createEl("h3", { text: "TIL 설정" });
+		containerEl.createEl("h3", { text: "TIL Settings" });
 
 		new Setting(containerEl)
-			.setName("새 TIL 파일 자동 열기")
-			.setDesc("til/ 폴더에 새 .md 파일이 생성되면 에디터에서 자동으로 엽니다")
+			.setName("Auto-open new TIL files")
+			.setDesc("Automatically open new .md files created in the til/ folder in the editor")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(this.plugin.settings.autoOpenNewTIL)
@@ -167,8 +167,8 @@ export class TILSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("시작 시 대시보드 열기")
-			.setDesc("Obsidian을 열 때 학습 대시보드를 자동으로 표시합니다")
+			.setName("Open dashboard on startup")
+			.setDesc("Automatically show the learning dashboard when Obsidian opens")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(this.plugin.settings.openDashboardOnStartup)
@@ -178,11 +178,11 @@ export class TILSettingTab extends PluginSettingTab {
 					})
 			);
 
-		containerEl.createEl("h3", { text: "MCP 서버" });
+		containerEl.createEl("h3", { text: "MCP Server" });
 
 		new Setting(containerEl)
-			.setName("MCP 서버 활성화")
-			.setDesc("Claude Code가 vault에 직접 접근할 수 있는 MCP 서버를 실행합니다")
+			.setName("Enable MCP server")
+			.setDesc("Run an MCP server so Claude Code can read and write vault files in real time")
 			.addToggle((toggle) =>
 				toggle
 					.setValue(this.plugin.settings.mcpEnabled)
@@ -193,8 +193,8 @@ export class TILSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("MCP 포트")
-			.setDesc("MCP 서버 포트 (변경 후 플러그인 재시작 필요)")
+			.setName("MCP port")
+			.setDesc("MCP server port (reload Obsidian after changing)")
 			.addText((text) =>
 				text
 					.setPlaceholder("22360")

@@ -76,7 +76,7 @@ export function formatProgressBar(done: number, total: number, width = 10): stri
  * 순수 함수 — 부수효과 없음, 단위 테스트 가능.
  */
 export function formatBacklogTable(categories: BacklogCategoryStatus[]): string {
-	if (categories.length === 0) return "백로그 항목이 없습니다";
+	if (categories.length === 0) return "No backlog items found";
 
 	const sorted = [...categories].sort((a, b) => {
 		const pctA = a.total > 0 ? a.done / a.total : 0;
@@ -89,8 +89,8 @@ export function formatBacklogTable(categories: BacklogCategoryStatus[]): string 
 	const totalPct = totalAll > 0 ? Math.round((totalDone / totalAll) * 100) : 0;
 
 	const lines: string[] = [];
-	lines.push("학습 백로그 현황\n");
-	lines.push("| 카테고리 | 진행률 | 완료 | 진행바 |");
+	lines.push("Learning Backlog Status\n");
+	lines.push("| Category | Progress | Done | Bar |");
 	lines.push("|---------|--------|------|--------|");
 
 	for (const c of sorted) {
@@ -99,7 +99,7 @@ export function formatBacklogTable(categories: BacklogCategoryStatus[]): string 
 		lines.push(`| [${c.category}](${c.filePath}) | ${pct}% | ${c.done}/${c.total} | ${bar} |`);
 	}
 
-	lines.push(`\n총 ${totalAll}개 항목 중 ${totalDone}개 완료 (${totalPct}%)`);
+	lines.push(`\n${totalDone} of ${totalAll} items completed (${totalPct}%)`);
 
 	return lines.join("\n");
 }

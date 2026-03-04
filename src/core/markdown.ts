@@ -275,7 +275,7 @@ export function rewriteTilLinks(html: string, existingFiles?: Set<string>): stri
 		(_match, tilPath: string, text: string) => {
 			const fullPath = `til/${tilPath}`;
 			if (existingFiles && !existingFiles.has(fullPath)) {
-				return `<a class="missing-link" title="아직 작성되지 않은 문서">${text}</a>`;
+				return `<a class="missing-link" title="Document not yet written">${text}</a>`;
 			}
 			const pathWithoutExt = tilPath.replace(/\.md$/, "");
 			return `<a href="../${pathWithoutExt}.html">${text}</a>`;

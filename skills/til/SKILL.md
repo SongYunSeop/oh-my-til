@@ -1,48 +1,47 @@
 ---
 name: til
-description: "Today I Learned - 주제를 리서치하고 대화형으로 학습한 뒤 TIL 마크다운으로 저장"
-argument-hint: "<주제> [카테고리]"
+description: "Today I Learned — research a topic, learn interactively, then save as TIL markdown"
+argument-hint: "<topic> [category]"
 plugin-version: "__PLUGIN_VERSION__"
 ---
 
 # TIL Skill
 
-주제 리서치 → 대화형 학습 → TIL 저장.
+Topic research → Interactive learning → Save TIL.
 
-## MCP 도구
+## MCP Tools
 
-- `til_list`: 기존 TIL 확인 (동일/유사 주제 감지)
-- `til_get_context`: 관련 TIL·백로그 파악, 링크 후보
-- `vault_get_active_file`: 사용자가 보는 파일 확인
+- `til_list`: Check existing TILs (detect same/similar topics)
+- `til_get_context`: Find related TILs and backlog items, link candidates
+- `vault_get_active_file`: Check the file the user is currently viewing
 
-## Phase 1: 주제 리서치
+## Phase 1: Topic Research
 
-1. `Read`로 `til/{category}/{slug}.md` 존재 확인 → 있으면 심화/신규 선택지 제시
-2. `til_get_context`로 기존 TIL 확인. MCP 불가 시 `til_list` 폴백
-   - 백로그 항목 학습 시 `til_backlog_status`(category) → `sections[].items[].sourceUrls` 참조
-     - URL 1개: `WebFetch`로 직접 패치
-     - URL 2개 이상: `til-fetcher` subagent **1개**에 모든 URL 전달
-3. 기존 TIL 없으면: 웹 검색으로 조사
-4. 핵심 개념, 예시, 관련 자료 수집 → 요약
+1. Use `Read` to check if `til/{category}/{slug}.md` exists → if so, offer to expand the existing TIL or start a new topic
+2. Use `til_get_context` to check existing TILs. Fall back to `til_list` if MCP is unavailable
+   - When learning a backlog item, call `til_backlog_status`(category) → reference `sections[].items[].sourceUrls`
+     - 1 URL: fetch directly with `WebFetch`
+     - 2+ URLs: pass all URLs to a single `til-fetcher` subagent
+3. If no existing TIL is found, research the topic via web search
+4. Collect key concepts, examples, and references → summarize
 
-## Phase 2: 대화형 학습
+## Phase 2: Interactive Learning
 
-1. 리서치 결과 기반 설명
-2. 심화 학습 모드: 기존 내용 반복하지 않고 새 관점에 집중
-3. 사용자 질문에 답변
-4. 사용자가 "저장해줘" 등 요청 시 Phase 3 전환 (자동 전환 금지)
+1. Explain based on research results
+2. Follow-up mode: focus on new perspectives; do not repeat existing content
+3. Answer user questions
+4. Move to Phase 3 only when the user explicitly requests to save
 
-## Phase 3: 저장
+## Phase 3: Save
 
-`/save` 스킬 규칙을 따라 저장. 심화 학습 모드는 기존 파일에 병합 (`updated` 날짜 추가).
+Follow `/save` skill rules to save. In follow-up mode, merge into the existing file (add `updated` date).
 
-## 인수
+## Arguments
 
-- 첫 번째: 학습 주제 (필수)
-- 두 번째: 카테고리 (선택, 미지정 시 자동 추론)
+- First: learning topic (required)
+- Second: category (optional, automatically detected if omitted)
 
-## 규칙
+## Rules
 
-- 한국어 작성, 기술 용어 원어 병기
-- 링크: `[표시명](til/{카테고리}/{slug}.md)` — `[[위키링크]]` 금지
-- 민감 정보 대체값 사용 (example.com, your-api-key)
+- Links: `[display name](til/{category}/{slug}.md)` — no `[[wiki links]]`
+- Use placeholder values for sensitive information (example.com, your-api-key)

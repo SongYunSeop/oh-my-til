@@ -43,16 +43,16 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"vault_get_active_file",
 		{
 			title: "Get Active File",
-			description: "현재 에디터에서 열린 파일의 경로와 내용을 반환합니다",
+			description: "Returns the path and content of the file currently open in Obsidian",
 		},
 		async () => {
 			const activePath = await metadata.getActiveFilePath();
 			if (!activePath) {
-				return { content: [{ type: "text" as const, text: "현재 열린 파일이 없습니다" }] };
+				return { content: [{ type: "text" as const, text: "No file is currently open" }] };
 			}
 			const text = await storage.readFile(activePath);
 			if (text === null) {
-				return { content: [{ type: "text" as const, text: "현재 열린 파일이 없습니다" }] };
+				return { content: [{ type: "text" as const, text: "Could not read the active file" }] };
 			}
 			return { content: [{ type: "text" as const, text: `path: ${activePath}\n---\n${text}` }] };
 		},
@@ -63,10 +63,10 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_list",
 		{
 			title: "List TILs",
-			description: "TIL 파일 목록과 카테고리별 분류를 반환합니다. search로 파일명/경로 필터링 가능.",
+			description: "Returns a list of TIL files with category grouping. Use search to filter by filename/path.",
 			inputSchema: z.object({
-				category: z.string().optional().describe("특정 카테고리만 필터링"),
-				search: z.string().optional().describe("파일 경로/이름에서 검색 (대소문자 무시)"),
+				category: z.string().optional().describe("Filter by specific category"),
+				search: z.string().optional().describe("Search in file path/name (case insensitive)"),
 			}),
 		},
 		async ({ category, search }) => {
@@ -98,9 +98,9 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_backlog_status",
 		{
 			title: "Backlog Status",
-			description: "학습 백로그의 진행률을 요약합니다",
+			description: "Summarizes backlog progress (queued learning topics)",
 			inputSchema: z.object({
-				category: z.string().optional().describe("특정 카테고리만 필터링"),
+				category: z.string().optional().describe("Filter by specific category"),
 			}),
 		},
 		async ({ category }) => {
@@ -148,9 +148,9 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_get_context",
 		{
 			title: "Get Topic Context",
-			description: "주제 관련 기존 학습 내용을 파악합니다 (파일, 링크 관계, 미작성 주제)",
+			description: "Finds existing learning content related to a topic (files, link relationships, unresolved links)",
 			inputSchema: z.object({
-				topic: z.string().describe("학습 주제 (예: typescript, hooks, flexbox)"),
+				topic: z.string().describe("Learning topic (e.g., typescript, hooks, flexbox)"),
 			}),
 		},
 		async ({ topic }) => {
@@ -228,9 +228,9 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_recent_context",
 		{
 			title: "Recent Learning Context",
-			description: "최근 학습 흐름을 시간순으로 파악합니다",
+			description: "Shows recent learning activity (newest first)",
 			inputSchema: z.object({
-				days: z.number().min(1).max(90).default(7).describe("조회할 일수 (기본 7일)"),
+				days: z.number().min(1).max(90).default(7).describe("Number of days to query (default 7)"),
 			}),
 		},
 		async ({ days }) => {
@@ -252,7 +252,7 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_dashboard",
 		{
 			title: "Dashboard Stats",
-			description: "학습 대시보드 통계를 반환합니다 (요약, 히트맵, 카테고리, 백로그, 복습)",
+			description: "Returns learning dashboard stats (summary, heatmap, categories, backlog, reviews)",
 			inputSchema: z.object({}),
 		},
 		async () => {
@@ -330,11 +330,11 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_review_list",
 		{
 			title: "Review List",
-			description: "오늘 복습할 TIL 카드 목록과 통계를 반환합니다. include_content=true로 노트 내용을 함께 가져오면 별도 파일 읽기를 줄일 수 있습니다.",
+			description: "Returns today's TIL review cards and stats. Set include_content=true to include note content with each card (avoids separate file reads).",
 			inputSchema: z.object({
-				category: z.string().optional().describe("특정 카테고리만 필터링"),
-				limit: z.number().min(1).max(100).optional().describe("최대 카드 수 (기본 20)"),
-				include_content: z.boolean().optional().describe("true면 각 카드의 노트 내용을 함께 반환 (기본 false)"),
+				category: z.string().optional().describe("Filter by specific category"),
+				limit: z.number().min(1).max(100).optional().describe("Max card count (default 20)"),
+				include_content: z.boolean().optional().describe("If true, include note content with each card (default false)"),
 			}),
 		},
 		async ({ category, limit, include_content }) => {
@@ -389,11 +389,11 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_review_update",
 		{
 			title: "Update Review",
-			description: "TIL 파일의 복습 결과를 기록하거나 복습 대상에서 제거합니다",
+			description: "Records a review result for a TIL file, or removes it from spaced repetition tracking",
 			inputSchema: z.object({
-				path: z.string().describe("TIL 파일 경로"),
-				grade: z.number().min(0).max(5).optional().describe("SM-2 등급 (0-5, action=review 시 필수)"),
-				action: z.enum(["review", "remove"]).optional().describe("review(기본): 복습 기록, remove: 복습 해제"),
+				path: z.string().describe("TIL file path"),
+				grade: z.number().min(0).max(5).optional().describe("SM-2 grade (0-5, required when action=review)"),
+				action: z.enum(["review", "remove"]).optional().describe("review (default): record review, remove: remove from review schedule"),
 			}),
 		},
 		async ({ path, grade, action }) => {
@@ -401,7 +401,7 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 
 			const content = await storage.readFile(path);
 			if (content === null) {
-				return { content: [{ type: "text" as const, text: `Error: 파일을 찾을 수 없습니다 — ${path}` }], isError: true };
+				return { content: [{ type: "text" as const, text: JSON.stringify({ error: `File not found: ${path}` }) }], isError: true };
 			}
 
 			if (effectiveAction === "remove") {
@@ -412,7 +412,7 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 
 			// action === "review"
 			if (grade === undefined) {
-				return { content: [{ type: "text" as const, text: "Error: action=review 시 grade(0-5)가 필요합니다" }], isError: true };
+				return { content: [{ type: "text" as const, text: "Error: grade (0-5) is required when action=review" }], isError: true };
 			}
 
 			const fileMeta = await metadata.getFileMetadata(path);
@@ -443,17 +443,17 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_save_note",
 		{
 			title: "Save TIL Note",
-			description: "TIL 노트를 저장합니다. frontmatter 형식과 경로 규칙을 서버가 보장합니다. auto_check_backlog=true로 저장 후 백로그 자동 체크.",
+			description: "Saves a TIL note. The server ensures frontmatter format and path conventions. Set auto_check_backlog=true to auto-check backlog after saving.",
 			inputSchema: z.object({
-				category: z.string().describe("카테고리 (예: typescript, react)"),
-				slug: z.string().describe("파일명 slug (예: generics, hooks)"),
-				title: z.string().describe("노트 제목"),
-				content: z.string().describe("노트 본문 (마크다운)"),
-				tags: z.array(z.string()).optional().describe("태그 목록 (예: [\"typescript\", \"basics\"])"),
-				date: z.string().optional().describe("작성일 (YYYY-MM-DD, 생략 시 오늘)"),
-				fmCategory: z.string().optional().describe("frontmatter category 값 (생략 시 category 파라미터 사용)"),
-				aliases: z.array(z.string()).optional().describe("aliases 목록 (예: [\"한글 제목\", \"English Title\"])"),
-				auto_check_backlog: z.boolean().optional().describe("true면 저장 후 백로그 항목을 자동으로 완료 처리 (기본 false)"),
+				category: z.string().describe("Category (e.g., typescript, react)"),
+				slug: z.string().describe("Filename slug (e.g., generics, hooks)"),
+				title: z.string().describe("Note title"),
+				content: z.string().describe("Note body (markdown)"),
+				tags: z.array(z.string()).optional().describe("Tag list (e.g., [\"typescript\", \"basics\"])"),
+				date: z.string().optional().describe("Creation date (YYYY-MM-DD, defaults to today)"),
+				fmCategory: z.string().optional().describe("frontmatter category value (defaults to category parameter)"),
+				aliases: z.array(z.string()).optional().describe("Aliases list (e.g., [\"Korean Title\", \"English Title\"])"),
+				auto_check_backlog: z.boolean().optional().describe("If true, auto-check matching backlog item after saving (default false)"),
 			}),
 		},
 		async ({ category, slug, title, content, tags, date, fmCategory, aliases, auto_check_backlog }) => {
@@ -508,22 +508,22 @@ export function registerTools(server: McpServer, storage: FileStorage, metadata:
 		"til_backlog_check",
 		{
 			title: "Check Backlog Item",
-			description: "백로그 항목을 완료([x]) 처리합니다",
+			description: "Marks a backlog item as completed ([x])",
 			inputSchema: z.object({
-				category: z.string().describe("카테고리 (예: typescript, react)"),
-				slug: z.string().describe("체크할 항목의 slug (예: generics)"),
+				category: z.string().describe("Category (e.g., typescript, react)"),
+				slug: z.string().describe("Slug of the item to mark as completed (e.g., generics)"),
 			}),
 		},
 		async ({ category, slug }) => {
 			const backlogPath = `${tilPath}/${category}/backlog.md`;
 			const content = await storage.readFile(backlogPath);
 			if (content === null) {
-				return { content: [{ type: "text" as const, text: JSON.stringify({ error: `백로그 파일을 찾을 수 없습니다 — ${backlogPath}` }) }], isError: true };
+				return { content: [{ type: "text" as const, text: JSON.stringify({ error: `Error: Backlog file not found — ${backlogPath}` }) }], isError: true };
 			}
 
 			const result = checkBacklogItem(content, slug);
 			if (!result.found) {
-				return { content: [{ type: "text" as const, text: JSON.stringify({ error: `"${slug}" 항목을 찾을 수 없습니다`, backlogPath }) }], isError: true };
+				return { content: [{ type: "text" as const, text: JSON.stringify({ error: `Item not found: "${slug}"`, backlogPath }) }], isError: true };
 			}
 			if (result.alreadyDone) {
 				return { content: [{ type: "text" as const, text: JSON.stringify({ alreadyDone: true, slug, backlogPath }) }] };

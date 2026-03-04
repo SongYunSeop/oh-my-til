@@ -629,7 +629,7 @@ describe("til_get_context (통합)", () => {
 			unresolvedMentions,
 		};
 		const text = formatTopicContext(result);
-		expect(text).toContain('"typescript" 학습 컨텍스트');
+		expect(text).toContain('Learning Context for "typescript"');
 		expect(text).toContain("Generics");
 	});
 
@@ -644,7 +644,7 @@ describe("til_get_context (통합)", () => {
 			matchedFiles: [],
 			unresolvedMentions: [],
 		};
-		expect(formatTopicContext(result)).toContain("새 주제입니다");
+		expect(formatTopicContext(result)).toContain("This is a new topic.");
 	});
 });
 
@@ -686,13 +686,13 @@ describe("til_recent_context (통합)", () => {
 		expect(result.groups.flatMap((g) => g.files.map((f) => f.path))).not.toContain("til/react/backlog.md");
 
 		const text = formatRecentContext(result);
-		expect(text).toContain("최근 7일 학습 활동 (2개 파일)");
+		expect(text).toContain("Recent Learning Activity (7 days, 2 files)");
 		expect(text).toContain("Generics");
 	});
 
 	it("활동이 없으면 안내 메시지를 반환한다", () => {
 		const result = filterRecentFiles([], 7, tilPath, now);
 		const text = formatRecentContext(result);
-		expect(text).toContain("학습 활동이 없습니다");
+		expect(text).toContain("No learning activity in the last");
 	});
 });

@@ -1,74 +1,74 @@
 ---
 name: install-plugin
-description: "Obsidian vault에 Oh My TIL 플러그인을 설치합니다"
+description: "Install the Oh My TIL plugin into an Obsidian vault"
 argument-hint: "<vault-path>"
 ---
 
 # Install Plugin Skill
 
-Oh My TIL 플러그인을 Obsidian vault에 설치합니다.
+Install the Oh My TIL plugin into an Obsidian vault.
 
-## 활성화 조건
+## Activation
 
 - `/install-plugin <vault-path>`
-- "플러그인 설치해줘"
+- "install the plugin"
 
-## 인수 처리
+## Argument Handling
 
-- **첫 번째 인수**: Obsidian vault 경로 (필수)
-  - 예: `~/workspace/my-vault`, `/Users/name/Documents/obsidian-vault`
-  - vault 경로에 `.obsidian` 폴더가 있는지 검증
+- **First argument**: Obsidian vault path (required)
+  - Examples: `~/workspace/my-vault`, `/Users/name/Documents/obsidian-vault`
+  - Validate that the vault path contains a `.obsidian` folder
 
-## 설치 절차
+## Installation Procedure
 
-아래 단계를 순서대로 실행한다. 각 단계에서 오류가 발생하면 중단하고 사용자에게 알린다.
+Execute the steps below in order. If an error occurs at any step, abort and notify the user.
 
-### 1. 사전 검증
+### 1. Pre-flight Validation
 
 ```bash
-# vault 경로 검증
+# Validate vault path
 ls <vault-path>/.obsidian
 
-# Node.js 설치 확인
-node --version   # 18 이상 필요
+# Check Node.js installation
+node --version   # requires 18 or higher
 
-# npm 설치 확인
+# Check npm installation
 npm --version
 ```
 
-vault 경로가 유효하지 않거나 Node.js가 없으면 안내 메시지를 출력하고 중단한다.
+If the vault path is invalid or Node.js is missing, print a guidance message and abort.
 
-### 2. 의존성 설치
+### 2. Install Dependencies
 
-프로젝트 루트에서:
+From the project root:
 
 ```bash
 npm install
 ```
 
-### 3. 배포
+### 3. Deploy
 
-deploy 스크립트를 실행한다. 빌드, 에셋 복사, 네이티브 모듈 설치, node-pty 재빌드를 자동 처리한다.
+Run the deploy script. It handles build, asset copying, native module installation, and node-pty rebuild automatically.
 
 ```bash
 npm run deploy -- <vault-path>
 ```
 
-### 4. 완료 안내
+### 4. Completion Notice
 
-설치 완료 후 사용자에게 안내:
+After installation completes, notify the user:
 
 ```
-설치 완료!
+Installation complete!
 
-1. Obsidian을 재시작하세요
-2. 설정 > Community plugins에서 "Oh My TIL"을 활성화하세요
-3. (선택) MCP 서버 연결:
+1. Restart Obsidian
+2. Enable "Oh My TIL" under Settings > Community plugins
+3. (Optional) Connect the MCP server:
    claude mcp add --transport http oh-my-til http://localhost:22360/mcp
 ```
 
-## 주의사항
+## Notes
 
-- 이 스킬은 프로젝트 루트 디렉토리에서 실행해야 한다 (`package.json`이 있는 위치)
-- Electron 버전 감지에 실패하면 사용자에게 Obsidian 개발자 도구(Ctrl+Shift+I)에서 `process.versions.electron`을 확인하도록 안내한다
-- 기존 설치가 있으면 덮어쓴다 (에셋만 교체, node_modules는 유지)
+- This skill must be run from the project root directory (where `package.json` is located)
+- If Electron version detection fails, advise the user to check `process.versions.electron` in Obsidian developer tools (Ctrl+Shift+I)
+- If an existing installation is present, it will be overwritten (assets only; node_modules are preserved)

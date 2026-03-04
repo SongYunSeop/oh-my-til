@@ -1,70 +1,70 @@
 ---
 name: update-plugin
-description: "설치된 Oh My TIL 플러그인을 최신 버전으로 업데이트합니다"
+description: "Update the installed Oh My TIL plugin to the latest version"
 argument-hint: "<vault-path>"
 ---
 
 # Update Plugin Skill
 
-이미 설치된 Oh My TIL 플러그인을 최신 소스로 업데이트합니다.
+Update the already-installed Oh My TIL plugin to the latest source.
 
-## 활성화 조건
+## Activation
 
 - `/update-plugin <vault-path>`
-- "플러그인 업데이트해줘"
+- "update the plugin"
 
-## 인수 처리
+## Argument Handling
 
-- **첫 번째 인수**: Obsidian vault 경로 (필수)
-  - 예: `~/workspace/my-vault`, `/Users/name/Documents/obsidian-vault`
+- **First argument**: Obsidian vault path (required)
+  - Examples: `~/workspace/my-vault`, `/Users/name/Documents/obsidian-vault`
 
-## 업데이트 절차
+## Update Procedure
 
-### 1. 사전 검증
+### 1. Pre-flight Validation
 
 ```bash
-# vault 경로 + 기존 설치 검증
+# Verify vault path + existing installation
 ls <vault-path>/.obsidian/plugins/oh-my-til/manifest.json
 ```
 
-플러그인이 설치되어 있지 않으면 `/install-plugin`을 사용하라고 안내하고 중단한다.
+If the plugin is not installed, advise the user to use `/install-plugin` and abort.
 
-### 2. 최신 소스 가져오기
+### 2. Fetch Latest Source
 
 ```bash
-# 현재 브랜치가 main인지 확인
+# Verify the current branch is main
 CURRENT_BRANCH=$(git branch --show-current)
 if [ "$CURRENT_BRANCH" != "main" ]; then
-  echo "[ERROR] 현재 브랜치가 main이 아닙니다: $CURRENT_BRANCH"
-  echo "main 브랜치에서 실행하세요: git checkout main"
+  echo "[ERROR] Current branch is not main: $CURRENT_BRANCH"
+  echo "Please run from the main branch: git checkout main"
   exit 1
 fi
 
 git pull origin main
 ```
 
-현재 브랜치가 main이 아니면 사용자에게 안내하고 중단한다. 충돌이 발생하면 사용자에게 알린다.
+If the current branch is not `main`, notify the user and abort. Notify the user if conflicts occur.
 
-### 3. 배포
+### 3. Deploy
 
-스킬/규칙을 항상 포함하여 배포한다 (`plugin-version` frontmatter로 사용자 커스터마이즈 파일은 자동 보호됨).
+Always include skills/rules in the deployment (`plugin-version` frontmatter automatically protects user-customized files).
 
 ```bash
 npm run deploy -- --refresh-skills <vault-path>
 ```
 
-deploy 스크립트가 빌드, 에셋 복사, node-pty 재빌드(Electron 버전 변경 시에만), 스킬/규칙 재설치를 자동 처리한다.
+The deploy script handles build, asset copying, node-pty rebuild (only when the Electron version changes), and skills/rules reinstall automatically.
 
-### 4. 완료 안내
+### 4. Completion Notice
 
 ```
-업데이트 완료!
+Update complete!
 
-Obsidian을 재시작하거나 플러그인을 다시 로드하세요.
+Restart Obsidian or reload the plugin.
 ```
 
-## 주의사항
+## Notes
 
-- 이 스킬은 프로젝트 루트 디렉토리에서 실행해야 한다
-- 에셋(main.js, manifest.json, styles.css)만 교체하므로 사용자 설정은 유지된다
-- node-pty 재빌드는 Electron 버전이 변경된 경우에만 실행된다 (`.electron-version` 파일로 추적)
+- This skill must be run from the project root directory
+- Only assets (main.js, manifest.json, styles.css) are replaced, so user settings are preserved
+- node-pty rebuild runs only when the Electron version has changed (tracked via the `.electron-version` file)

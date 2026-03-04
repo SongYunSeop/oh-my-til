@@ -388,16 +388,16 @@ export function simpleGradeToSm2(remembered: boolean): ReviewGrade {
  * 복습 카드 목록을 텍스트로 포매팅한다.
  */
 export function formatReviewList(cards: ReviewCard[]): string {
-	if (cards.length === 0) return "복습할 카드가 없습니다.";
+	if (cards.length === 0) return "No cards to review.";
 
 	const lines: string[] = [];
-	lines.push(`## 복습 대상 (${cards.length}개)\n`);
-	lines.push(`| # | 제목 | 카테고리 | 연체 | 반복 | EF |`);
+	lines.push(`## Cards Due for Review (${cards.length})\n`);
+	lines.push(`| # | Title | Category | Overdue | Repetitions | EF |`);
 	lines.push(`|---|------|---------|------|------|-----|`);
 
 	for (let i = 0; i < cards.length; i++) {
 		const c = cards[i]!;
-		const overdueStr = c.overdueDays > 0 ? `+${c.overdueDays}일` : c.overdueDays === 0 ? "오늘" : `${c.overdueDays}일`;
+		const overdueStr = c.overdueDays > 0 ? `+${c.overdueDays}d` : c.overdueDays === 0 ? "today" : `${c.overdueDays}d`;
 		lines.push(`| ${i + 1} | ${c.title} | ${c.category} | ${overdueStr} | ${c.repetitions} | ${c.ease_factor} |`);
 	}
 
@@ -409,14 +409,14 @@ export function formatReviewList(cards: ReviewCard[]): string {
  */
 export function formatReviewStats(stats: ReviewStats): string {
 	const lines: string[] = [];
-	lines.push(`## 복습 통계\n`);
-	lines.push(`| 지표 | 값 |`);
+	lines.push(`## Review Statistics\n`);
+	lines.push(`| Metric | Value |`);
 	lines.push(`|------|-----|`);
-	lines.push(`| 오늘 복습 대상 | ${stats.dueToday}개 |`);
-	lines.push(`| 연체 | ${stats.overdueCount}개 |`);
-	lines.push(`| 오늘 복습 완료 | ${stats.totalReviewed}개 |`);
-	lines.push(`| 전체 등록 | ${stats.totalScheduled}개 |`);
-	lines.push(`| 평균 EF | ${stats.averageEase} |`);
-	lines.push(`| 연속 복습 | ${stats.reviewStreak}일 |`);
+	lines.push(`| Due today | ${stats.dueToday} |`);
+	lines.push(`| Overdue | ${stats.overdueCount} |`);
+	lines.push(`| Reviewed today | ${stats.totalReviewed} |`);
+	lines.push(`| Total scheduled | ${stats.totalScheduled} |`);
+	lines.push(`| Average EF | ${stats.averageEase} |`);
+	lines.push(`| Review streak | ${stats.reviewStreak}d |`);
 	return lines.join("\n");
 }

@@ -2,7 +2,7 @@
 # Oh My TIL — Task completion notification hook
 
 TITLE="Oh My TIL"
-MESSAGE="작업이 완료되었습니다"
+MESSAGE="Task completed"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   if command -v terminal-notifier &>/dev/null; then

@@ -605,15 +605,15 @@ export function formatDashboardText(stats: EnhancedTILStats): string {
 
 	// Summary
 	const s = stats.summary;
-	lines.push("## 학습 대시보드\n");
-	lines.push(`| 지표 | 값 |`);
+	lines.push("## Learning Dashboard\n");
+	lines.push(`| Metric | Value |`);
 	lines.push(`|------|-----|`);
-	lines.push(`| 총 TIL | ${s.totalTils}개 |`);
-	lines.push(`| 카테고리 | ${s.categoryCount}개 |`);
-	lines.push(`| 이번 주 | ${s.thisWeekCount}개 |`);
-	lines.push(`| 연속 학습 | ${s.streak}일 |`);
+	lines.push(`| Total TILs | ${s.totalTils} |`);
+	lines.push(`| Categories | ${s.categoryCount} |`);
+	lines.push(`| This week | ${s.thisWeekCount} |`);
+	lines.push(`| Streak | ${s.streak} |`);
 	if (s.reviewDueCount !== undefined && s.reviewDueCount > 0) {
-		lines.push(`| 복습 예정 | ${s.reviewDueCount}개 |`);
+		lines.push(`| Reviews due | ${s.reviewDueCount} |`);
 	}
 
 	// Heatmap sparkline (주단위)
@@ -629,14 +629,14 @@ export function formatDashboardText(stats: EnhancedTILStats): string {
 			const idx = Math.min(Math.floor((w / maxWeek) * 4), 4);
 			return sparks[idx];
 		}).join("");
-		lines.push(`\n### 활동 추이 (${stats.heatmap.cells.length}일)\n`);
+		lines.push(`\n### Activity Trend (${stats.heatmap.cells.length} days)\n`);
 		lines.push(sparkline);
 	}
 
 	// Categories
 	if (stats.categories.length > 0) {
-		lines.push(`\n### 카테고리별 현황\n`);
-		lines.push(`| 카테고리 | 수 | 최근 수정 |`);
+		lines.push(`\n### Categories\n`);
+		lines.push(`| Category | Count | Last Modified |`);
 		lines.push(`|---------|-----|----------|`);
 		for (const cat of stats.categories) {
 			const latest = cat.files.length > 0 ? formatDate(cat.files[0]!.mtime) : "-";
@@ -648,9 +648,9 @@ export function formatDashboardText(stats: EnhancedTILStats): string {
 	const b = stats.backlog;
 	if (b.totalItems > 0) {
 		const pct = Math.round((b.totalDone / b.totalItems) * 100);
-		lines.push(`\n### 백로그 진행률\n`);
-		lines.push(`전체: ${b.totalDone}/${b.totalItems} (${pct}%) ${formatProgressBar(b.totalDone, b.totalItems)}\n`);
-		lines.push(`| 카테고리 | 진행률 | 완료 | 진행바 |`);
+		lines.push(`\n### Backlog Progress\n`);
+		lines.push(`Total: ${b.totalDone}/${b.totalItems} (${pct}%) ${formatProgressBar(b.totalDone, b.totalItems)}\n`);
+		lines.push(`| Category | Progress | Done | Bar |`);
 		lines.push(`|---------|--------|------|--------|`);
 		for (const c of b.categories) {
 			const catPct = c.total > 0 ? Math.round((c.done / c.total) * 100) : 0;

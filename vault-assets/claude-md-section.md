@@ -1,39 +1,39 @@
-## 학습 워크플로우
+## Learning Workflow
 
-1. `/research <주제>` — 리서치 → 백로그 생성
-2. `/backlog [카테고리]` — 백로그 진행 확인
-3. `/til <주제>` — 리서치 → 대화형 학습 → 저장
-4. `/save` — TIL 저장 (Daily/MOC/백로그 자동 업데이트)
-5. `/til-review [카테고리]` — SRS 기반 간격 반복 복습
+1. `/research <topic>` — Research → Generate backlog
+2. `/backlog [category]` — Check backlog progress
+3. `/til <topic>` — Research → Interactive learning → Save
+4. `/save` — Save TIL (auto-update Daily/MOC/backlog)
+5. `/til-review [category]` — SRS-based spaced repetition review
 
-## MCP 도구
+## MCP Tools
 
-**학습 컨텍스트:**
-- `til_get_context` — 주제 관련 기존 학습 컨텍스트 (경로/내용 매칭, backlink, 미작성 링크)
-- `til_recent_context` — 최근 학습 흐름 (시간순)
-- `vault_get_active_file` — 현재 열린 파일
+**Learning Context:**
+- `til_get_context` — Find existing TILs related to a topic (searches file paths, content, backlinks, and unresolved links)
+- `til_recent_context` — Recent learning activity (newest first)
+- `vault_get_active_file` — Currently open file
 
-**TIL 관리:**
-- `til_list` — TIL 목록 + 카테고리 분류 (search 필터)
-- `til_save_note` — TIL 저장 (frontmatter 보장, auto_check_backlog로 백로그 자동 체크)
+**TIL Management:**
+- `til_list` — TIL list + category grouping (search filter)
+- `til_save_note` — Save TIL (ensures valid frontmatter; set auto_check_backlog to auto-mark backlog items)
 
-**백로그:**
-- `til_backlog_status` — 백로그 진행률
-- `til_backlog_check` — 백로그 항목 완료 처리 (단독 사용 시)
+**Backlog:**
+- `til_backlog_status` — Backlog progress
+- `til_backlog_check` — Mark backlog item as completed (standalone use)
 
-**복습 (SRS):**
-- `til_review_list` — 복습 카드 목록 + 통계 (include_content)
-- `til_review_update` — 복습 결과 기록
+**Review (SRS):**
+- `til_review_list` — Review card list + stats (include_content)
+- `til_review_update` — Record review result
 
-**통계:**
-- `til_dashboard` — 학습 대시보드 통계
+**Stats:**
+- `til_dashboard` — Learning dashboard stats
 
-### 연결
+### Connection
 
 ```bash
-# HTTP (Obsidian 플러그인 또는 oh-my-til serve 사용 시)
+# HTTP (when using Obsidian plugin or oh-my-til serve)
 claude mcp add --transport http oh-my-til http://localhost:22360/mcp
 
-# stdio (Obsidian 없이 독립 실행, Claude Desktop scheduled task 등)
+# stdio (standalone without Obsidian, Claude Desktop scheduled task, etc.)
 claude mcp add oh-my-til -- npx oh-my-til mcp /path/to/vault
 ```

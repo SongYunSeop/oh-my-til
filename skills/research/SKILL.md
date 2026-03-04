@@ -1,71 +1,70 @@
 ---
 name: research
-description: "주제를 리서치하여 학습에 필요한 개념/용어를 파악하고, 백로그로 정리"
-argument-hint: "<주제> [카테고리]"
+description: "Research a topic to identify key concepts and terms, then organize as a backlog"
+argument-hint: "<topic> [category]"
 plugin-version: "__PLUGIN_VERSION__"
 ---
 
 # Research Skill
 
-주제 리서치 → 개념/의존 관계 파악 → 백로그 파일 저장.
+Topic research → Identify concepts and dependencies → Save backlog file.
 
-## MCP 도구
+## MCP Tools
 
-- `til_list`: 기존 TIL 확인 (search 파라미터로 주제 검색)
+- `til_list`: Check existing TILs (search by topic using the search parameter)
 
-## Phase 1: 주제 리서치
+## Phase 1: Topic Research
 
-1. `til_list(search=주제)`로 이미 학습한 주제 확인 → 중복 백로그 방지
-2. 웹 검색으로 주제 조사, 필요 개념·용어·선행 지식 파악
-3. 소주제 분해 후 직접 리서치
-4. 소주제 간 의존 관계 분석
+1. Use `til_list(search=topic)` to check already-learned topics → avoid duplicate backlog entries
+2. Research the topic via web search, identify required concepts, terms, and prerequisites
+3. Break down into subtopics and research each directly
+4. Analyze dependencies between subtopics
 
-## Phase 2: 백로그 정리
+## Phase 2: Organize Backlog
 
-1. 학습 순서 정렬: 선행 지식 → 핵심 개념 → 심화
-2. 각 항목에 1줄 설명
-3. 사용자 피드백 (추가/제거/순서 변경)
+1. Sort by learning order: Prerequisites → Core Concepts → Advanced
+2. Add a one-line description per item
+3. Gather user feedback: allow adding, removing, or reordering items
 
-## Phase 3: 저장
+## Phase 3: Save
 
-1. `./til/{카테고리}/backlog.md`에 저장 (폴더 자동 생성)
-2. 기존 backlog.md 있으면 병합:
-   - `[x]` 완료 항목 보존
-   - 동일 항목 체크 상태 유지
-   - 기존 sources 보존, 새 항목만 추가
-3. TIL MOC에 백로그 링크 추가
-4. atomic commit: `📋 research: {주제} 학습 백로그 - {카테고리}` (push 안 함)
+1. Save to `./til/{category}/backlog.md` (auto-create folder)
+2. If `backlog.md` already exists, merge:
+   - Preserve `[x]` completed items
+   - Keep check state for matching items
+   - Preserve existing sources, only add new items
+3. Add backlog link to TIL MOC
+4. Commit all changes: `📋 research: {topic} learning backlog - {category}` (do not push)
 
-## 백로그 템플릿
+## Backlog Template
 
 ```markdown
 ---
-tags: [backlog, {카테고리}]
-aliases: ["Backlog - {주제}"]
+tags: [backlog, {category}]
+aliases: ["Backlog - {topic}"]
 updated: YYYY-MM-DD
 sources:
   slug-a: [https://url-1]
 ---
 
-# {주제} 학습 백로그
+# {topic} Learning Backlog
 
-## 선행 지식
-- [ ] [개념A](til/{카테고리}/{slug-a}.md) - 설명
+## Prerequisites
+- [ ] [Concept A](til/{category}/{slug-a}.md) - description
 
-## 핵심 개념
-- [ ] [개념C](til/{카테고리}/{slug-c}.md) - 설명
+## Core Concepts
+- [ ] [Concept C](til/{category}/{slug-c}.md) - description
 
-## 심화
-- [ ] [개념E](til/{카테고리}/{slug-e}.md) - 설명
+## Advanced
+- [ ] [Concept E](til/{category}/{slug-e}.md) - description
 ```
 
-## 인수
+## Arguments
 
-- 첫 번째: 리서치 주제 (필수)
-- 두 번째: 카테고리 (선택, 미지정 시 자동 추론)
+- First: research topic (required)
+- Second: category (optional, automatically detected if omitted)
 
-## 규칙
+## Rules
 
-- 항목당 1줄 설명, 20개 초과 시 분리
-- 한국어 작성, 기술 용어 원어 병기
-- 링크: `[표시명](til/{카테고리}/{slug}.md)`
+- One-line description per item, split into multiple files if over 20 items
+- Links: `[display name](til/{category}/{slug}.md)`

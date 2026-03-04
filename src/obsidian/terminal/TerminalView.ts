@@ -244,8 +244,8 @@ export class TerminalView extends ItemView {
 				setTimeout(() => this.flushPendingCommands(), 100);
 			}
 		} catch (error) {
-			console.error("Oh My TIL: PTY 시작 실패", error);
-			this.terminal.write("\r\n\x1b[31mError: 터미널 시작에 실패했습니다.\x1b[0m\r\n");
+			console.error("Oh My TIL: PTY start failed", error);
+			this.terminal.write("\r\n\x1b[31mError: Failed to start terminal.\x1b[0m\r\n");
 			this.terminal.write(`\r\n${error}\r\n`);
 		}
 	}

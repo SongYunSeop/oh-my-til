@@ -1,5 +1,5 @@
 ---
-description: "새 버전을 릴리즈합니다. 버전 범프 → 테스트 → 빌드 → 태그 → GitHub Release"
+description: "Create a new release. Version bump → test → build → tag → GitHub Release"
 argument-hint: "[patch|minor|major]"
 allowed-tools: Read, Edit, Bash(npm *), Bash(git *), Bash(gh *)
 disable-model-invocation: true
@@ -7,128 +7,128 @@ disable-model-invocation: true
 
 # Create GitHub Release
 
-새 버전을 릴리즈합니다.
+Create a new release.
 
-## 인자
+## Arguments
 
-$ARGUMENTS에서 bump 타입을 추출합니다: `patch`, `minor`, `major` (기본: `patch`).
-숫자 버전(예: `0.2.0`)이 직접 주어지면 그 버전을 사용합니다.
-인자가 없으면 `patch` bump을 적용합니다.
+Extract the bump type from `$ARGUMENTS`: `patch`, `minor`, `major` (default: `patch`).
+If a numeric version (e.g. `0.2.0`) is provided directly, use that version.
+If no argument is given, apply a `patch` bump.
 
-## 사전 검증
+## Pre-flight Validation
 
-1. working tree가 clean한지 확인 (`git status --porcelain`). uncommitted changes가 있으면 중단
-2. 현재 브랜치가 `main`인지 확인. 아니면 중단
-3. `main`이 `origin/main`과 동기화되어 있는지 확인 (`git fetch origin && git diff main origin/main --quiet`). 차이가 있으면 사용자에게 알리고 중단
-4. `gh` CLI가 설치되어 있는지 확인. 없으면 중단
+1. Verify the working tree is clean (`git status --porcelain`). Abort if there are uncommitted changes.
+2. Verify the current branch is `main`. Abort otherwise.
+3. Verify `main` is in sync with `origin/main` (`git fetch origin && git diff main origin/main --quiet`). Notify the user and abort if there are differences.
+4. Verify the `gh` CLI is installed. Abort if not found.
 
-## 버전 결정
+## Version Determination
 
-- `manifest.json`에서 현재 버전을 읽는다
-- bump 타입에 따라 semver 계산:
+- Read the current version from `manifest.json`
+- Calculate semver based on bump type:
   - `patch`: 0.1.3 → 0.1.4
   - `minor`: 0.1.3 → 0.2.0
   - `major`: 0.1.3 → 1.0.0
-- 계산된 새 버전을 사용자에게 확인받는다
+- Confirm the calculated new version with the user
 
-## 문서 검증
+## Documentation Validation
 
-버전 업데이트 전에 문서가 최신인지 검증한다:
+Validate that documentation is up to date before bumping the version:
 
-1. `src/` 디렉토리의 실제 파일 목록과 `CLAUDE.md`의 구조 섹션을 비교한다
-2. `CLAUDE.md`, `README.md`, `README.ko.md`에서 아래 항목이 현재 코드와 일치하는지 확인:
-   - 스킬 목록 (`/til`, `/backlog`, `/research`, `/save` 등)
-   - 설정 항목 (settings.ts의 인터페이스와 대조)
-   - 프로젝트 구조 (파일 트리)
-   - 빌드/배포 명령어
-3. 누락이나 불일치가 있으면 수정하고, 없으면 다음 단계로 진행한다
+1. Compare the actual file list in `src/` against the structure section in `CLAUDE.md`
+2. Verify the following items in `CLAUDE.md`, `README.md`, `README.ko.md` match the current code:
+   - Skill list (`/til`, `/backlog`, `/research`, `/save`, etc.)
+   - Settings entries (cross-check with the interface in settings.ts)
+   - Project structure (file tree)
+   - Build/deploy commands
+3. Fix any missing or mismatched items; proceed to the next step if everything is in order
 
-## 절차
+## Procedure
 
-1. `npm test`로 테스트 통과 확인
-2. `npm run build`로 프로덕션 빌드 확인
-3. 아래 **3개 파일**의 버전을 새 버전으로 업데이트:
+1. Verify tests pass with `npm test`
+2. Verify production build with `npm run build`
+3. Update the version in the following **3 files** to the new version:
    - `package.json` → `"version"`
    - `manifest.json` → `"version"`
-   - `versions.json` → 새 버전 항목 추가 (minAppVersion은 manifest.json에서 읽기)
-   - (`skills/`의 `plugin-version`은 `__PLUGIN_VERSION__` 플레이스홀더로 자동 치환됨)
-4. 랜딩 페이지 버전 동기화: `npm run sync-version` 실행 (`docs/index.html`, `docs/ko/index.html`의 hero-badge 버전 업데이트)
-5. 변경사항을 커밋: `🔖 chore: release v{version}`
-6. 태그 생성: `git tag v{version}`
-7. 푸시: `git push origin main --tags`
-8. 릴리스 노트 작성 (아래 템플릿 참고)
-9. npm 배포:
+   - `versions.json` → add new version entry (read minAppVersion from manifest.json)
+   - (`plugin-version` in `skills/` is auto-substituted via the `__PLUGIN_VERSION__` placeholder)
+4. Sync landing page version: run `npm run sync-version` (updates hero-badge version in `docs/index.html`, `docs/ko/index.html`)
+5. Commit changes: `🔖 chore: release v{version}`
+6. Create tag: `git tag v{version}`
+7. Push: `git push origin main --tags`
+8. Write release notes (see template below)
+9. Publish to npm:
    ```
    npm publish
    ```
-10. GitHub Release 생성:
+10. Create GitHub Release:
     ```
-    gh release create v{version} main.js manifest.json styles.css --title "v{version}" --notes "{릴리스 노트}"
+    gh release create v{version} main.js manifest.json styles.css --title "v{version}" --notes "{release notes}"
     ```
 
-에셋은 반드시 `main.js`, `manifest.json`, `styles.css` 세 파일입니다.
+Assets must be exactly these three files: `main.js`, `manifest.json`, `styles.css`.
 
-## 릴리즈 후 검증
+## Post-Release Verification
 
-1. `git log origin/main --oneline -1`로 릴리즈 커밋이 원격에 반영되었는지 확인
-2. `git tag -l v{version}`과 `git ls-remote origin refs/tags/v{version}`으로 태그가 로컬/원격 모두 존재하는지 확인
-3. 릴리즈 커밋이 `main` 브랜치에서 도달 가능한지 확인: `git branch --contains v{version}`에 `main`이 포함되어야 한다
-4. 하나라도 실패하면 사용자에게 경고하고 수동 조치를 안내한다
+1. Verify the release commit is reflected on the remote with `git log origin/main --oneline -1`
+2. Verify the tag exists both locally and remotely with `git tag -l v{version}` and `git ls-remote origin refs/tags/v{version}`
+3. Verify the release commit is reachable from the `main` branch: `git branch --contains v{version}` must include `main`
+4. If any check fails, warn the user and provide guidance for manual remediation
 
-## 릴리스 노트 작성
+## Writing Release Notes
 
-이전 태그부터 현재까지 커밋을 분석하여 릴리스 노트를 작성한다.
+Analyze commits from the previous tag to HEAD and write release notes.
 
-### 커밋 분석
+### Commit Analysis
 
 ```bash
-git log {이전태그}...HEAD --oneline
+git log {previous-tag}...HEAD --oneline
 ```
 
-이전 태그가 없으면 전체 커밋을 대상으로 한다.
+If there is no previous tag, include all commits.
 
-### 커밋 분류 규칙
+### Commit Classification Rules
 
-커밋 prefix 이모지 또는 타입으로 분류:
+Classify by commit prefix emoji or type:
 
-| prefix | 카테고리 |
+| prefix | category |
 |--------|----------|
 | `✨ feat` | Features |
 | `♻️ refactor`, `⚡ perf`, `🎨 style` | Improvements |
 | `🐛 fix` | Bug Fixes |
 | `📝 docs` | Documentation |
 | `✅ test` | Tests |
-| `🔖 chore`, `🔧 chore` | Chores (릴리스 노트에서 제외) |
+| `🔖 chore`, `🔧 chore` | Chores (exclude from release notes) |
 
-사용자와 무관한 개발 도구/워크플로우 변경은 **Internal**로 분류한다.
+Classify development tooling/workflow changes that are not user-facing as **Internal**.
 
-### 릴리스 노트 템플릿
+### Release Notes Template
 
 ```markdown
 ## What's Changed
 
 ### Features
-- 변경 요약 (커밋 메시지를 사용자 관점으로 재작성)
+- Summary of change (rewrite commit message from the user's perspective)
 
 ### Improvements
-- 개선 요약
+- Summary of improvement
 
 ### Bug Fixes
-- 수정 요약
+- Summary of fix
 
 ### Documentation
-- 문서 변경 요약
+- Summary of documentation change
 
 ### Internal
-- 개발 도구/워크플로우 변경 요약
+- Summary of dev tooling/workflow changes
 
-**Full Changelog**: https://github.com/{owner}/{repo}/compare/{이전태그}...v{version}
+**Full Changelog**: https://github.com/{owner}/{repo}/compare/{previous-tag}...v{version}
 ```
 
-### 작성 규칙
+### Writing Guidelines
 
-- 커밋 메시지를 그대로 복사하지 않고, **사용자 관점**에서 재작성한다
-- 영문으로 작성한다
-- `chore` 커밋(버전 범프, 릴리스 등)은 노트에서 제외한다
-- 빈 카테고리는 섹션째 생략한다
-- 한 카테고리에 항목이 1개면 카테고리 헤딩 없이 바로 나열해도 된다
+- Do not copy commit messages verbatim; rewrite them **from the user's perspective**
+- Write in English
+- Exclude `chore` commits (version bumps, releases, etc.) from the notes
+- Omit empty category sections entirely
+- If a category has only one item, it is acceptable to list it without a section heading

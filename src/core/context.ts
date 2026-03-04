@@ -120,34 +120,34 @@ export function formatTopicContext(result: TopicContextResult): string {
 	const lines: string[] = [];
 
 	if (result.matchedFiles.length === 0 && result.unresolvedMentions.length === 0) {
-		return `"${result.topic}"에 대한 기존 학습 내용이 없습니다. 새 주제입니다.`;
+		return `No existing learning content found for "${result.topic}". This is a new topic.`;
 	}
 
-	lines.push(`## "${result.topic}" 학습 컨텍스트\n`);
+	lines.push(`## Learning Context for "${result.topic}"\n`);
 
 	if (result.matchedFiles.length > 0) {
-		lines.push(`### 관련 파일 (${result.matchedFiles.length}개)\n`);
+		lines.push(`### Related Files (${result.matchedFiles.length})\n`);
 		for (const f of result.matchedFiles) {
-			lines.push(`- **${f.path}** [${f.category}] (${f.matchType} 매칭)`);
+			lines.push(`- **${f.path}** [${f.category}] (${f.matchType} match)`);
 			if (f.headings.length > 0) {
-				lines.push(`  목차: ${f.headings.join(", ")}`);
+				lines.push(`  Headings: ${f.headings.join(", ")}`);
 			}
 			if (f.outgoingLinks.length > 0) {
-				lines.push(`  참조: ${f.outgoingLinks.join(", ")}`);
+				lines.push(`  Outgoing links: ${f.outgoingLinks.join(", ")}`);
 			}
 			if (f.backlinks.length > 0) {
-				lines.push(`  역참조: ${f.backlinks.join(", ")}`);
+				lines.push(`  Backlinks: ${f.backlinks.join(", ")}`);
 			}
 			if (f.tags.length > 0) {
-				lines.push(`  태그: ${f.tags.join(", ")}`);
+				lines.push(`  Tags: ${f.tags.join(", ")}`);
 			}
 		}
 	}
 
 	if (result.unresolvedMentions.length > 0) {
-		lines.push(`\n### 미작성 관련 링크 (${result.unresolvedMentions.length}개)\n`);
+		lines.push(`\n### Unresolved Related Links (${result.unresolvedMentions.length})\n`);
 		for (const u of result.unresolvedMentions) {
-			lines.push(`- [${u.linkName}](${u.linkName}.md) — 언급 파일: ${u.mentionedIn.join(", ")}`);
+			lines.push(`- [${u.linkName}](${u.linkName}.md) — Mentioned in: ${u.mentionedIn.join(", ")}`);
 		}
 	}
 
@@ -229,18 +229,18 @@ export function filterRecentFiles(
  */
 export function formatRecentContext(result: RecentContextResult): string {
 	if (result.totalFiles === 0) {
-		return `최근 ${result.days}일간 학습 활동이 없습니다.`;
+		return `No learning activity in the last ${result.days} days.`;
 	}
 
 	const lines: string[] = [];
-	lines.push(`## 최근 ${result.days}일 학습 활동 (${result.totalFiles}개 파일)\n`);
+	lines.push(`## Recent Learning Activity (${result.days} days, ${result.totalFiles} files)\n`);
 
 	for (const group of result.groups) {
 		lines.push(`### ${group.date}\n`);
 		for (const f of group.files) {
 			lines.push(`- **${f.path}** [${f.category}]`);
 			if (f.headings.length > 0) {
-				lines.push(`  목차: ${f.headings.join(", ")}`);
+				lines.push(`  Headings: ${f.headings.join(", ")}`);
 			}
 		}
 	}

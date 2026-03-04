@@ -235,11 +235,11 @@ describe("formatTopicContext", () => {
 			],
 		};
 		const text = formatTopicContext(result);
-		expect(text).toContain('"typescript" 학습 컨텍스트');
-		expect(text).toContain("관련 파일 (1개)");
+		expect(text).toContain('Learning Context for "typescript"');
+		expect(text).toContain("Related Files (1)");
 		expect(text).toContain("til/typescript/generics.md");
 		expect(text).toContain("제네릭 기초");
-		expect(text).toContain("미작성 관련 링크 (1개)");
+		expect(text).toContain("Unresolved Related Links (1)");
 		expect(text).toContain("고급 타입");
 	});
 
@@ -250,7 +250,7 @@ describe("formatTopicContext", () => {
 			unresolvedMentions: [],
 		};
 		const text = formatTopicContext(result);
-		expect(text).toContain("새 주제입니다");
+		expect(text).toContain("This is a new topic.");
 	});
 
 	it("unresolved만 있을 때도 출력한다", () => {
@@ -262,9 +262,9 @@ describe("formatTopicContext", () => {
 			],
 		};
 		const text = formatTopicContext(result);
-		expect(text).toContain("미작성 관련 링크");
+		expect(text).toContain("Unresolved Related Links");
 		expect(text).toContain("[고급 타입](고급 타입.md)");
-		expect(text).not.toContain("관련 파일");
+		expect(text).not.toContain("Related Files");
 	});
 });
 
@@ -346,7 +346,7 @@ describe("formatRecentContext", () => {
 			],
 		};
 		const text = formatRecentContext(result);
-		expect(text).toContain("최근 7일 학습 활동 (2개 파일)");
+		expect(text).toContain("Recent Learning Activity (7 days, 2 files)");
 		expect(text).toContain("2026-02-17");
 		expect(text).toContain("2026-02-16");
 		expect(text).toContain("til/ts/generics.md");
@@ -359,6 +359,6 @@ describe("formatRecentContext", () => {
 			groups: [],
 		};
 		const text = formatRecentContext(result);
-		expect(text).toContain("학습 활동이 없습니다");
+		expect(text).toContain("No learning activity in the last");
 	});
 });

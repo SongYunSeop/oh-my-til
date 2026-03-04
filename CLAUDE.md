@@ -1,173 +1,173 @@
 # CLAUDE.md - oh-my-til
 
-## 프로젝트 개요
+## Project Overview
 
-Claude Code 기반 TIL 학습 워크플로우 플러그인. Obsidian 없이 독립 CLI(`npx oh-my-til`)로 실행하거나, Obsidian 플러그인으로 사이드바에 Claude Code 터미널을 임베딩하여 사용할 수 있다. xterm.js + node-pty 기반.
+A Claude Code-based TIL learning workflow plugin. Can be run as a standalone CLI (`npx oh-my-til`) without Obsidian, or embedded as a sidebar Claude Code terminal via the Obsidian plugin. Built on xterm.js + node-pty.
 
-핵심 흐름: 커맨드 팔레트 → 터미널 열기 → Claude Code에서 `/til`, `/backlog`, `/research`, `/save`, `/til-review`, `/dashboard`, `/migrate-links`, `/omt-setup` 스킬 직접 실행 → 새 파일 감지 시 에디터에서 열기
+Core flow: Command palette → Open terminal → Run `/til`, `/backlog`, `/research`, `/save`, `/til-review`, `/dashboard`, `/omt-setup` skills directly in Claude Code → Open newly detected files in editor
 
-Obsidian의 역할은 "터미널 임베딩 + 파일 감시 + skill 배포 + MCP 서버 + 대시보드"로 한정하고, 워크플로우 주도권은 Claude Code에 있다. 독립 실행 시에는 `npx oh-my-til init`으로 스킬/규칙을 설치하고 `npx oh-my-til serve`로 MCP 서버를 띄운다.
+Obsidian's role is limited to "terminal embedding + file watching + skill deployment + MCP server + dashboard". Workflow control belongs to Claude Code. For standalone use, install skills/rules with `npx oh-my-til init` and start the MCP server with `npx oh-my-til serve`.
 
-## 프로젝트 철학
+## Project Philosophy
 
-코어 가치는 Claude Code 기반 학습 워크플로우(스킬, MCP 도구, 학습 컨텍스트 분석)에 있다.
-Obsidian은 현재 검증 환경이자 배포 채널이며, 코어 로직은 Obsidian 없이도 성립해야 한다.
+The core value lies in Claude Code-based learning workflows (skills, MCP tools, learning context analysis).
+Obsidian is the current validation environment and deployment channel; core logic must work without Obsidian.
 
-- **코어 레이어** (Obsidian 비종속): 스킬 프롬프트, MCP 도구 로직(context.ts, backlog.ts, stats.ts), 학습 워크플로우 설계
-- **플랫폼 어댑터** (Obsidian 종속): 터미널 임베딩, 파일 감시, 대시보드 UI, 설정 탭, Plugin 라이프사이클
+- **Core layer** (Obsidian-independent): Skill prompts, MCP tool logic (context.ts, backlog.ts, stats.ts), learning workflow design
+- **Platform adapter** (Obsidian-dependent): Terminal embedding, file watching, dashboard UI, settings tab, Plugin lifecycle
 
-새 기능 추가 시 로직은 코어 레이어에, UI/이벤트 연결은 플랫폼 어댑터에 배치한다.
+When adding new features, place logic in the core layer and UI/event wiring in the platform adapter.
 
-## 기술 스택
+## Tech Stack
 
 - TypeScript + Obsidian Plugin API
-- xterm.js (@xterm/xterm) — 터미널 렌더링
-- node-pty — PTY(의사 터미널) 프로세스 관리
-- @modelcontextprotocol/sdk — MCP 프로토콜 구현
-- zod — 입력 스키마 검증 (MCP SDK 피어)
-- @electron/rebuild — 네이티브 모듈 재빌드 (Electron 37.10.2)
-- esbuild — 번들러
+- xterm.js (@xterm/xterm) — terminal rendering
+- node-pty — PTY (pseudo-terminal) process management
+- @modelcontextprotocol/sdk — MCP protocol implementation
+- zod — input schema validation (MCP SDK peer)
+- @electron/rebuild — native module rebuild (Electron 37.10.2)
+- esbuild — bundler
 
-## 핵심 레퍼런스
+## Key References
 
-- [claude-code-terminal](https://github.com/dternyak/claude-code-terminal) — xterm.js + node-pty Obsidian 통합 패턴의 원본 구현
+- [claude-code-terminal](https://github.com/dternyak/claude-code-terminal) — original implementation of the xterm.js + node-pty Obsidian integration pattern
 
-## 구조
+## Structure
 
 ```
 src/
-├── core/                     ← 플랫폼 독립 순수 로직
-│   ├── backlog.ts            ← 백로그 파싱/포맷 순수 함수 (parseBacklogItems, extractTopicFromPath, parseBacklogSections, parseFrontmatterSources)
-│   ├── context.ts            ← 학습 컨텍스트 순수 함수 (topic 매칭, 최근 활동, 포맷)
-│   ├── stats.ts              ← 대시보드 통계 순수 함수 (streak, heatmap, enhanced categories, backlog progress, review due count)
-│   ├── srs.ts                ← SRS(간격 반복) 순수 함수 (SM-2 알고리즘, 복습 카드 필터/정렬/통계)
-│   ├── migrate-links.ts      ← Wikilink [[]] → [](path) 변환 순수 함수
-│   ├── keyboard.ts           ← Shift+Enter → \n 변환 순수 함수 (Claude Code multiline 지원)
-│   ├── env.ts                ← ensurePath(): macOS Homebrew PATH 보정
-│   ├── skills.ts             ← 버전 비교/플레이스홀더 치환 순수 함수
-│   ├── cli.ts                ← CLI 인자 파싱 순수 함수 (parseArgs)
-│   ├── config.ts             ← 설정 파일 파싱/로딩 순수 함수
-│   ├── markdown.ts           ← 마크다운 → HTML 변환 순수 함수 (외부 의존성 없음)
-│   ├── profile.ts            ← 정적 사이트 페이지 생성 (프로필, TIL 페이지, 카테고리 인덱스)
+├── core/                     ← platform-independent pure logic
+│   ├── backlog.ts            ← backlog parsing/formatting pure functions (parseBacklogItems, extractTopicFromPath, parseBacklogSections, parseFrontmatterSources)
+│   ├── context.ts            ← learning context pure functions (topic matching, recent activity, formatting)
+│   ├── stats.ts              ← dashboard statistics pure functions (streak, heatmap, enhanced categories, backlog progress, review due count)
+│   ├── srs.ts                ← SRS (spaced repetition) pure functions (SM-2 algorithm, review card filter/sort/stats)
+│   ├── migrate-links.ts      ← Wikilink [[]] → [](path) conversion pure functions
+│   ├── keyboard.ts           ← Shift+Enter → \n conversion pure functions (Claude Code multiline support)
+│   ├── env.ts                ← ensurePath(): macOS Homebrew PATH correction
+│   ├── skills.ts             ← version comparison/placeholder substitution pure functions
+│   ├── cli.ts                ← CLI argument parsing pure functions (parseArgs)
+│   ├── config.ts             ← config file parsing/loading pure functions
+│   ├── markdown.ts           ← markdown → HTML conversion pure functions (no external dependencies)
+│   ├── profile.ts            ← static site page generation (profile, TIL pages, category index)
 │   └── index.ts              ← barrel export
-├── ports/                    ← 어댑터 인터페이스
-│   ├── storage.ts            ← FileStorage 인터페이스
-│   └── metadata.ts           ← MetadataProvider 인터페이스
-├── adapters/                 ← 포트 구현체
-│   ├── fs-adapter.ts         ← node:fs 기반 (standalone)
-│   └── obsidian-adapter.ts   ← Obsidian App 기반
-├── mcp/                      ← MCP 서버 (포트 의존, Obsidian 무관)
-│   ├── context.ts            ← 학습 컨텍스트 도구 (topic 매칭, 카테고리 추출)
-│   ├── server.ts             ← HTTP 서버 + Streamable HTTP 트랜스포트
-│   └── tools.ts              ← MCP 도구 정의 (FileStorage + MetadataProvider 사용)
-├── plugin-install.ts         ← 플러그인 에셋 자동 설치/업데이트 (skills, agents, CLAUDE.md 섹션) (공유)
-├── cli/                      ← 독립 CLI 진입점
+├── ports/                    ← adapter interfaces
+│   ├── storage.ts            ← FileStorage interface
+│   └── metadata.ts           ← MetadataProvider interface
+├── adapters/                 ← port implementations
+│   ├── fs-adapter.ts         ← node:fs based (standalone)
+│   └── obsidian-adapter.ts   ← Obsidian App based
+├── mcp/                      ← MCP server (port-dependent, Obsidian-agnostic)
+│   ├── context.ts            ← learning context tools (topic matching, category extraction)
+│   ├── server.ts             ← HTTP server + Streamable HTTP transport
+│   └── tools.ts              ← MCP tool definitions (uses FileStorage + MetadataProvider)
+├── plugin-install.ts         ← plugin asset auto-install/update (skills, agents, CLAUDE.md section) (shared)
+├── cli/                      ← standalone CLI entry point
 │   ├── index.ts              ← npx oh-my-til init / serve / mcp / deploy
-│   └── obsidian-install.ts   ← Obsidian 플러그인 자동 설치 (Electron 감지, node-pty 재빌드)
-└── obsidian/                 ← Obsidian 플랫폼 어댑터
-    ├── main.ts               ← TILPlugin 진입점 (터미널 뷰 + MCP + 대시보드 + watcher + skill 설치)
-    ├── settings.ts           ← 설정 탭 + 인터페이스 (mcpEnabled, mcpPort 포함)
-    ├── watcher.ts            ← 새 TIL 파일 감지 → 에디터에서 열기
+│   └── obsidian-install.ts   ← Obsidian plugin auto-install (Electron detection, node-pty rebuild)
+└── obsidian/                 ← Obsidian platform adapter
+    ├── main.ts               ← TILPlugin entry point (terminal view + MCP + dashboard + watcher + skill install)
+    ├── settings.ts           ← settings tab + interface (includes mcpEnabled, mcpPort)
+    ├── watcher.ts            ← new TIL file detection → open in editor
     ├── terminal/
-    │   ├── TerminalView.ts   ← 사이드바 터미널 (ItemView + xterm.js)
-    │   ├── MarkdownLinkProvider.ts ← 3개 ILinkProvider: MarkdownLinkProvider ([text](path) + CJK), FilepathLinkProvider (til/ 경로), Osc8LinkProvider (OSC 8 하이퍼링크 + IMarker)
-    │   └── pty.ts            ← PTY 프로세스 관리 (node-pty)
+    │   ├── TerminalView.ts   ← sidebar terminal (ItemView + xterm.js)
+    │   ├── MarkdownLinkProvider.ts ← 3 ILinkProviders: MarkdownLinkProvider ([text](path) + CJK), FilepathLinkProvider (til/ paths), Osc8LinkProvider (OSC 8 hyperlinks + IMarker)
+    │   └── pty.ts            ← PTY process management (node-pty)
     └── dashboard/
-        └── DashboardView.ts  ← 학습 대시보드 (Summary Cards + Heatmap + Categories + Recent + Backlog)
+        └── DashboardView.ts  ← learning dashboard (Summary Cards + Heatmap + Categories + Recent + Backlog)
 
-skills/                   ← Claude Code Plugin 스킬 + Obsidian init 시 설치되는 스킬 소스
-agents/                   ← 커스텀 에이전트 (til-fetcher)
-hooks/                    ← Claude Code Plugin 훅
-├── hooks.json            ← 훅 선언 (${CLAUDE_PLUGIN_ROOT} 변수 사용)
-├── notify-complete.sh    ← 작업 완료 알림 스크립트
-└── check-obsidian.sh     ← Obsidian vault 감지 + 안내 스크립트
-.mcp.json                 ← MCP 서버 자동 등록 설정
+skills/                   ← Claude Code Plugin skills + skill sources installed at Obsidian init
+agents/                   ← custom agents (til-fetcher)
+hooks/                    ← Claude Code Plugin hooks
+├── hooks.json            ← hook declarations (uses ${CLAUDE_PLUGIN_ROOT} variable)
+├── notify-complete.sh    ← task completion notification script
+└── check-obsidian.sh     ← Obsidian vault detection + guidance script
+.mcp.json                 ← MCP server auto-registration config
 vault-assets/
-└── claude-md-section.md  ← .claude/CLAUDE.md에 삽입되는 MCP 안내 템플릿
+└── claude-md-section.md  ← init flow only: MCP guidance template inserted into .claude/CLAUDE.md
 
-.claude-plugin/           ← Claude Code Plugin 매니페스트 (repo 루트 = 플러그인 루트)
-├── plugin.json           ← 플러그인 메타데이터 (표준 구조, 빌드 불필요)
-└── marketplace.json      ← marketplace 카탈로그
+.claude-plugin/           ← Claude Code Plugin manifest (repo root = plugin root)
+├── plugin.json           ← plugin metadata (standard structure, no build required)
+└── marketplace.json      ← marketplace catalog
 
 __tests__/
-├── mock-obsidian.ts      ← obsidian 모듈 mock
-├── utils.test.ts         ← 설정 기본값 테스트
-├── skills.test.ts        ← skill/rule 버전 기반 설치/업데이트 로직 테스트
-├── watcher.test.ts       ← 파일 감시 필터링 로직 테스트
-├── stats.test.ts         ← 대시보드 통계 (기본 + streak, heatmap, enhanced categories, backlog) 테스트
-├── srs.test.ts           ← SRS 간격 반복 (SM-2 알고리즘, frontmatter 파싱/업데이트, 카드 필터/통계) 테스트
-├── mcp-tools.test.ts     ← MCP 도구 필터링/집계 로직 테스트
-├── context.test.ts       ← 학습 컨텍스트 순수 함수 테스트
-├── mcp-server.test.ts    ← MCP 서버 HTTP 라우팅/CORS/라이프사이클 테스트
-├── main-logic.test.ts    ← 플러그인 핵심 로직 (watcher 동기화, 설정 검증)
-├── backlog.test.ts       ← 백로그 파싱/경로 추출 테스트
-├── markdown-link-provider.test.ts ← 마크다운 링크 감지 + CJK 셀 너비 + OSC 8 순수 함수 테스트
-├── shift-enter.test.ts   ← Shift+Enter 키 핸들러 순수 함수 테스트
-├── ensure-path.test.ts   ← macOS PATH 보정 테스트
-├── migrate-links.test.ts ← Wikilink → 마크다운 링크 변환 테스트
-├── adapters.test.ts      ← fs-adapter / obsidian-adapter 포트 구현 테스트
-├── cli.test.ts           ← CLI 인자 파싱 (positional + options + boolean 플래그) 테스트
-├── config.test.ts        ← 설정 파일 파싱/로딩 테스트
-├── obsidian-install.test.ts ← Obsidian 플러그인 설치 순수 함수 (아티팩트, 버전 검증) 테스트
-├── markdown.test.ts      ← 마크다운 → HTML 변환 순수 함수 테스트
-└── profile.test.ts       ← 정적 사이트 페이지 생성 (프로필, TIL, 카테고리 인덱스) 테스트
+├── mock-obsidian.ts      ← obsidian module mock
+├── utils.test.ts         ← settings defaults tests
+├── skills.test.ts        ← skill/rule version-based install/update logic tests
+├── watcher.test.ts       ← file watch filtering logic tests
+├── stats.test.ts         ← dashboard statistics (basic + streak, heatmap, enhanced categories, backlog) tests
+├── srs.test.ts           ← SRS spaced repetition (SM-2 algorithm, frontmatter parse/update, card filter/stats) tests
+├── mcp-tools.test.ts     ← MCP tool filtering/aggregation logic tests
+├── context.test.ts       ← learning context pure function tests
+├── mcp-server.test.ts    ← MCP server HTTP routing/CORS/lifecycle tests
+├── main-logic.test.ts    ← plugin core logic (watcher sync, settings validation)
+├── backlog.test.ts       ← backlog parsing/path extraction tests
+├── markdown-link-provider.test.ts ← markdown link detection + CJK cell width + OSC 8 pure function tests
+├── shift-enter.test.ts   ← Shift+Enter key handler pure function tests
+├── ensure-path.test.ts   ← macOS PATH correction tests
+├── migrate-links.test.ts ← Wikilink → markdown link conversion tests
+├── adapters.test.ts      ← fs-adapter / obsidian-adapter port implementation tests
+├── cli.test.ts           ← CLI argument parsing (positional + options + boolean flags) tests
+├── config.test.ts        ← config file parsing/loading tests
+├── obsidian-install.test.ts ← Obsidian plugin install pure functions (artifacts, version validation) tests
+├── markdown.test.ts      ← markdown → HTML conversion pure function tests
+└── profile.test.ts       ← static site page generation (profile, TIL, category index) tests
 ```
 
-## 빌드
+## Build
 
 ```bash
 npm install
-npm run rebuild-pty    # node-pty를 Obsidian Electron 버전에 맞춰 재빌드
-npm run dev            # 워치 모드
-npm run build          # Obsidian 플러그인 + CLI 빌드
-npm run build:obsidian # Obsidian 플러그인만 빌드
-npm run build:cli      # CLI만 빌드
-npm test               # vitest 테스트 실행
-npm run deploy -- <vault-path>  # vault에 배포 (빌드 + 복사 + pty 재빌드)
-npm run deploy -- --refresh-skills <vault-path>  # 스킬/규칙 강제 재설치 포함
+npm run rebuild-pty    # rebuild node-pty for the Obsidian Electron version
+npm run dev            # watch mode
+npm run build          # build Obsidian plugin + CLI
+npm run build:obsidian # build Obsidian plugin only
+npm run build:cli      # build CLI only
+npm test               # run vitest tests
+npm run deploy -- <vault-path>  # deploy to vault (build + copy + pty rebuild)
+npm run deploy -- --refresh-skills <vault-path>  # includes force reinstall of skills/rules
 ```
 
-### Standalone CLI (Obsidian 없이 독립 실행)
+### Standalone CLI (running without Obsidian)
 
 ```bash
-npx oh-my-til init ~/my-til                     # 디렉토리 생성 + 스킬/규칙/CLAUDE.md 설치 (.obsidian 감지 시 플러그인 자동 설치)
-npx oh-my-til init ~/my-til --no-obsidian       # Obsidian 플러그인 설치 건너뛰기
-npx oh-my-til serve ~/my-til                    # MCP 서버 독립 실행 (HTTP)
+npx oh-my-til init ~/my-til                     # create directory + install skills/rules/CLAUDE.md (auto-installs plugin if .obsidian detected)
+npx oh-my-til init ~/my-til --no-obsidian       # skip Obsidian plugin installation
+npx oh-my-til serve ~/my-til                    # run MCP server standalone (HTTP)
 npx oh-my-til serve ~/my-til --port 3000 --til-path my-til
-npx oh-my-til mcp ~/my-til                      # MCP 서버 stdio 모드 (Claude Desktop 등)
-npx oh-my-til deploy ~/my-til                   # TIL 정적 사이트 생성 (_site/)
+npx oh-my-til mcp ~/my-til                      # MCP server stdio mode (Claude Desktop, etc.)
+npx oh-my-til deploy ~/my-til                   # generate TIL static site (_site/)
 npx oh-my-til deploy ~/my-til --out docs --title "My TIL" --github https://github.com/user
-ELECTRON_VERSION=37.10.2 npx oh-my-til init ~/vault  # Electron 버전 수동 지정
+ELECTRON_VERSION=37.10.2 npx oh-my-til init ~/vault  # manually specify Electron version
 ```
 
-## 규칙
+## Rules
 
-- **코드 변경 시 항상 feature branch + worktree에서 작업한다**. main 브랜치에서 직접 수정하지 않는다.
-- **새 기능/워크플로우 변경 시 반드시 사용자와 방향을 먼저 논의한다**. 구현 방식이 여러 가지일 수 있는 작업은 바로 코드를 작성하지 않고, 접근 방법을 제안하고 합의한 뒤 작업한다.
-- **브랜치 격리 (git worktree)**: feature 브랜치 작업 시 `git worktree`를 사용하여 작업 디렉토리를 분리한다. 현재 브랜치에서 다른 feature 작업이 필요하면 `git worktree add ../oh-my-til-<branch-name> <branch-name>`으로 별도 worktree를 생성하도록 안내한다. 같은 디렉토리에서 브랜치를 전환하지 않는다.
-- Obsidian API는 `obsidian` 모듈에서 import
-- node-pty는 `electronRequire`로 로드 (일반 import 불가, 네이티브 모듈)
-- `onload()`에서 등록한 리소스는 자동 해제됨
-- `onunload()`에서 PTY 프로세스를 반드시 kill
-- 파일 감시는 `vault.on('create', ...)` 사용
-- manifest.json의 `isDesktopOnly`는 반드시 `true` (node-pty 네이티브 모듈 때문)
-- esbuild에서 node-pty는 external로 처리
-- UI 워크플로우(주제 입력, 백로그 선택)는 Claude Code 스킬이 담당 — Obsidian 쪽에서 중복 구현하지 않는다
-- MCP 도구는 Obsidian `App` 인스턴스를 통해 vault 접근 — node-pty/터미널을 거치지 않음
-- MCP 서버는 `onload()`에서 시작, `onunload()`에서 종료
-- 대시보드는 순수 DOM 조작 (프레임워크 없음), Obsidian CSS 변수 활용
-- 코드 변경 시 테스트 가능한 부분은 반드시 테스트 작성/실행 후 커밋 (`npm test && npm run build` 통과 확인)
-- Skill 파일은 `.claude/skills/<name>/SKILL.md` 경로에 설치 (Claude Code가 1단계 깊이만 탐색, 중첩 불가)
-- Skill 파일의 `plugin-version` frontmatter로 자동 업데이트 관리. 없으면 사용자 커스터마이즈로 간주하여 덮어쓰지 않음
-- 백로그 파일은 `til/{카테고리}/backlog.md` 경로 패턴
-- 한국어 작성, 기술 용어 원어 병기
-- **문서 동기화**: 새 파일 추가, 설정 변경, 스킬 추가/삭제 등 구조적 변경이 있으면 `CLAUDE.md`, `README.md`, `README.ko.md`도 함께 업데이트한다 (구조 섹션, 기능 목록, 설정 테이블, 스킬 목록)
-- **버전 관리**: `skills/`의 `plugin-version`은 `__PLUGIN_VERSION__` 플레이스홀더로 관리되며, `skills.ts`가 설치 시 `manifest.json` 버전으로 자동 치환한다. 릴리즈 시 수동 업데이트 대상은 `package.json`, `manifest.json`, `versions.json` 3개 파일뿐이다. `/release` 스킬 사용을 권장한다.
+- **Always work on a feature branch + worktree when making code changes**. Never modify the main branch directly.
+- **Always discuss direction with the user before new features or workflow changes**. For tasks with multiple implementation options, do not write code immediately — propose approaches, reach agreement, then proceed.
+- **Branch isolation (git worktree)**: Use `git worktree` to isolate working directories for feature branch work. If another feature task is needed from the current branch, guide the user to create a separate worktree with `git worktree add ../oh-my-til-<branch-name> <branch-name>`. Do not switch branches in the same directory.
+- Import Obsidian API from the `obsidian` module
+- Load node-pty via `electronRequire` (regular import not possible, native module)
+- Resources registered in `onload()` are automatically released
+- Always kill PTY processes in `onunload()`
+- Use `vault.on('create', ...)` for file watching
+- `isDesktopOnly` in manifest.json must be `true` (required by node-pty native module)
+- node-pty is treated as external in esbuild
+- UI workflows (topic input, backlog selection) are handled by Claude Code skills — do not duplicate in Obsidian
+- MCP tools access the vault through the Obsidian `App` instance — not through node-pty/terminal
+- MCP server starts in `onload()` and stops in `onunload()`
+- Dashboard uses pure DOM manipulation (no framework), leverages Obsidian CSS variables
+- For code changes, always write/run tests before committing (`npm test && npm run build` must pass)
+- Skill files are installed at `.claude/skills/<name>/SKILL.md` (Claude Code only discovers 1 level deep, no nesting)
+- Skill file auto-updates are managed via `plugin-version` frontmatter. Files without it are treated as user-customized and will not be overwritten
+- Backlog files follow the `til/{category}/backlog.md` path pattern
+- Write in English; use original technical terms as-is
+- **Documentation sync**: When structural changes occur (new files added, settings changed, skills added/removed), update `CLAUDE.md`, `README.md`, and `README.ko.md` accordingly (structure section, feature list, settings table, skills list)
+- **Version management**: `plugin-version` in `skills/` is managed with the `__PLUGIN_VERSION__` placeholder, which `skills.ts` automatically substitutes with the `manifest.json` version at install time. Only 3 files need manual updates at release time: `package.json`, `manifest.json`, `versions.json`. Use the `/release` skill.
 
-## 참고 문서
+## Reference Documentation
 
 - [Obsidian Developer Docs](https://docs.obsidian.md/Home)
 - [Plugin API Reference](https://docs.obsidian.md/Reference/TypeScript+API/Plugin)
 - [xterm.js docs](https://xtermjs.org/docs/)
 - [node-pty (GitHub)](https://github.com/microsoft/node-pty)
-- [claude-code-terminal 소스](https://github.com/dternyak/claude-code-terminal)
+- [claude-code-terminal source](https://github.com/dternyak/claude-code-terminal)

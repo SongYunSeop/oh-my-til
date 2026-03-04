@@ -505,7 +505,7 @@ describe("simpleGradeToSm2", () => {
 
 describe("formatReviewList", () => {
 	it("빈 배열에서 안내 메시지를 반환한다", () => {
-		expect(formatReviewList([])).toBe("복습할 카드가 없습니다.");
+		expect(formatReviewList([])).toBe("No cards to review.");
 	});
 
 	it("카드 목록을 테이블로 포매팅한다", () => {
@@ -520,10 +520,10 @@ describe("formatReviewList", () => {
 			ease_factor: 2.5,
 		}];
 		const result = formatReviewList(cards);
-		expect(result).toContain("복습 대상 (1개)");
+		expect(result).toContain("Cards Due for Review (1)");
 		expect(result).toContain("Generics");
 		expect(result).toContain("ts");
-		expect(result).toContain("오늘");
+		expect(result).toContain("today");
 	});
 
 	it("연체 카드의 일수를 표시한다", () => {
@@ -538,7 +538,7 @@ describe("formatReviewList", () => {
 			ease_factor: 2.5,
 		}];
 		const result = formatReviewList(cards);
-		expect(result).toContain("+3일");
+		expect(result).toContain("+3d");
 	});
 });
 
@@ -555,12 +555,12 @@ describe("formatReviewStats", () => {
 			reviewStreak: 7,
 		};
 		const result = formatReviewStats(stats);
-		expect(result).toContain("복습 통계");
-		expect(result).toContain("5개");
-		expect(result).toContain("2개");
-		expect(result).toContain("3개");
-		expect(result).toContain("20개");
+		expect(result).toContain("Review Statistics");
+		expect(result).toContain("| Due today | 5 |");
+		expect(result).toContain("| Overdue | 2 |");
+		expect(result).toContain("| Reviewed today | 3 |");
+		expect(result).toContain("| Total scheduled | 20 |");
 		expect(result).toContain("2.45");
-		expect(result).toContain("7일");
+		expect(result).toContain("7d");
 	});
 });

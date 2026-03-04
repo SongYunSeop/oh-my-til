@@ -657,24 +657,24 @@ describe("formatDashboardText", () => {
 		const stats = computeEnhancedStats(files, "til", backlog, now);
 		const text = formatDashboardText(stats);
 
-		expect(text).toContain("학습 대시보드");
-		expect(text).toContain("총 TIL");
-		expect(text).toContain("카테고리");
-		expect(text).toContain("이번 주");
-		expect(text).toContain("연속 학습");
-		expect(text).toContain("활동 추이");
-		expect(text).toContain("카테고리별 현황");
-		expect(text).toContain("백로그 진행률");
+		expect(text).toContain("Learning Dashboard");
+		expect(text).toContain("Total TILs");
+		expect(text).toContain("Categories");
+		expect(text).toContain("This week");
+		expect(text).toContain("Streak");
+		expect(text).toContain("Activity Trend");
+		expect(text).toContain("Categories");
+		expect(text).toContain("Backlog Progress");
 	});
 
 	it("빈 데이터에서도 기본 요약을 표시한다", () => {
 		const stats = computeEnhancedStats([], "til", [], now);
 		const text = formatDashboardText(stats);
 
-		expect(text).toContain("총 TIL | 0개");
-		expect(text).toContain("연속 학습 | 0일");
+		expect(text).toContain("Total TILs | 0");
+		expect(text).toContain("Streak | 0");
 		// 백로그가 없으면 백로그 섹션 없음
-		expect(text).not.toContain("백로그 진행률");
+		expect(text).not.toContain("Backlog Progress");
 	});
 });
 
