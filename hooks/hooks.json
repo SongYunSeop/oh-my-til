@@ -10,6 +10,15 @@
             "async": true
           }
         ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/inject-mcp-context.sh"
+          }
+        ]
       }
     ],
     "Notification": [
