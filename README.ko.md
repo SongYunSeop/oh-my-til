@@ -101,15 +101,6 @@ ELECTRON_VERSION=37.10.2 npx oh-my-til init /path/to/your/vault
 
 > Electron 버전 확인: Obsidian 개발자 도구(Ctrl+Shift+I)에서 `process.versions.electron` 실행
 
-#### Claude Code로 설치
-
-```bash
-git clone https://github.com/SongYunSeop/oh-my-til.git
-cd oh-my-til
-claude
-# 실행 후: /install-plugin /path/to/your/vault
-```
-
 #### 수동 설치 (소스에서)
 
 ```bash
@@ -171,6 +162,9 @@ MCP 서버 연결 시 Claude Code에서 사용할 수 있는 도구:
 | **backlog** | `/backlog [카테고리]` | 학습 백로그 조회 및 진행 상황 요약 |
 | **save** | *(/til에서 자동 호출)* | TIL 마크다운 저장 + Daily 노트, MOC, 백로그 연동 |
 | **til-review** | `/til-review [카테고리]` | SRS 기반 간격 반복 복습 세션 (SM-2 알고리즘) |
+| **dashboard** | `/dashboard` | 학습 대시보드 — 통계, 활동 히트맵, 카테고리, 백로그 진행률 |
+| **omt-setup** | `/omt-setup [서브커맨드]` | 통합 설정 — init, deploy, oh-my-til 관리 |
+| **setup-obsidian** | `/setup-obsidian` | 현재 vault에 Obsidian 데스크톱 플러그인 설치 |
 
 ## 개발
 
@@ -191,7 +185,7 @@ src/
 │   ├── context.ts           # 학습 컨텍스트 헬퍼 (순수 함수)
 │   ├── stats.ts             # TIL 통계 순수 함수
 │   ├── srs.ts               # SRS 간격 반복 (SM-2 알고리즘, 복습 카드/통계)
-│   ├── migrate-links.ts     # Wikilink [[]] → [](path) 변환
+│   ├── migrate-links.ts     # Wikilink [[]] → [](path) 변환 (내부 유틸리티)
 │   ├── keyboard.ts          # Shift+Enter → \n (멀티라인 지원)
 │   ├── env.ts               # macOS PATH 보정 (Homebrew)
 │   ├── skills.ts            # 버전 비교/플레이스홀더 치환 순수 함수
@@ -212,7 +206,7 @@ src/
 │   └── tools.ts             # MCP 도구 정의 (FileStorage + MetadataProvider 사용)
 ├── plugin-install.ts        # 플러그인 에셋 자동 설치/업데이트 (skills, agents, CLAUDE.md 섹션)
 ├── cli/                     # 독립 CLI 진입점
-│   ├── index.ts             # npx oh-my-til init / serve / deploy
+│   ├── index.ts             # npx oh-my-til init / serve / mcp / deploy
 │   └── obsidian-install.ts  # Obsidian 플러그인 자동 설치 (Electron 감지, node-pty 재빌드)
 └── obsidian/                # Obsidian 플랫폼 어댑터
     ├── main.ts              # 플러그인 진입점

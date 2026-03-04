@@ -101,15 +101,6 @@ ELECTRON_VERSION=37.10.2 npx oh-my-til init /path/to/your/vault
 
 > To find your Electron version, open Obsidian's Developer Tools (Ctrl+Shift+I) and run `process.versions.electron`.
 
-#### Using Claude Code
-
-```bash
-git clone https://github.com/SongYunSeop/oh-my-til.git
-cd oh-my-til
-claude
-# Then run: /install-plugin /path/to/your/vault
-```
-
 #### Manual Installation (from source)
 
 ```bash
@@ -171,6 +162,9 @@ The plugin auto-installs these skills to `.claude/skills/`:
 | **backlog** | `/backlog [category]` | View learning backlog and progress |
 | **save** | *(auto-invoked by /til)* | Save TIL markdown with Daily note, MOC, and backlog updates |
 | **til-review** | `/til-review [category]` | SRS-based spaced repetition review session (SM-2 algorithm) |
+| **dashboard** | `/dashboard` | Learning dashboard — stats, activity heatmap, categories, backlog progress |
+| **omt-setup** | `/omt-setup [subcommand]` | Unified setup — init, deploy, and manage oh-my-til |
+| **setup-obsidian** | `/setup-obsidian` | Install the Obsidian desktop plugin in the current vault |
 
 ## Development
 
@@ -191,7 +185,7 @@ src/
 │   ├── context.ts           # Learning context helpers (pure functions)
 │   ├── stats.ts             # TIL statistics (pure functions)
 │   ├── srs.ts               # Spaced repetition (SM-2 algorithm, review cards/stats)
-│   ├── migrate-links.ts     # Wikilink [[]] → [](path) conversion
+│   ├── migrate-links.ts     # Wikilink [[]] → [](path) conversion (internal utility)
 │   ├── keyboard.ts          # Shift+Enter → \n (multiline support)
 │   ├── env.ts               # macOS PATH resolution (Homebrew)
 │   ├── skills.ts            # Version comparison / placeholder substitution
@@ -212,7 +206,7 @@ src/
 │   └── tools.ts             # MCP tool definitions (FileStorage + MetadataProvider)
 ├── plugin-install.ts        # Plugin asset auto-install/update (skills, agents, CLAUDE.md section)
 ├── cli/                     # Standalone CLI entry point
-│   ├── index.ts             # npx oh-my-til init / serve / deploy
+│   ├── index.ts             # npx oh-my-til init / serve / mcp / deploy
 │   └── obsidian-install.ts  # Auto-install Obsidian plugin (Electron detection, node-pty rebuild)
 └── obsidian/                # Obsidian platform adapter
     ├── main.ts              # Plugin entry point

@@ -38,7 +38,7 @@
       <p class="hero-tagline">AI-powered <strong>Today I Learned</strong> workflow.<br>Research, learn, and build your knowledge base with Claude Code.</p>
       <div class="hero-actions">
         <div class="hero-install" onclick="copyInstall(this)" role="button" tabindex="0">
-          <code>npx oh-my-til init ~/my-til</code>
+          <code>claude plugin install oh-my-til</code>
           <span class="copy-hint">Click to copy</span>
         </div>
         <a href="https://github.com/SongYunSeop/oh-my-til" class="btn btn-secondary" target="_blank" rel="noopener">
@@ -287,7 +287,7 @@ npx oh-my-til init ~/vault</code></pre>
         <a href="https://github.com/SongYunSeop/oh-my-til/releases" target="_blank" rel="noopener">Releases</a>
         <a href="https://github.com/SongYunSeop/oh-my-til/issues" target="_blank" rel="noopener">Issues</a>
       </div>
-      <p class="footer-copy">MIT License &copy; 2025 <a href="https://github.com/SongYunSeop" target="_blank" rel="noopener">SongYunSeop</a></p>
+      <p class="footer-copy">MIT License &copy; 2026 <a href="https://github.com/SongYunSeop" target="_blank" rel="noopener">SongYunSeop</a></p>
     </div>
   </footer>
 
@@ -298,7 +298,7 @@ npx oh-my-til init ~/vault</code></pre>
 
   <script>
     function copyInstall(el) {
-      const text = 'npx oh-my-til init ~/my-til';
+      const text = 'claude plugin install oh-my-til';
       navigator.clipboard.writeText(text).then(() => {
         const hint = el.querySelector('.copy-hint');
         hint.textContent = 'Copied!';
