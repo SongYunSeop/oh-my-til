@@ -97,9 +97,19 @@ export class FsStorage implements FileStorage {
 	}
 }
 
+/** scanLinks 결과 캐시 (동일 MCP 요청 내 중복 스캔 방지) */
+interface LinkScanCache {
+	resolved: Record<string, Record<string, number>>;
+	unresolved: Record<string, Record<string, number>>;
+	expiresAt: number;
+}
+
+const LINK_SCAN_TTL_MS = 5_000; // 5초 TTL
+
 export class FsMetadata implements MetadataProvider {
 	private readonly resolvedBase: string;
 	private readonly storage: FsStorage;
+	private linkScanCache: LinkScanCache | null = null;
 
 	constructor(private basePath: string, storage?: FsStorage) {
 		this.resolvedBase = path.resolve(basePath);
@@ -123,13 +133,22 @@ export class FsMetadata implements MetadataProvider {
 	}
 
 	async getResolvedLinks(): Promise<Record<string, Record<string, number>>> {
-		const { resolved } = await this.scanLinks();
-		return resolved;
+		const cached = await this.getCachedLinks();
+		return cached.resolved;
 	}
 
 	async getUnresolvedLinks(): Promise<Record<string, Record<string, number>>> {
-		const { unresolved } = await this.scanLinks();
-		return unresolved;
+		const cached = await this.getCachedLinks();
+		return cached.unresolved;
+	}
+
+	private async getCachedLinks(): Promise<LinkScanCache> {
+		if (this.linkScanCache && Date.now() < this.linkScanCache.expiresAt) {
+			return this.linkScanCache;
+		}
+		const result = await this.scanLinks();
+		this.linkScanCache = { ...result, expiresAt: Date.now() + LINK_SCAN_TTL_MS };
+		return this.linkScanCache;
 	}
 
 	async getActiveFilePath(): Promise<string | null> {
