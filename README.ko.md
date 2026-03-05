@@ -140,7 +140,6 @@ MCP 서버 연결 시 Claude Code에서 사용할 수 있는 도구:
 
 | 도구 | 설명 |
 |------|------|
-| `vault_get_active_file` | 현재 열린 파일 가져오기 |
 | `til_list` | 카테고리별 TIL 파일 목록 (`search` 필터 지원) |
 | `til_save_note` | TIL 노트 저장 (frontmatter/경로 규칙 보장, 백로그 자동 체크) |
 | `til_backlog_status` | 백로그 진행률 요약 (체크박스 카운트) |

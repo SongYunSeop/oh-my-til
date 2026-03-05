@@ -140,7 +140,6 @@ When the MCP server is connected, Claude Code can use these tools:
 
 | Tool | Description |
 |------|-------------|
-| `vault_get_active_file` | Get the currently open file |
 | `til_list` | List TIL files grouped by category (supports `search` filter) |
 | `til_save_note` | Save a TIL note with validated frontmatter and path conventions (auto backlog check) |
 | `til_backlog_status` | Backlog progress summary with checkbox counts |

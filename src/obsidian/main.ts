@@ -4,16 +4,13 @@ import { DashboardView, VIEW_TYPE_TIL_DASHBOARD } from "./dashboard/DashboardVie
 import { TILSettingTab, DEFAULT_SETTINGS } from "./settings";
 import type { TILSettings } from "./settings";
 import { TILWatcher } from "./watcher";
-import { TILMcpServer } from "../mcp/server";
 import { installPlugin } from "../plugin-install";
 import { parseBacklogItems, extractTopicFromPath } from "../core/backlog";
-import { loadOmtConfig } from "../core/config";
-import { ObsidianStorage, ObsidianMetadata } from "../adapters/obsidian-adapter";
+import { ObsidianStorage } from "../adapters/obsidian-adapter";
 
 export default class TILPlugin extends Plugin {
 	settings: TILSettings = DEFAULT_SETTINGS;
 	private watcher: TILWatcher | null = null;
-	private mcpServer: TILMcpServer | null = null;
 
 	async onload() {
 		await this.loadSettings();
@@ -48,9 +45,7 @@ export default class TILPlugin extends Plugin {
 
 		// 플러그인 에셋 자동 설치/업데이트 (skills, agents, CLAUDE.md)
 		const storage = new ObsidianStorage(this.app);
-		const vaultBasePath = (this.app.vault.adapter as unknown as { basePath?: string }).basePath ?? "";
-		const omtConfig = loadOmtConfig(vaultBasePath);
-		installPlugin(storage, this.manifest.version, omtConfig.mode ?? "standard");
+		installPlugin(storage, this.manifest.version);
 
 		// 시작 시 대시보드 자동 열기 (워크스페이스 복원 이후 포커스 확보)
 		if (this.settings.openDashboardOnStartup) {
@@ -135,25 +130,10 @@ export default class TILPlugin extends Plugin {
 			}),
 		);
 
-		// MCP 서버 시작
-		if (this.settings.mcpEnabled) {
-			const mcpStorage = new ObsidianStorage(this.app);
-			const mcpMetadata = new ObsidianMetadata(this.app);
-			this.mcpServer = new TILMcpServer(mcpStorage, mcpMetadata, this.settings.mcpPort, this.settings.tilPath, this.manifest.version, {
-				onError: (msg) => new Notice(msg),
-			});
-			try {
-				await this.mcpServer.start();
-			} catch {
-				// 에러는 TILMcpServer 내부에서 onError 콜백으로 표시됨
-				this.mcpServer = null;
-			}
-		}
 	}
 
 	async onunload() {
 		this.watcher?.stop();
-		await this.mcpServer?.stop();
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_TIL_TERMINAL);
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_TIL_DASHBOARD);
 	}

@@ -158,11 +158,53 @@ describe("FsMetadata", () => {
 		expect(await metadata.getActiveFilePath()).toBeNull();
 	});
 
-	it("getResolvedLinks returns empty in standalone", async () => {
-		expect(await metadata.getResolvedLinks()).toEqual({});
+	it("getResolvedLinks resolves markdown links to existing files", async () => {
+		await fs.mkdir(path.join(tmpDir, "til/ts"), { recursive: true });
+		await fs.writeFile(path.join(tmpDir, "til/ts/generics.md"), "# Generics\n\nSee [Types](til/ts/types.md)");
+		await fs.writeFile(path.join(tmpDir, "til/ts/types.md"), "# Types");
+
+		const resolved = await metadata.getResolvedLinks();
+		expect(resolved["til/ts/generics.md"]).toBeDefined();
+		expect(resolved["til/ts/generics.md"]!["til/ts/types.md"]).toBe(1);
 	});
 
-	it("getUnresolvedLinks returns empty in standalone", async () => {
+	it("getUnresolvedLinks collects links to non-existent files", async () => {
+		await fs.mkdir(path.join(tmpDir, "til/ts"), { recursive: true });
+		await fs.writeFile(path.join(tmpDir, "til/ts/generics.md"), "# Generics\n\nSee [[advanced-types]] and [missing](til/ts/missing.md)");
+
+		const unresolved = await metadata.getUnresolvedLinks();
+		expect(unresolved["til/ts/generics.md"]).toBeDefined();
+		expect(unresolved["til/ts/generics.md"]!["advanced-types"]).toBe(1);
+		expect(unresolved["til/ts/generics.md"]!["missing"]).toBe(1);
+	});
+
+	it("getResolvedLinks handles wikilinks", async () => {
+		await fs.mkdir(path.join(tmpDir, "til/ts"), { recursive: true });
+		await fs.writeFile(path.join(tmpDir, "til/ts/generics.md"), "# Generics\n\n[[types]]");
+		await fs.writeFile(path.join(tmpDir, "til/ts/types.md"), "# Types");
+
+		const resolved = await metadata.getResolvedLinks();
+		expect(resolved["til/ts/generics.md"]!["til/ts/types.md"]).toBe(1);
+	});
+
+	it("getResolvedLinks skips external URLs", async () => {
+		await fs.writeFile(path.join(tmpDir, "test.md"), "See [link](https://example.com)");
+
+		const resolved = await metadata.getResolvedLinks();
+		expect(resolved["test.md"]).toBeUndefined();
+	});
+
+	it("getResolvedLinks counts multiple references", async () => {
+		await fs.mkdir(path.join(tmpDir, "til/ts"), { recursive: true });
+		await fs.writeFile(path.join(tmpDir, "til/ts/a.md"), "[types](til/ts/types.md) and [types again](til/ts/types.md)");
+		await fs.writeFile(path.join(tmpDir, "til/ts/types.md"), "# Types");
+
+		const resolved = await metadata.getResolvedLinks();
+		expect(resolved["til/ts/a.md"]!["til/ts/types.md"]).toBe(2);
+	});
+
+	it("returns empty when no md files exist", async () => {
+		expect(await metadata.getResolvedLinks()).toEqual({});
 		expect(await metadata.getUnresolvedLinks()).toEqual({});
 	});
 

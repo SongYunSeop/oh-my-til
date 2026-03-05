@@ -13,7 +13,6 @@ Topic research → Interactive learning → Save TIL.
 
 - `til_list`: Check existing TILs (detect same/similar topics)
 - `til_get_context`: Find related TILs and backlog items, link candidates
-- `vault_get_active_file`: Check the file the user is currently viewing
 
 ## Phase 1: Topic Research
 

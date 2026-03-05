@@ -38,26 +38,6 @@ import {
  * 모든 도구는 FileStorage / MetadataProvider 포트를 통해 vault에 접근한다.
  */
 export function registerTools(server: McpServer, storage: FileStorage, metadata: MetadataProvider, tilPath: string): void {
-	// vault_get_active_file: 현재 열린 파일 경로 + 내용
-	server.registerTool(
-		"vault_get_active_file",
-		{
-			title: "Get Active File",
-			description: "Returns the path and content of the file currently open in Obsidian",
-		},
-		async () => {
-			const activePath = await metadata.getActiveFilePath();
-			if (!activePath) {
-				return { content: [{ type: "text" as const, text: "No file is currently open" }] };
-			}
-			const text = await storage.readFile(activePath);
-			if (text === null) {
-				return { content: [{ type: "text" as const, text: "Could not read the active file" }] };
-			}
-			return { content: [{ type: "text" as const, text: `path: ${activePath}\n---\n${text}` }] };
-		},
-	);
-
 	// til_list: TIL 파일 목록 + 메타데이터
 	server.registerTool(
 		"til_list",

@@ -14,7 +14,6 @@ Learning conversation → Save TIL file → Update Daily/MOC/backlog → Review 
 - `til_get_context`: Find related TILs and backlog items
 - `til_list`: Check for duplicate existing TILs
 - `til_save_note`: Save TIL note (server guarantees frontmatter/path rules, auto_check_backlog auto-checks backlog)
-- `vault_get_active_file`: User file context
 
 ## Step 1: Check Context
 

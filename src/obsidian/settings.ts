@@ -11,8 +11,6 @@ export interface TILSettings {
 	autoOpenNewTIL: boolean;
 	openDashboardOnStartup: boolean;
 	claudeArgs: string;
-	mcpEnabled: boolean;
-	mcpPort: number;
 }
 
 export const DEFAULT_SETTINGS: TILSettings = {
@@ -28,8 +26,6 @@ export const DEFAULT_SETTINGS: TILSettings = {
 	autoOpenNewTIL: true,
 	openDashboardOnStartup: false,
 	claudeArgs: "",
-	mcpEnabled: true,
-	mcpPort: 22360,
 };
 
 export class TILSettingTab extends PluginSettingTab {
@@ -178,34 +174,5 @@ export class TILSettingTab extends PluginSettingTab {
 					})
 			);
 
-		containerEl.createEl("h3", { text: "MCP Server" });
-
-		new Setting(containerEl)
-			.setName("Enable MCP server")
-			.setDesc("Run an MCP server so Claude Code can read and write vault files in real time")
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.mcpEnabled)
-					.onChange(async (value) => {
-						this.plugin.settings.mcpEnabled = value;
-						await this.plugin.saveSettings();
-					})
-			);
-
-		new Setting(containerEl)
-			.setName("MCP port")
-			.setDesc("MCP server port (reload Obsidian after changing)")
-			.addText((text) =>
-				text
-					.setPlaceholder("22360")
-					.setValue(String(this.plugin.settings.mcpPort))
-					.onChange(async (value) => {
-						const port = parseInt(value, 10);
-						if (!isNaN(port) && port > 0 && port < 65536) {
-							this.plugin.settings.mcpPort = port;
-							await this.plugin.saveSettings();
-						}
-					})
-			);
 	}
 }

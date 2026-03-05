@@ -11,7 +11,6 @@
 **Learning Context:**
 - `til_get_context` — Find existing TILs related to a topic (searches file paths, content, backlinks, and unresolved links)
 - `til_recent_context` — Recent learning activity (newest first)
-- `vault_get_active_file` — Currently open file
 
 **TIL Management:**
 - `til_list` — TIL list + category grouping (search filter)
@@ -27,13 +26,3 @@
 
 **Stats:**
 - `til_dashboard` — Learning dashboard stats
-
-### Connection
-
-```bash
-# HTTP (when using Obsidian plugin or oh-my-til serve)
-claude mcp add --transport http oh-my-til http://localhost:22360/mcp
-
-# stdio (standalone without Obsidian, Claude Desktop scheduled task, etc.)
-claude mcp add oh-my-til -- npx oh-my-til mcp /path/to/vault
-```

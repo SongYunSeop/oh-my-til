@@ -521,24 +521,6 @@ describe("til_save_note (frontmatter)", () => {
 	});
 });
 
-describe("vault_get_active_file", () => {
-	it("열린 파일이 없으면 null을 반환한다", () => {
-		const app = createApp({});
-		const active = app.workspace.getActiveFile();
-		expect(active).toBeNull();
-	});
-
-	it("열린 파일의 경로와 내용을 반환한다", async () => {
-		const app = createApp({ "til/test.md": "# Test content" });
-		const file = new TFile("til/test.md");
-		(app as AppWithHelpers)._setActiveFile(file);
-
-		const active = app.workspace.getActiveFile();
-		expect(active).not.toBeNull();
-		expect(active!.path).toBe("til/test.md");
-	});
-});
-
 // --- til_get_context 통합 테스트 ---
 
 describe("til_get_context (통합)", () => {

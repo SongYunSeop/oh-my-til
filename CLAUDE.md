@@ -65,8 +65,8 @@ src/
 │   ├── index.ts              ← npx oh-my-til init / serve / mcp / deploy
 │   └── obsidian-install.ts   ← Obsidian plugin auto-install (Electron detection, node-pty rebuild)
 └── obsidian/                 ← Obsidian platform adapter
-    ├── main.ts               ← TILPlugin entry point (terminal view + MCP + dashboard + watcher + skill install)
-    ├── settings.ts           ← settings tab + interface (includes mcpEnabled, mcpPort)
+    ├── main.ts               ← TILPlugin entry point (terminal view + dashboard + watcher + skill install)
+    ├── settings.ts           ← settings tab + interface
     ├── watcher.ts            ← new TIL file detection → open in editor
     ├── terminal/
     │   ├── TerminalView.ts   ← sidebar terminal (ItemView + xterm.js)
@@ -153,8 +153,7 @@ ELECTRON_VERSION=37.10.2 npx oh-my-til init ~/vault  # manually specify Electron
 - `isDesktopOnly` in manifest.json must be `true` (required by node-pty native module)
 - node-pty is treated as external in esbuild
 - UI workflows (topic input, backlog selection) are handled by Claude Code skills — do not duplicate in Obsidian
-- MCP tools access the vault through the Obsidian `App` instance — not through node-pty/terminal
-- MCP server starts in `onload()` and stops in `onunload()`
+- MCP server is managed by the Claude Code plugin system (`.mcp.json`), not by the Obsidian plugin
 - Dashboard uses pure DOM manipulation (no framework), leverages Obsidian CSS variables
 - For code changes, always write/run tests before committing (`npm test && npm run build` must pass)
 - Skill files are installed at `.claude/skills/<name>/SKILL.md` (Claude Code only discovers 1 level deep, no nesting)

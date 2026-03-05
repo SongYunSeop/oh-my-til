@@ -105,21 +105,3 @@ describe("saveSettings watcher 동기화", () => {
 	});
 });
 
-describe("설정 기본값 검증", () => {
-	it("mcpPort 유효 범위 검증 로직", () => {
-		// settings.ts의 포트 검증 로직 재현
-		function isValidPort(value: string): boolean {
-			const port = parseInt(value, 10);
-			return !isNaN(port) && port > 0 && port < 65536;
-		}
-
-		expect(isValidPort("22360")).toBe(true);
-		expect(isValidPort("1")).toBe(true);
-		expect(isValidPort("65535")).toBe(true);
-		expect(isValidPort("0")).toBe(false);
-		expect(isValidPort("65536")).toBe(false);
-		expect(isValidPort("-1")).toBe(false);
-		expect(isValidPort("abc")).toBe(false);
-		expect(isValidPort("")).toBe(false);
-	});
-});
