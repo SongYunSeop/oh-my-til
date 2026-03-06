@@ -4,9 +4,7 @@ import { DashboardView, VIEW_TYPE_TIL_DASHBOARD } from "./dashboard/DashboardVie
 import { TILSettingTab, DEFAULT_SETTINGS } from "./settings";
 import type { TILSettings } from "./settings";
 import { TILWatcher } from "./watcher";
-import { installPlugin } from "../plugin-install";
 import { parseBacklogItems, extractTopicFromPath } from "../core/backlog";
-import { ObsidianStorage } from "../adapters/obsidian-adapter";
 
 export default class TILPlugin extends Plugin {
 	settings: TILSettings = DEFAULT_SETTINGS;
@@ -42,10 +40,6 @@ export default class TILPlugin extends Plugin {
 		});
 
 		this.addSettingTab(new TILSettingTab(this.app, this));
-
-		// Auto-install/update plugin assets (skills, agents, CLAUDE.md)
-		const storage = new ObsidianStorage(this.app);
-		installPlugin(storage, this.manifest.version);
 
 		// Auto-open dashboard on startup (acquire focus after workspace restore)
 		if (this.settings.openDashboardOnStartup) {
