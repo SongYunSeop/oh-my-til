@@ -298,6 +298,14 @@
       color: rgba(49, 41, 39, 0.82);
       line-height: 1.5;
     }
+    .feature-desc a {
+      color: #312927;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .feature-desc a:hover {
+      opacity: 0.7;
+    }
 
     .divider-v {
       width: 1px;
@@ -1087,7 +1095,7 @@
       <div class="hero-content">
         <div class="hero-text">
           <div>
-            <p class="hero-badge fade-in" style="animation-delay:0s">v1.1.1 — Open Source</p>
+            <p class="hero-badge fade-in" style="animation-delay:0s">v1.1.2 — Open Source</p>
             <h1 class="hero-title"><span class="word" style="animation-delay:0.18s">o</span><span class="word" style="animation-delay:0.25s">h</span> <span class="word" style="animation-delay:0.32s">m</span><span class="word" style="animation-delay:0.39s">y</span> <span class="word" style="animation-delay:0.46s">t</span><span class="word" style="animation-delay:0.53s">i</span><span class="word" style="animation-delay:0.60s">l</span></h1>
           </div>
           <p class="hero-description fade-in" style="animation-delay:0.62s">
@@ -1140,8 +1148,8 @@ claude plugin install oh-my-til --scope project</span>
         <div class="features-row">
           <div class="feature-card">
             <div class="feature-text">
-              <div class="feature-title">Embedded Terminal</div>
-              <div class="feature-desc">Claude Code terminal in Obsidian sidebar. Or use standalone CLI — no Obsidian required.</div>
+              <div class="feature-title">AI-Powered Learning</div>
+              <div class="feature-desc">Learn through dialogue. Claude researches, teaches, and quizzes you — then saves what you learned.</div>
             </div>
           </div>
 
@@ -1149,8 +1157,8 @@ claude plugin install oh-my-til --scope project</span>
 
           <div class="feature-card">
             <div class="feature-text">
-              <div class="feature-title">Built-in MCP Server</div>
-              <div class="feature-desc">Claude Code accesses your vault directly via HTTP. Context-aware research and learning.</div>
+              <div class="feature-title">Spaced Repetition (SRS)</div>
+              <div class="feature-desc">SM-2 algorithm schedules TIL reviews. Anki-style grading with /til-review.</div>
             </div>
           </div>
 
@@ -1171,8 +1179,8 @@ claude plugin install oh-my-til --scope project</span>
         <div class="features-row">
           <div class="feature-card">
             <div class="feature-text">
-              <div class="feature-title">Spaced Repetition (SRS)</div>
-              <div class="feature-desc">SM-2 algorithm schedules TIL reviews. Anki-style grading with&nbsp;/til-review.</div>
+              <div class="feature-title">Built-in MCP Server</div>
+              <div class="feature-desc">Claude Code accesses your TIL notes directly via HTTP. Context-aware research and learning.</div>
             </div>
           </div>
 
@@ -1180,8 +1188,8 @@ claude plugin install oh-my-til --scope project</span>
 
           <div class="feature-card">
             <div class="feature-text">
-              <div class="feature-title">Smart Link Detection</div>
-              <div class="feature-desc">Markdown links in the terminal are clickable. CJK-aware width calculation.</div>
+              <div class="feature-title">Static Site Deploy</div>
+              <div class="feature-desc">Publish your TIL as a static site with a single command. <a href="https://songyunseop.github.io/obsidian-vault/" target="_blank" rel="noopener">See example</a></div>
             </div>
           </div>
 
@@ -1189,8 +1197,8 @@ claude plugin install oh-my-til --scope project</span>
 
           <div class="feature-card">
             <div class="feature-text">
-              <div class="feature-title">Backlog System</div>
-              <div class="feature-desc">Research creates backlogs. Track what to learn next with progress tracking.</div>
+              <div class="feature-title">Obsidian Integration</div>
+              <div class="feature-desc">Use inside Obsidian with embedded terminal, file watcher, and dashboard.</div>
             </div>
           </div>
         </div>
@@ -1303,7 +1311,7 @@ claude plugin install oh-my-til --scope project</span>
           <div class="install-card-title">Claude Code Plugin</div>
           <div class="install-card-desc">Skills, MCP server, and hooks auto-registered.</div>
           <div class="install-code" onclick="copyInstall(this, 'claude plugin marketplace add SongYunSeop/oh-my-til && claude plugin install oh-my-til --scope project')" style="cursor:pointer; position:relative;">
-            <pre><code><span class="c-comment"># Run in your TIL vault directory</span>
+            <pre><code><span class="c-comment"># Run in your TIL directory</span>
 claude plugin marketplace add SongYunSeop/oh-my-til
 
 <span class="c-comment"># Install plugin</span>
@@ -1313,7 +1321,7 @@ claude plugin install oh-my-til --scope project</code></pre>
         </div>
         <div class="install-card">
           <div class="install-card-title">Obsidian Integration</div>
-          <div class="install-card-desc">Embedded terminal + file watcher + dashboard. Run inside Claude Code after plugin install.</div>
+          <div class="install-card-desc">Optional. Adds embedded terminal and dashboard to Obsidian.</div>
           <div class="install-code" onclick="copyInstall(this, '/setup-obsidian')" style="cursor:pointer; position:relative;">
             <pre><code><span class="c-comment"># Inside Claude Code</span>
 /setup-obsidian</code></pre>
