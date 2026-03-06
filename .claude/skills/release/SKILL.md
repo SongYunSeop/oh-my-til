@@ -47,21 +47,23 @@ Validate that documentation is up to date before bumping the version:
 
 1. Verify tests pass with `npm test`
 2. Verify production build with `npm run build`
-3. Update the version in the following **3 files** to the new version:
+3. Verify the build artifact is fresh: `main.js` modification time must be within the last 60 seconds. If stale, abort and investigate — a stale `main.js` means the build did not update the artifact (`.gitignore` tracks it but `npm files` includes it).
+4. Update the version in the following **3 files** to the new version:
    - `package.json` → `"version"`
    - `manifest.json` → `"version"`
    - `versions.json` → add new version entry (read minAppVersion from manifest.json)
    - (`plugin-version` in `skills/` is auto-substituted via the `__PLUGIN_VERSION__` placeholder)
-4. Sync landing page version: run `npm run sync-version` (updates hero-badge version in `docs/index.html`, `docs/ko/index.html`)
-5. Commit changes: `🔖 chore: release v{version}`
-6. Create tag: `git tag v{version}`
-7. Push: `git push origin main --tags`
-8. Write release notes (see template below)
-9. Publish to npm:
-   ```
-   npm publish
-   ```
-10. Create GitHub Release:
+5. Sync landing page version: run `npm run sync-version` (updates hero-badge version in `docs/index.html`, `docs/ko/index.html`)
+6. Commit changes: `🔖 chore: release v{version}`
+7. Create tag: `git tag v{version}`
+8. Push: `git push origin main --tags`
+9. Write release notes (see template below)
+10. Publish to npm:
+    ```
+    npm publish
+    ```
+    Note: `prepublishOnly` script runs `npm run build` automatically before publishing.
+11. Create GitHub Release:
     ```
     gh release create v{version} main.js manifest.json styles.css --title "v{version}" --notes "{release notes}"
     ```

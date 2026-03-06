@@ -23,7 +23,8 @@
 		"check": "vitest run && node esbuild.config.mjs production && tsc --noEmit",
 		"test": "vitest run",
 		"migrate-links": "npx tsx scripts/migrate-links.ts",
-		"sync-version": "node scripts/sync-version.mjs"
+		"sync-version": "node scripts/sync-version.mjs",
+		"prepublishOnly": "npm run build"
 	},
 	"keywords": [
 		"claude",
