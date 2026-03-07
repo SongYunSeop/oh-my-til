@@ -4,327 +4,1633 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Oh My TIL — AI 기반 학습 워크플로우</title>
-  <meta name="description" content="Claude Code 기반 TIL 학습 워크플로우 플러그인. 독립 CLI 또는 Obsidian 플러그인으로 사용 가능.">
-  <meta property="og:title" content="Oh My TIL — AI 기반 학습 워크플로우">
-  <meta property="og:description" content="Claude Code 기반 TIL 학습 워크플로우 플러그인. 독립 CLI 또는 Obsidian 플러그인.">
+  <meta name="description" content="AI 기반 Today I Learned 워크플로우. Claude Code로 리서치하고, 배우고, 지식 베이스를 쌓으세요.">
   <meta property="og:type" content="website">
+  <meta property="og:title" content="Oh My TIL — AI 기반 학습 워크플로우">
+  <meta property="og:description" content="AI 기반 Today I Learned 워크플로우. Claude Code로 리서치하고, 배우고, 지식 베이스를 쌓으세요.">
   <meta property="og:url" content="https://songyunseop.github.io/oh-my-til/ko">
-  <link rel="stylesheet" href="../style.css">
+  <meta property="og:image" content="https://songyunseop.github.io/oh-my-til/png/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Oh My TIL — AI 기반 학습 워크플로우">
+  <meta name="twitter:description" content="AI 기반 Today I Learned 워크플로우. Claude Code로 리서치하고, 배우고, 지식 베이스를 쌓으세요.">
+  <meta name="twitter:image" content="https://songyunseop.github.io/oh-my-til/png/og-image.png">
+  <link rel="icon" type="image/png" href="../png/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&family=Noto+Serif+KR:wght@400;500;600&family=Noto+Sans:wght@500&family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #F0F0F0;
+      color: #312927;
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      width: 100%;
+      height: 66px;
+      padding: 0 28px;
+      border-bottom: 1px solid rgba(49, 41, 39, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .navbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 44px;
+      text-decoration: none;
+    }
+
+    .navbar-logo img {
+      height: 34px;
+      width: auto;
+    }
+
+    .navbar-logo-text {
+      font-family: 'Noto Serif', serif;
+      font-weight: 500;
+      font-size: 20px;
+      color: #312927;
+      line-height: 1.362;
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .navbar-actions a {
+      color: #312927;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-lang {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 13px;
+      color: rgba(49, 41, 39, 0.55) !important;
+      transition: color 0.15s ease;
+    }
+
+    .navbar-lang:hover {
+      color: #312927 !important;
+    }
+
+    .navbar-actions svg {
+      display: block;
+    }
+
+    /* ── Hero ── */
+    .hero-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 140px;
+      padding: 0 100px;
+      min-height: 800px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .hero-badge {
+      font-family: 'Noto Sans KR', 'Noto Sans', sans-serif;
+      font-weight: 500;
+      font-size: 18px;
+      color: #DE6F38;
+      line-height: 1.362;
+    }
+
+    .hero-title {
+      font-family: 'Noto Serif', serif;
+      font-weight: 600;
+      font-size: 80px;
+      color: #312927;
+      line-height: 1.362;
+    }
+
+    .hero-description {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 20px;
+      color: rgba(49, 41, 39, 0.76);
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .hero-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #312927;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: 'SFMono-Regular', 'Menlo', monospace;
+      font-weight: 400;
+      font-size: 13px;
+      color: #F0F0F0;
+      text-decoration: none;
+      line-height: 1.6;
+      white-space: nowrap;
+    }
+
+    .hero-btn:hover {
+      background: #3d3533;
+    }
+
+    .btn-copy-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-copy-text {
+      display: none;
+    }
+
+    .btn-icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* ── Hero background decorations ── */
+    .hero-bg-deco {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.55;
+    }
+
+    /* Hero illustration — frame animation */
+    .hero-illustration {
+      position: relative;
+      z-index: 1;
+      width: 320px;
+      height: 257px;
+      flex-shrink: 0;
+    }
+
+    .hero-illustration img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0;
+    }
+
+    /* ── Features ── */
+    .features-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .features {
+      padding: 60px 28px;
+      border-top: 1px solid rgba(49, 41, 39, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 69px;
+    }
+
+    .features-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      width: 698px;
+      max-width: 100%;
+      text-align: center;
+    }
+
+    .features-emoji {
+      font-size: 45px;
+      line-height: 1.5;
+    }
+
+    .features-title {
+      font-family: 'Noto Serif KR', 'Noto Serif', serif;
+      font-weight: 400;
+      font-size: 44px;
+      color: #2F2A2A;
+      line-height: 1.362;
+    }
+
+    .features-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 34px;
+      align-self: stretch;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .features-row {
+      display: flex;
+      align-items: center;
+      gap: 29px;
+      align-self: stretch;
+    }
+
+    .feature-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      flex: 1;
+    }
+
+    .feature-text {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .feature-title {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 20px;
+      color: #312927;
+      line-height: 1.5;
+    }
+
+    .feature-desc {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: rgba(49, 41, 39, 0.82);
+      line-height: 1.7;
+    }
+
+    .feature-desc a {
+      color: #312927;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .feature-desc a:hover {
+      opacity: 0.7;
+    }
+
+    .divider-v {
+      width: 1px;
+      height: 80px;
+      background: #6C6C6C;
+      flex-shrink: 0;
+    }
+
+    .divider-h {
+      height: 1px;
+      background: #6C6C6C;
+      align-self: stretch;
+    }
+
+    /* ── Scroll fade-in ── */
+    .scroll-fade {
+      opacity: 0;
+      transform: translateY(-16px);
+      filter: blur(8px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                  filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .scroll-fade.visible {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0px);
+    }
+    .scroll-fade:nth-child(2) { transition-delay: 0.12s; }
+
+    .scroll-fade-letter {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(-12px);
+      filter: blur(6px);
+      transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                  filter 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .scroll-fade-letter.visible {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0px);
+    }
+
+    /* ── Hero enter animation ── */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-16px); filter: blur(8px); }
+      to   { opacity: 1; transform: translateY(0); filter: blur(0px); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      animation: fadeInDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-title .word {
+      display: inline-block;
+      opacity: 0;
+      animation: fadeInDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    /* ── Demo ── */
+    .demo-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .demo {
+      padding: 60px 28px;
+      border-top: 1px solid rgba(49, 41, 39, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .demo-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      text-align: center;
+    }
+
+    .demo-emoji {
+      font-size: 45px;
+      line-height: 1.5;
+    }
+
+    .demo-title {
+      font-family: 'Noto Serif KR', 'Noto Serif', serif;
+      font-weight: 400;
+      font-size: 44px;
+      color: #2F2A2A;
+      line-height: 1.362;
+    }
+
+    .demo-subtitle {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      color: rgba(49, 41, 39, 0.6);
+      line-height: 1.7;
+    }
+
+    /* ── Carousel ── */
+    .carousel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .carousel-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .carousel-tab {
+      font-family: 'SFMono-Regular', 'Menlo', monospace;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(49, 41, 39, 0.15);
+      background: transparent;
+      color: rgba(49, 41, 39, 0.5);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .carousel-tab:hover {
+      border-color: rgba(49, 41, 39, 0.3);
+      color: #312927;
+    }
+
+    .carousel-tab.active {
+      background: #312927;
+      border-color: #312927;
+      color: #F0F0F0;
+    }
+
+    .carousel-progress {
+      width: 100%;
+      height: 2px;
+      background: rgba(49, 41, 39, 0.08);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .carousel-progress-bar {
+      height: 100%;
+      background: #DE6F38;
+      width: 0%;
+      transition: width 0.3s linear;
+    }
+
+    /* ── Typed terminal ── */
+    .typed-terminal {
+      width: 100%;
+      background: #1E1E1E;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    }
+
+    .typed-terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      background: #2D2D2D;
+    }
+
+    .typed-terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .typed-terminal-dot:nth-child(1) { background: #FF5F56; }
+    .typed-terminal-dot:nth-child(2) { background: #FFBD2E; }
+    .typed-terminal-dot:nth-child(3) { background: #27C93F; }
+
+    .typed-terminal-body {
+      padding: 20px 22px;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      font-family: 'SFMono-Regular', 'Menlo', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
+    .typed-line {
+      display: flex;
+      white-space: nowrap;
+    }
+
+    .typed-prompt {
+      color: #27C93F;
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+
+    .typed-cmd {
+      color: #F0F0F0;
+    }
+
+    .typed-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 16px;
+      background: #F0F0F0;
+      margin-left: 1px;
+      vertical-align: text-bottom;
+      animation: blink 0.8s step-end infinite;
+    }
+
+    .typed-output {
+      color: rgba(240, 240, 240, 0.55);
+      font-size: 13px;
+      white-space: pre-wrap;
+      overflow: hidden;
+    }
+
+    .typed-output .highlight {
+      color: #FFBD2E;
+    }
+
+    .typed-output .success {
+      color: #27C93F;
+    }
+
+    .typed-output .accent {
+      color: #DE6F38;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* ── Workflow ── */
+    .workflow-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .workflow {
+      padding: 60px 28px;
+      border-top: 1px solid rgba(49, 41, 39, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .workflow-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      text-align: center;
+    }
+
+    .workflow-emoji {
+      font-size: 45px;
+      line-height: 1.5;
+    }
+
+    .workflow-title {
+      font-family: 'Noto Serif KR', 'Noto Serif', serif;
+      font-weight: 400;
+      font-size: 44px;
+      color: #2F2A2A;
+      line-height: 1.362;
+    }
+
+    .workflow-subtitle {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      color: rgba(49, 41, 39, 0.6);
+      line-height: 1.5;
+    }
+
+    .workflow-steps {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      align-self: stretch;
+      justify-content: center;
+    }
+
+    .workflow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      flex: 0 1 200px;
+      text-align: center;
+    }
+
+    .workflow-step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #312927;
+      color: #F0F0F0;
+      font-family: 'Noto Serif', serif;
+      font-weight: 500;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .workflow-step-content {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .workflow-step-cmd {
+      font-family: 'SFMono-Regular', 'Menlo', monospace;
+      font-size: 15px;
+      color: #DE6F38;
+      font-weight: 500;
+    }
+
+    .workflow-step-desc {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: rgba(49, 41, 39, 0.7);
+      line-height: 1.6;
+    }
+
+    .workflow-arrow {
+      display: flex;
+      align-items: center;
+      padding-top: 8px;
+      color: rgba(49, 41, 39, 0.25);
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .workflow-cycle {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
+      background: rgba(49, 41, 39, 0.04);
+      border-radius: 16px;
+      border: 1px solid rgba(49, 41, 39, 0.08);
+    }
+
+    .workflow-cycle-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .workflow-cycle-text {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: rgba(49, 41, 39, 0.7);
+      line-height: 1.7;
+    }
+
+    .workflow-cycle-text code {
+      font-family: 'SFMono-Regular', 'Menlo', monospace;
+      font-size: 13px;
+      color: #DE6F38;
+      background: rgba(222, 111, 56, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* ── Install ── */
+    .install-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .install {
+      padding: 60px 28px;
+      border-top: 1px solid rgba(49, 41, 39, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .install-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      text-align: center;
+    }
+
+    .install-emoji {
+      font-size: 45px;
+      line-height: 1.5;
+    }
+
+    .install-title {
+      font-family: 'Noto Serif KR', 'Noto Serif', serif;
+      font-weight: 400;
+      font-size: 44px;
+      color: #2F2A2A;
+      line-height: 1.362;
+    }
+
+    .install-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .install-card {
+      background: #FBFBFB;
+      border-radius: 16px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .install-card-title {
+      font-family: 'Noto Serif KR', 'Noto Serif', serif;
+      font-weight: 500;
+      font-size: 22px;
+      color: #312927;
+      line-height: 1.362;
+    }
+
+    .install-card-desc {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: rgba(49, 41, 39, 0.65);
+      line-height: 1.7;
+    }
+
+    .install-code {
+      background: #312927;
+      border-radius: 10px;
+      padding: 16px;
+      overflow-x: auto;
+    }
+
+    .install-code pre {
+      margin: 0;
+      font-family: 'SFMono-Regular', 'Menlo', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #F0F0F0;
+    }
+
+    .install-code .c-comment {
+      color: rgba(240, 240, 240, 0.4);
+    }
+
+    .install-copy-hint {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 11px;
+      color: rgba(240, 240, 240, 0.35);
+      transition: color 0.15s ease;
+      pointer-events: none;
+    }
+
+    .install-code:hover .install-copy-hint {
+      color: rgba(240, 240, 240, 0.6);
+    }
+
+    .install-prereq {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: rgba(49, 41, 39, 0.55);
+      text-align: center;
+    }
+
+    .install-prereq a {
+      color: #DE6F38;
+      text-decoration: none;
+    }
+
+    .install-prereq a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 28px;
+      border-top: 1px solid rgba(49, 41, 39, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-logo {
+      height: 24px;
+      width: auto;
+    }
+
+    .footer-name {
+      font-family: 'Noto Serif', serif;
+      font-weight: 500;
+      font-size: 15px;
+      color: #312927;
+    }
+
+    .footer-sep {
+      color: rgba(49, 41, 39, 0.24);
+      font-size: 14px;
+    }
+
+    .footer-copy {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: rgba(49, 41, 39, 0.48);
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-link {
+      font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: rgba(49, 41, 39, 0.6);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .footer-link:hover {
+      color: #312927;
+    }
+
+    /* ── Responsive (≤ 810px) ── */
+    @media (max-width: 810px) {
+      .navbar {
+        padding: 0 16px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 100px;
+        grid-template-rows: auto auto;
+        gap: 24px 8px;
+        padding: 40px 16px;
+        min-height: auto;
+      }
+
+      .hero-title {
+        font-size: 52px;
+      }
+
+      .hero-description {
+        font-size: 16px;
+      }
+
+      .hero-content {
+        display: contents;
+      }
+
+      .hero-text {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .hero-illustration {
+        grid-column: 2;
+        grid-row: 1;
+        width: 100px;
+        height: auto;
+        aspect-ratio: 320 / 257;
+        align-self: center;
+      }
+
+      .hero-actions {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+
+      .hero-bg-deco {
+        display: none;
+      }
+
+      .hero-btn {
+        font-size: 11px;
+        padding: 10px 12px;
+      }
+
+      .features {
+        padding: 40px 20px;
+        gap: 40px;
+      }
+
+      .features-title {
+        font-size: 32px;
+      }
+
+      .features-row {
+        flex-direction: column;
+        gap: 32px;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      .divider-v {
+        display: none;
+      }
+
+      .divider-h {
+        display: none;
+      }
+
+      .demo-title,
+      .workflow-title,
+      .install-title {
+        font-size: 32px;
+      }
+
+      .carousel-tabs {
+        gap: 4px;
+      }
+
+      .carousel-tab {
+        font-size: 12px;
+        padding: 5px 10px;
+      }
+
+      .workflow-steps {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .workflow-arrow {
+        transform: rotate(90deg);
+        padding-top: 0;
+      }
+
+      .workflow-step {
+        flex: none;
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .workflow-cycle {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .typed-terminal-body {
+        font-size: 12px;
+        min-height: 420px;
+        padding: 16px 14px;
+      }
+
+      .typed-output {
+        font-size: 11px;
+      }
+
+      .footer {
+        flex-direction: column;
+        gap: 16px;
+        padding: 32px 16px;
+        text-align: center;
+      }
+
+      .footer-links {
+        gap: 16px;
+      }
+    }
+
+    /* ── Responsive (≤ 480px) ── */
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 40px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .hero-btn {
+        width: 100%;
+        justify-content: center;
+        font-size: 11px;
+      }
+
+      .demo {
+        padding: 40px 16px;
+      }
+
+      .demo-subtitle {
+        font-size: 14px;
+      }
+
+      .typed-terminal-body {
+        font-size: 11px;
+        min-height: 380px;
+        padding: 12px 10px;
+      }
+
+      .typed-output {
+        font-size: 10px;
+      }
+
+      .install-card {
+        padding: 20px 16px;
+      }
+
+      .install-code pre {
+        font-size: 11px;
+      }
+
+      .workflow {
+        padding: 40px 16px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Nav -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="#" class="nav-brand">Oh My TIL</a>
-      <div class="nav-links">
-        <a href="#features">기능</a>
-        <a href="#demo">데모</a>
-        <a href="#workflow">워크플로우</a>
-        <a href="#install">설치</a>
-        <a href="../" class="nav-lang">EN</a>
-        <a href="https://github.com/SongYunSeop/oh-my-til" class="nav-github" target="_blank" rel="noopener">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar">
+      <a href="#" class="navbar-logo">
+        <img src="../png/logo.png" alt="Oh My TIL 로고">
+        <span class="navbar-logo-text">oh my til</span>
+      </a>
+      <div class="navbar-actions">
+        <a href="../" class="navbar-lang">EN</a>
+        <a href="https://github.com/SongYunSeop/oh-my-til" aria-label="GitHub">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M16 3C8.82 3 3 8.82 3 16c0 5.75 3.73 10.62 8.9 12.34.65.12.89-.28.89-.62v-2.17c-3.62.79-4.38-1.74-4.38-1.74-.59-1.5-1.44-1.9-1.44-1.9-1.18-.8.09-.79.09-.79 1.3.09 1.99 1.34 1.99 1.34 1.16 1.98 3.04 1.41 3.78 1.08.12-.84.45-1.41.82-1.74-2.89-.33-5.93-1.44-5.93-6.43 0-1.42.51-2.58 1.34-3.49-.13-.33-.58-1.65.13-3.44 0 0 1.09-.35 3.58 1.34a12.46 12.46 0 013.26-.44c1.1.01 2.21.15 3.25.44 2.48-1.69 3.57-1.34 3.57-1.34.71 1.79.26 3.11.13 3.44.84.91 1.34 2.07 1.34 3.49 0 5-3.05 6.1-5.95 6.42.47.4.88 1.19.88 2.4v3.56c0 .34.23.75.89.62C25.28 26.62 29 21.75 29 16c0-7.18-5.82-13-13-13z" fill="#312927"/>
+          </svg>
         </a>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-badge">v1.1.1 &mdash; 오픈소스</div>
-      <h1>Oh My TIL</h1>
-      <p class="hero-tagline">AI 기반 <strong>Today I Learned</strong> 워크플로우.<br>Claude Code로 리서치하고, 배우고, 지식 베이스를 쌓으세요.</p>
-      <div class="hero-actions">
-        <div class="hero-install" onclick="copyInstall(this)" role="button" tabindex="0">
-          <code>claude plugin install oh-my-til</code>
-          <span class="copy-hint">클릭하여 복사</span>
+  <!-- Hero Section -->
+  <div class="hero-wrapper">
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-text">
+          <div>
+            <p class="hero-badge fade-in" style="animation-delay:0s">v1.1.2 — 오픈소스</p>
+            <h1 class="hero-title"><span class="word" style="animation-delay:0.18s">o</span><span class="word" style="animation-delay:0.25s">h</span> <span class="word" style="animation-delay:0.32s">m</span><span class="word" style="animation-delay:0.39s">y</span> <span class="word" style="animation-delay:0.46s">t</span><span class="word" style="animation-delay:0.53s">i</span><span class="word" style="animation-delay:0.60s">l</span></h1>
+          </div>
+          <p class="hero-description fade-in" style="animation-delay:0.62s">
+            AI 기반&nbsp;Today I Learned&nbsp;워크플로우.<br>
+            Claude Code로 리서치하고, 배우고, 지식 베이스를 쌓으세요.
+          </p>
         </div>
-        <a href="https://github.com/SongYunSeop/oh-my-til" class="btn btn-secondary" target="_blank" rel="noopener">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-          GitHub
-        </a>
+        <div class="hero-actions fade-in" style="animation-delay:0.78s">
+          <button class="hero-btn" onclick="copyCommand(this)">
+            <span style="white-space:pre-line; text-align:left;">claude plugin marketplace add SongYunSeop/oh-my-til
+claude plugin install oh-my-til --scope project</span>
+            <span class="btn-copy-group">
+              <span class="btn-copy-text">클릭하여 복사</span>
+              <svg class="btn-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="7.5" y="7.5" width="9" height="9" rx="1.5" stroke="#F0F0F0" stroke-width="1.25"/>
+                <path d="M5 12.5H4.5A1.5 1.5 0 013 11V4.5A1.5 1.5 0 014.5 3H11A1.5 1.5 0 0112.5 4.5V5" stroke="#F0F0F0" stroke-width="1.25" stroke-linecap="round"/>
+              </svg>
+            </span>
+          </button>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Features -->
-  <section class="features" id="features">
-    <div class="container">
-      <h2>효과적인 학습에 필요한 모든 것</h2>
+      <div class="hero-illustration fade-in" style="animation-delay:0.35s">
+        <img src="../png/hero_section_1.png" alt="/research /til">
+        <img src="../png/hero_section_2.png" alt="">
+        <img src="../png/hero_section_3.png" alt="">
+        <img src="../png/hero_section_4.png" alt="">
+      </div>
+
+      <!-- Background decorations -->
+      <img class="hero-bg-deco" src="../png/magnifying_glass.png" alt=""
+           style="width:100px; bottom:80px; left:60px;">
+      <img class="hero-bg-deco" src="../png/bulb.png" alt=""
+           style="width:110px; top:52px; right:160px;">
+      <img class="hero-bg-deco" src="../png/claude.png" alt=""
+           style="width:90px; top:120px; left:180px; opacity:0.3;">
+    </section>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-wrapper">
+    <section class="features">
+      <div class="features-header">
+        <div class="features-emoji scroll-fade">💪</div>
+        <h2 class="features-title">
+          <span class="scroll-fade-letter" style="transition-delay:0.080s">배</span><span class="scroll-fade-letter" style="transition-delay:0.115s">움</span><span class="scroll-fade-letter" style="transition-delay:0.150s">을</span> <span class="scroll-fade-letter" style="transition-delay:0.185s">위</span><span class="scroll-fade-letter" style="transition-delay:0.220s">한</span> <span class="scroll-fade-letter" style="transition-delay:0.255s">완</span><span class="scroll-fade-letter" style="transition-delay:0.290s">벽</span><span class="scroll-fade-letter" style="transition-delay:0.325s">한</span> <span class="scroll-fade-letter" style="transition-delay:0.360s">도</span><span class="scroll-fade-letter" style="transition-delay:0.395s">구</span>
+        </h2>
+      </div>
+
       <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">&#x1F4BB;</div>
-          <h3>임베디드 터미널</h3>
-          <p>Obsidian 사이드바에 Claude Code 터미널을 임베딩. 독립 CLI로도 사용 가능 &mdash; Obsidian 불필요.</p>
+        <!-- Row 1 -->
+        <div class="features-row">
+          <div class="feature-card">
+            <div class="feature-text">
+              <div class="feature-title">AI 기반 학습</div>
+              <div class="feature-desc">대화로 배웁니다. Claude가 리서치하고, 가르치고, 퀴즈를 내고, 배운 내용을 TIL로 저장합니다.</div>
+            </div>
+          </div>
+
+          <div class="divider-v"></div>
+
+          <div class="feature-card">
+            <div class="feature-text">
+              <div class="feature-title">간격 반복 복습 (SRS)</div>
+              <div class="feature-desc">SM-2 알고리즘으로 TIL 복습 스케줄링. /til-review로 Anki 스타일 평가.</div>
+            </div>
+          </div>
+
+          <div class="divider-v"></div>
+
+          <div class="feature-card">
+            <div class="feature-text">
+              <div class="feature-title">학습 대시보드</div>
+              <div class="feature-desc">TIL 통계, 카테고리 분석, 스트릭, 히트맵을 한눈에 확인.</div>
+            </div>
+          </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#x1F50C;</div>
-          <h3>내장 MCP 서버</h3>
-          <p>Claude Code가 HTTP를 통해 vault에 직접 접근. 컨텍스트 기반 리서치와 학습.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#x1F4CA;</div>
-          <h3>학습 대시보드</h3>
-          <p>TIL 통계, 카테고리 분석, 스트릭, 히트맵을 한눈에 확인.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#x1F501;</div>
-          <h3>간격 반복 복습 (SRS)</h3>
-          <p>SM-2 알고리즘으로 TIL 복습 스케줄링. Anki 스타일 <code>/til-review</code> 평가.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#x26A1;</div>
-          <h3>자동 설치 스킬</h3>
-          <p><code>/til</code>, <code>/research</code>, <code>/backlog</code>, <code>/save</code>, <code>/til-review</code>, <code>/dashboard</code> &mdash; 설치 즉시 사용 가능.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#x1F517;</div>
-          <h3>스마트 링크 감지</h3>
-          <p>터미널의 마크다운 링크를 클릭 가능. CJK 너비 계산 지원.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">&#x1F4C2;</div>
-          <h3>백로그 시스템</h3>
-          <p>리서치가 백로그를 생성. 진행률 추적으로 다음에 배울 것을 관리.</p>
+
+        <!-- Horizontal divider -->
+        <div class="divider-h"></div>
+
+        <!-- Row 2 -->
+        <div class="features-row">
+          <div class="feature-card">
+            <div class="feature-text">
+              <div class="feature-title">내장 MCP 서버</div>
+              <div class="feature-desc">Claude Code가 HTTP로 TIL 노트에 직접 접근. 컨텍스트 기반 리서치와 학습.</div>
+            </div>
+          </div>
+
+          <div class="divider-v"></div>
+
+          <div class="feature-card">
+            <div class="feature-text">
+              <div class="feature-title">정적 사이트 배포</div>
+              <div class="feature-desc">단일 명령으로 TIL을 정적 사이트로 배포. <a href="https://songyunseop.github.io/obsidian-vault/" target="_blank" rel="noopener">예시 보기</a></div>
+            </div>
+          </div>
+
+          <div class="divider-v"></div>
+
+          <div class="feature-card">
+            <div class="feature-text">
+              <div class="feature-title">Obsidian 연동</div>
+              <div class="feature-desc">임베디드 터미널, 파일 감시, 대시보드와 함께 Obsidian에서 사용.</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
-  <!-- Demo -->
-  <section class="demo" id="demo">
-    <div class="container">
-      <h2>실제 동작 화면</h2>
-      <p class="demo-subtitle">Claude Code가 주제를 리서치하고, 대화형 학습을 안내하며, 구조화된 TIL 노트를 저장합니다.</p>
+  <!-- Demo Section -->
+  <div class="demo-wrapper">
+    <section class="demo" id="demo">
+      <div class="demo-header scroll-fade">
+        <div class="demo-emoji">🎬</div>
+        <h2 class="demo-title">실제 동작 화면</h2>
+        <p class="demo-subtitle">Claude Code가 주제를 리서치하고, 대화형 학습을 안내하며, 구조화된 TIL 노트를 저장합니다.</p>
+      </div>
 
-      <div class="demo-row-label">터미널 스킬</div>
-      <div class="demo-grid demo-grid-3">
-        <div class="demo-item">
-          <div class="demo-label">/til &mdash; 대화형 학습</div>
-          <img src="../screenshots/terminal-til.png" alt="Oh My TIL — /til 대화형 학습 세션" loading="lazy">
+      <div class="carousel scroll-fade" id="carousel">
+        <div class="carousel-tabs" id="carouselTabs">
+          <button class="carousel-tab active" data-idx="0">/research</button>
+          <button class="carousel-tab" data-idx="1">/til</button>
+          <button class="carousel-tab" data-idx="2">/til-review</button>
+          <button class="carousel-tab" data-idx="3">/backlog</button>
+          <button class="carousel-tab" data-idx="4">/dashboard</button>
         </div>
-        <div class="demo-item">
-          <div class="demo-label">/research &mdash; 백로그 생성</div>
-          <img src="../screenshots/terminal-research.png" alt="Oh My TIL — /research 백로그 생성" loading="lazy">
+        <div class="typed-terminal" id="typedTerminal">
+          <div class="typed-terminal-bar">
+            <div class="typed-terminal-dot"></div>
+            <div class="typed-terminal-dot"></div>
+            <div class="typed-terminal-dot"></div>
+          </div>
+          <div class="typed-terminal-body" id="typedBody">
+            <div class="typed-line">
+              <span class="typed-prompt">❯</span>
+              <span class="typed-cmd" id="typedCmd"></span>
+              <span class="typed-cursor" id="typedCursor"></span>
+            </div>
+            <div class="typed-output" id="typedOutput"></div>
+          </div>
         </div>
-        <div class="demo-item">
-          <div class="demo-label">/backlog &mdash; 진행률 추적</div>
-          <img src="../screenshots/terminal-backlog.png" alt="Oh My TIL — /backlog 진행률 추적" loading="lazy">
+        <div class="carousel-progress">
+          <div class="carousel-progress-bar" id="carouselProgress"></div>
         </div>
       </div>
 
-      <div class="demo-row-label">Obsidian 통합</div>
-      <div class="demo-grid demo-grid-2">
-        <div class="demo-item">
-          <div class="demo-label">대시보드 &mdash; 통계, 히트맵, 카테고리</div>
-          <img src="../screenshots/dashboard.png" alt="Oh My TIL — Obsidian 학습 대시보드" loading="lazy">
-        </div>
-        <div class="demo-item">
-          <div class="demo-label">분할 뷰 &mdash; 노트 + 터미널</div>
-          <img src="../screenshots/splitview.png" alt="Oh My TIL — 노트와 터미널 분할 뷰" loading="lazy">
-        </div>
+    </section>
+  </div>
+
+  <!-- Workflow Section -->
+  <div class="workflow-wrapper">
+    <section class="workflow" id="workflow">
+      <div class="workflow-header scroll-fade">
+        <div class="workflow-emoji">🔄</div>
+        <h2 class="workflow-title">학습 루프</h2>
+        <p class="workflow-subtitle">두 가지 진입점, 하나의 순환 사이클.</p>
       </div>
-    </div>
-  </section>
 
-  <!-- Learning Loop -->
-  <section class="loop" id="workflow">
-    <div class="container">
-      <h2>학습 루프</h2>
-      <p class="loop-subtitle">두 가지 진입점, 하나의 순환 사이클.</p>
-
-      <div class="loop-flow">
-        <!-- Entry -->
-        <div class="flow-row">
-          <div class="flow-node flow-node-accent">
-            <code>claude</code>
-            <p>Claude Code 시작</p>
+      <div class="workflow-steps scroll-fade">
+        <div class="workflow-step">
+          <div class="workflow-step-num">1</div>
+          <div class="workflow-step-content">
+            <div class="workflow-step-cmd">/research topic</div>
+            <div class="workflow-step-desc">어떤 주제든 구조화된 학습 백로그를 생성</div>
           </div>
         </div>
-
-        <!-- Branch connectors -->
-        <div class="flow-branch-lines">
-          <div class="flow-branch-stem"></div>
-          <div class="flow-branch-bar"></div>
-          <div class="flow-branch-arm-l"></div>
-          <div class="flow-branch-arm-r"></div>
-        </div>
-
-        <!-- Two entry paths -->
-        <div class="flow-branch">
-          <div class="flow-branch-item">
-            <div class="flow-branch-label">빠른 시작</div>
-            <div class="flow-node">
-              <code>/til topic</code>
-              <p>리서치 + 학습 + 저장을<br>한 세션에서</p>
-            </div>
-          </div>
-          <div class="flow-branch-item">
-            <div class="flow-branch-label">심화 학습</div>
-            <div class="flow-node">
-              <code>/research topic</code>
-              <p>구조화된 학습<br>백로그 생성</p>
-            </div>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step">
+          <div class="workflow-step-num">2</div>
+          <div class="workflow-step-content">
+            <div class="workflow-step-cmd">/til topic</div>
+            <div class="workflow-step-desc">리서치, 대화형 학습, TIL 노트 저장</div>
           </div>
         </div>
-
-        <!-- Merge connectors -->
-        <div class="flow-merge-lines">
-          <div class="flow-merge-arm-l"></div>
-          <div class="flow-merge-arm-r"></div>
-          <div class="flow-merge-bar"></div>
-          <div class="flow-merge-stem"></div>
-        </div>
-
-        <!-- Knowledge Base -->
-        <div class="flow-row">
-          <div class="flow-node flow-node-green">
-            <div class="flow-node-emoji">&#x1F4DA;</div>
-            <p><strong>지식 베이스</strong><br>TIL 노트 &bull; 데일리 노트 &bull; MOC</p>
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step">
+          <div class="workflow-step-num">3</div>
+          <div class="workflow-step-content">
+            <div class="workflow-step-cmd">/til-review</div>
+            <div class="workflow-step-desc">SM-2 스케줄링 기반 간격 반복 복습</div>
           </div>
         </div>
-
-        <div class="flow-arrow">&#x25BC;</div>
-
-        <!-- Review cycle -->
-        <div class="flow-cycle">
-          <div class="flow-cycle-label">복습 사이클 &mdash; 간격 반복 (SM-2)</div>
-          <div class="flow-cycle-row">
-            <div class="flow-node">
-              <code>/til-review</code>
-              <p>오늘 복습 카드<br>Anki 스타일 평가</p>
-            </div>
-            <div class="flow-cycle-arrow">&#x2192;</div>
-            <div class="flow-node flow-node-green">
-              <div class="flow-node-emoji">&#x1F4C8;</div>
-              <p>SM-2 재스케줄링<br>다음 복습일 설정</p>
-            </div>
-          </div>
-          <div class="flow-cycle-back">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15A9 9 0 0 0 21 12 9 9 0 0 0 5.64 5.64L1 10"/></svg>
-            예정일에 다음 복습
-          </div>
-        </div>
-
-        <div class="flow-arrow">&#x25BC;</div>
-
-        <!-- Backlog cycle -->
-        <div class="flow-cycle">
-          <div class="flow-cycle-label">백로그 사이클 &mdash; 완료할 때까지 반복</div>
-          <div class="flow-cycle-row">
-            <div class="flow-node">
-              <code>/backlog</code>
-              <p>진행률 확인<br>다음 주제 선택</p>
-            </div>
-            <div class="flow-cycle-arrow">&#x2192;</div>
-            <div class="flow-node">
-              <code>/til topic</code>
-              <p>주제를 대화형으로<br>학습</p>
-            </div>
-            <div class="flow-cycle-arrow">&#x2192;</div>
-            <div class="flow-node flow-node-green">
-              <div class="flow-node-emoji">&#x2705;</div>
-              <p>TIL 저장<br>백로그 체크</p>
-            </div>
-          </div>
-          <div class="flow-cycle-back">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15A9 9 0 0 0 21 12 9 9 0 0 0 5.64 5.64L1 10"/></svg>
-            백로그에서 다음 주제
+        <div class="workflow-arrow">→</div>
+        <div class="workflow-step">
+          <div class="workflow-step-num">4</div>
+          <div class="workflow-step-content">
+            <div class="workflow-step-cmd">/backlog</div>
+            <div class="workflow-step-desc">진행률 확인 및 다음 주제 선택</div>
           </div>
         </div>
       </div>
 
-    </div>
-  </section>
+      <div class="workflow-cycle scroll-fade">
+        <div class="workflow-cycle-icon">♻️</div>
+        <div class="workflow-cycle-text">
+          사이클이 반복됩니다: <code>/backlog</code>에서 <code>/til</code>로, 완료된 TIL은 <code>/til-review</code>로 스케줄링, <code>/research</code>로 백로그를 계속 채웁니다.
+        </div>
+      </div>
+    </section>
+  </div>
 
-  <!-- Install -->
-  <section class="install" id="install">
-    <div class="container">
-      <h2>몇 초 만에 시작하기</h2>
-      <div class="install-options">
+  <!-- Install Section -->
+  <div class="install-wrapper">
+    <section class="install" id="install">
+      <div class="install-header scroll-fade">
+        <div class="install-emoji">🚀</div>
+        <h2 class="install-title">몇 초 만에 시작하기</h2>
+      </div>
+
+      <div class="install-cards scroll-fade">
         <div class="install-card">
-          <h3>Claude Code Plugin</h3>
-          <p>스킬, MCP 서버, 훅 자동 등록. 권장 방법.</p>
-          <div class="code-block">
-            <pre><code><span class="c-comment"># marketplace 등록 &amp; 플러그인 설치</span>
-claude plugin marketplace add https://github.com/SongYunSeop/oh-my-til.git --scope project
-claude plugin install oh-my-til@oh-my-til --scope project</code></pre>
+          <div class="install-card-title">Claude Code Plugin</div>
+          <div class="install-card-desc">스킬, MCP 서버, 훅이 자동으로 등록됩니다. 권장 방법.</div>
+          <div class="install-code" onclick="copyInstall(this, 'claude plugin marketplace add SongYunSeop/oh-my-til && claude plugin install oh-my-til --scope project')" style="cursor:pointer; position:relative;">
+            <pre><code><span class="c-comment"># TIL 디렉토리에서 실행</span>
+claude plugin marketplace add SongYunSeop/oh-my-til
+
+<span class="c-comment"># 플러그인 설치</span>
+claude plugin install oh-my-til --scope project</code></pre>
+            <span class="install-copy-hint">클릭하여 복사</span>
           </div>
         </div>
         <div class="install-card">
-          <h3>독립 CLI</h3>
-          <p>Obsidian 없이 사용. Node.js와 Claude Code만 있으면 됩니다.</p>
-          <div class="code-block">
-            <pre><code><span class="c-comment"># 초기화</span>
-npx oh-my-til init ~/my-til
+          <div class="install-card-title">Obsidian 연동</div>
+          <div class="install-card-desc">선택 사항. Obsidian에 임베디드 터미널과 대시보드를 추가합니다.</div>
+          <div class="install-code" onclick="copyInstall(this, '/setup-obsidian')" style="cursor:pointer; position:relative;">
+            <pre><code><span class="c-comment"># Claude Code 내에서 실행</span>
+/setup-obsidian</code></pre>
+            <span class="install-copy-hint">클릭하여 복사</span>
+          </div>
+        </div>
+      </div>
 
-<span class="c-comment"># 학습 시작</span>
-cd ~/my-til && claude</code></pre>
-          </div>
-        </div>
-        <div class="install-card">
-          <h3>Obsidian 플러그인</h3>
-          <p>임베디드 터미널 + 파일 감시 + 대시보드.</p>
-          <div class="code-block">
-            <pre><code><span class="c-comment"># 플러그인 자동 설치</span>
-npx oh-my-til init ~/vault</code></pre>
-          </div>
-        </div>
+      <div class="install-prereq scroll-fade">
+        <strong>필요 환경:</strong> <a href="https://nodejs.org" target="_blank" rel="noopener">Node.js</a> 18+ · <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code CLI</a>
       </div>
-      <div class="install-prereq">
-        <strong>필요 환경:</strong> <a href="https://nodejs.org" target="_blank" rel="noopener">Node.js</a> 18+ &bull; <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code CLI</a>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-links">
-        <a href="https://github.com/SongYunSeop/oh-my-til" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://github.com/SongYunSeop/oh-my-til/releases" target="_blank" rel="noopener">릴리즈</a>
-        <a href="https://github.com/SongYunSeop/oh-my-til/issues" target="_blank" rel="noopener">이슈</a>
-      </div>
-      <p class="footer-copy">MIT License &copy; 2026 <a href="https://github.com/SongYunSeop" target="_blank" rel="noopener">SongYunSeop</a></p>
+  <footer class="footer">
+    <div class="footer-left">
+      <img class="footer-logo" src="../png/logo.png" alt="">
+      <span class="footer-name">oh my til</span>
+      <span class="footer-sep">·</span>
+      <span class="footer-copy">&copy; 2026 SongYunSeop</span>
+      <span class="footer-sep">·</span>
+      <span class="footer-copy">MIT License</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/SongYunSeop/oh-my-til" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/SongYunSeop/oh-my-til/releases" class="footer-link" target="_blank" rel="noopener">릴리즈</a>
+      <a href="https://github.com/SongYunSeop/oh-my-til/issues" class="footer-link" target="_blank" rel="noopener">이슈</a>
     </div>
   </footer>
 
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox">
-    <img src="" alt="">
-  </div>
-
   <script>
-    function copyInstall(el) {
-      const text = 'claude plugin install oh-my-til';
+    // Frame animation
+    (function () {
+      const frames = [...document.querySelectorAll('.hero-illustration img')];
+      let idx = 0;
+      frames[0].style.opacity = '1';
+      setInterval(() => {
+        frames[idx].style.opacity = '0';
+        idx = (idx + 1) % frames.length;
+        frames[idx].style.opacity = '1';
+      }, 160);
+    })();
+
+    // Scroll fade-in via IntersectionObserver
+    (function () {
+      const opts = { rootMargin: '0px 0px -120px 0px', threshold: 0 };
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          e.target.querySelectorAll('.scroll-fade-letter').forEach(el => el.classList.add('visible'));
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        });
+      }, opts);
+      document.querySelectorAll('.scroll-fade, .features-header').forEach(el => io.observe(el));
+    })();
+
+    // Carousel typed terminal
+    (function () {
+      const demos = [
+        {
+          cmd: '/research react server components',
+          output: [
+            '기존 TIL 확인 중... 관련 노트 2개 발견.',
+            '서브토픽 및 의존성 리서치 중...',
+            '',
+            '## 기초 (0/3)',
+            '- ( ) <span class="accent">서버 컴포넌트 vs 클라이언트 컴포넌트</span>',
+            '- ( ) <span class="accent">use client / use server 디렉티브</span>',
+            '- ( ) <span class="accent">언제 어떤 컴포넌트를 쓸까</span>',
+            '',
+            '## 데이터 & 렌더링 (0/3)',
+            '- ( ) <span class="accent">서버 사이드 데이터 페칭</span>',
+            '- ( ) <span class="accent">스트리밍과 Suspense</span>',
+            '- ( ) <span class="accent">캐싱 전략</span>',
+            '',
+            '## 심화 (0/2)',
+            '- ( ) <span class="accent">컴포지션 패턴</span>',
+            '- ( ) <span class="accent">클라이언트 전용 앱에서 마이그레이션</span>',
+            '',
+            '<span class="success">✓</span> <span class="accent">til/react/backlog.md</span>에 저장됨 (8개 항목)',
+          ]
+        },
+        {
+          cmd: '/til typescript generics',
+          output: [
+            '기존 TIL 확인 중... 없음.',
+            '웹 검색으로 <span class="highlight">TypeScript 제네릭</span> 리서치 중...',
+            '',
+            '제네릭은 재사용 가능한 타입 안전 코드를 작성하게 해줍니다.',
+            '<span class="highlight">&lt;T&gt;</span>를 "타입 변수"로 생각하면 됩니다.',
+            '',
+            '제네릭에 대해 이미 알고 있는 게 있나요?',
+            '수준에 맞게 학습을 조정할게요.',
+            '',
+            '<span class="highlight">&gt; Array&lt;T&gt;는 알지만 제약 조건은 모름</span>',
+            '',
+            '좋아요! 그럼 .length 속성을 가진 객체만',
+            '받는 함수를 작성해 보세요:',
+            '',
+            '```ts',
+            'function logLength<span class="accent">&lt;T extends { length: number }&gt;</span>',
+            '  (arg: T): void { ... }',
+            '```',
+            '',
+            '여기서 <span class="accent">extends</span>가 왜 필요할까요?',
+            '<span class="highlight">number</span>를 넘기면 어떻게 될까요?',
+          ]
+        },
+        {
+          cmd: '/til-review',
+          output: [
+            '오늘 복습할 카드 <span class="highlight">3개</span>가 있습니다.',
+            '',
+            '모드 선택:',
+            '  1. 단순 모드 (다시 / 완료)',
+            '  2. 상세 모드 (다시 / 어려움 / 완료 / 쉬움)',
+            '',
+            '────────────────────────────────────',
+            '',
+            '<span class="accent">[1/3]</span> <span class="highlight">TypeScript — type vs interface</span>',
+            '  반복: 3회  |  EF: 2.5  |  지연: 1일',
+            '',
+            'Q: <span class="highlight">type</span>을 <span class="highlight">interface</span> 대신 써야 하는 경우는?',
+            '   type만 가능한 예시를 들어보세요.',
+            '',
+            '> <span class="success">완료 (기억함)</span> / 다시 (잊어버림)',
+          ]
+        },
+        {
+          cmd: '/backlog',
+          output: [
+            '<span class="accent">react</span>        <span class="success">███</span><span class="highlight">░░░░░░░</span>  3/8   37%   2일 전',
+            '<span class="accent">typescript</span>   <span class="success">█████</span><span class="highlight">░░░░░</span>  4/8   50%   오늘',
+            '<span class="accent">css</span>          <span class="success">██████████</span>  5/5  100%   1주일 전',
+            '<span class="accent">node</span>         <span class="success">██</span><span class="highlight">░░░░░░░░</span>  1/5   20%   3일 전',
+            '<span class="accent">docker</span>       <span class="highlight">░░░░░░░░░░</span>  0/6    0%   —',
+            '',
+            '총 5개 카테고리에서 <span class="highlight">13/32</span>개 완료.',
+            '',
+            '<span class="accent">/backlog react</span> →',
+            '',
+            '## 기초 (3/3) <span class="success">✓ 완료</span>',
+            '  (x) <span class="success">서버 vs 클라이언트 컴포넌트</span>',
+            '  (x) <span class="success">use client / use server 디렉티브</span>',
+            '  (x) <span class="success">언제 어떤 컴포넌트를 쓸까</span>',
+            '',
+            '## 데이터 & 렌더링 (0/3)',
+            '  ( ) 서버 사이드 데이터 페칭',
+            '  ( ) 스트리밍과 Suspense',
+            '  ( ) 캐싱 전략',
+          ]
+        },
+        {
+          cmd: '/dashboard',
+          output: [
+            '## 요약',
+            '  📝 전체 TIL: <span class="highlight">47</span>     📂 카테고리: <span class="highlight">8</span>',
+            '  📅 이번 주:  <span class="highlight">3</span>      🔥 스트릭: <span class="success">12일</span>',
+            '',
+            '## 활동 히트맵 (24주)',
+            '  <span class="success">▁▂▃▁▅▇▃▂▅▃▇▅▂▃▅▇▃▅▂▇▅▃▁▅</span>',
+            '',
+            '## 카테고리',
+            '  <span class="accent">typescript</span>   TIL 12개   마지막: 오늘',
+            '  <span class="accent">react</span>         TIL 9개   마지막: 어제',
+            '  <span class="accent">css</span>           TIL 8개   마지막: 3일 전',
+            '  <span class="accent">node</span>          TIL 7개   마지막: 5일 전',
+            '  <span class="accent">docker</span>        TIL 5개   마지막: 1주일 전',
+            '',
+            '## 백로그 진행률',
+            '  <span class="accent">css</span>          <span class="success">██████████</span> 100%',
+            '  <span class="accent">typescript</span>   <span class="success">█████</span><span class="highlight">░░░░░</span>  50%',
+            '  <span class="accent">react</span>        <span class="success">███</span><span class="highlight">░░░░░░░</span>  37%',
+          ]
+        },
+      ];
+
+      const cmdEl = document.getElementById('typedCmd');
+      const outputEl = document.getElementById('typedOutput');
+      const cursorEl = document.getElementById('typedCursor');
+      const carousel = document.getElementById('carousel');
+      const progressBar = document.getElementById('carouselProgress');
+      const tabs = [...document.querySelectorAll('.carousel-tab')];
+      let demoIdx = 0;
+      let started = false;
+      let animating = false;
+      let autoTimer = null;
+
+      function updateTabs() {
+        tabs.forEach((t, i) => t.classList.toggle('active', i === demoIdx));
+      }
+
+      function typeCmd(text, cb) {
+        let i = 0;
+        function t() {
+          if (!animating) return;
+          cmdEl.textContent = text.slice(0, ++i);
+          if (i >= text.length) { cb(); return; }
+          setTimeout(t, 55 + Math.random() * 35);
+        }
+        t();
+      }
+
+      function showOutput(lines, cb) {
+        cursorEl.style.display = 'none';
+        let i = 0;
+        function next() {
+          if (!animating) return;
+          if (i >= lines.length) { cb(); return; }
+          outputEl.innerHTML += (i > 0 ? '\n' : '') + lines[i];
+          i++;
+          setTimeout(next, 100);
+        }
+        next();
+      }
+
+      function startProgress(duration) {
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        requestAnimationFrame(() => {
+          progressBar.style.transition = 'width ' + duration + 'ms linear';
+          progressBar.style.width = '100%';
+        });
+      }
+
+      function runDemo() {
+        animating = true;
+        updateTabs();
+        cmdEl.textContent = '';
+        outputEl.innerHTML = '';
+        cursorEl.style.display = '';
+
+        const demo = demos[demoIdx];
+        const typeDuration = demo.cmd.length * 70;
+        const outputDuration = demo.output.length * 100;
+        const totalDuration = typeDuration + 300 + outputDuration + 3000;
+        startProgress(totalDuration);
+
+        typeCmd(demo.cmd, () => {
+          setTimeout(() => {
+            showOutput(demo.output, () => {
+              autoTimer = setTimeout(() => {
+                goTo((demoIdx + 1) % demos.length);
+              }, 3000);
+            });
+          }, 300);
+        });
+      }
+
+      function goTo(idx) {
+        animating = false;
+        clearTimeout(autoTimer);
+        demoIdx = idx;
+        setTimeout(runDemo, 200);
+      }
+
+      // Tab clicks
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          goTo(parseInt(tab.dataset.idx));
+        });
+      });
+
+      // Start when scrolled into view
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !started) {
+          started = true;
+          setTimeout(runDemo, 600);
+          io.disconnect();
+        }
+      }, { threshold: 0.3 });
+      io.observe(carousel);
+    })();
+
+    function copyInstall(el, text) {
       navigator.clipboard.writeText(text).then(() => {
-        const hint = el.querySelector('.copy-hint');
+        const hint = el.querySelector('.install-copy-hint');
+        const original = hint.textContent;
         hint.textContent = '복사됨!';
-        setTimeout(() => { hint.textContent = '클릭하여 복사'; }, 2000);
+        hint.style.color = 'rgba(39, 201, 63, 0.8)';
+        setTimeout(() => {
+          hint.textContent = original;
+          hint.style.color = '';
+        }, 1500);
       });
     }
 
-    // Lightbox
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = lightbox.querySelector('img');
-
-    document.querySelectorAll('.demo-item img').forEach(img => {
-      img.addEventListener('click', () => {
-        lightboxImg.src = img.src;
-        lightboxImg.alt = img.alt;
-        lightbox.classList.add('active');
+    function copyCommand(btn) {
+      navigator.clipboard.writeText('claude plugin marketplace add SongYunSeop/oh-my-til && claude plugin install oh-my-til --scope project').then(() => {
+        const copyText = btn.querySelector('.btn-copy-text');
+        const icon = btn.querySelector('.btn-icon');
+        if (copyText) {
+          const original = copyText.textContent;
+          copyText.textContent = '복사됨!';
+          setTimeout(() => { copyText.textContent = original; }, 1500);
+        }
+        if (icon) {
+          const originalHTML = icon.innerHTML;
+          icon.innerHTML = '<path d="M4 10.5L8 14.5L16 5.5" stroke="#27C93F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
+          setTimeout(() => { icon.innerHTML = originalHTML; }, 1500);
+        }
       });
-    });
-
-    lightbox.addEventListener('click', () => {
-      lightbox.classList.remove('active');
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') lightbox.classList.remove('active');
-    });
+    }
   </script>
 </body>
 </html>
