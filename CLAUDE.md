@@ -59,6 +59,10 @@ src/
 ├── mcp/                      ← MCP server (port-dependent, Obsidian-agnostic)
 │   ├── context.ts            ← learning context tools (topic matching, category extraction)
 │   └── tools.ts              ← MCP tool definitions (uses FileStorage + MetadataProvider)
+├── backlog.ts               ← re-export from core/backlog
+├── migrate-links.ts         ← re-export from core/migrate-links
+├── settings.ts              ← re-export from obsidian/settings
+├── types.d.ts               ← module declarations (*.md)
 ├── cli/                      ← standalone CLI entry point
 │   ├── index.ts              ← npx oh-my-til mcp / install-obsidian / deploy
 │   └── obsidian-install.ts   ← Obsidian plugin auto-install (Electron detection, node-pty rebuild)
@@ -78,7 +82,8 @@ agents/                   ← custom agents (til-fetcher)
 hooks/                    ← Claude Code Plugin hooks
 ├── hooks.json            ← hook declarations (uses ${CLAUDE_PLUGIN_ROOT} variable)
 ├── notify-complete.sh    ← task completion notification script
-└── check-obsidian.sh     ← Obsidian vault detection + guidance script
+├── check-obsidian.sh     ← Obsidian vault detection + guidance script
+└── inject-mcp-context.sh ← MCP context injection script
 .mcp.json                 ← MCP server auto-registration config
 vault-assets/
 └── claude-md-section.md  ← init flow only: MCP guidance template inserted into .claude/CLAUDE.md
@@ -107,7 +112,8 @@ __tests__/
 ├── config.test.ts        ← config file parsing/loading tests
 ├── obsidian-install.test.ts ← Obsidian plugin install pure functions (artifacts, version validation) tests
 ├── markdown.test.ts      ← markdown → HTML conversion pure function tests
-└── profile.test.ts       ← static site page generation (profile, TIL, category index) tests
+├── profile.test.ts       ← static site page generation (profile, TIL, category index) tests
+└── plugin-structure.test.ts ← plugin structure validation tests
 ```
 
 ## Build

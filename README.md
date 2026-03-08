@@ -116,9 +116,10 @@ claude mcp add --transport http oh-my-til http://localhost:22360/mcp
 | Font Size | `13` | Terminal font size (px) |
 | Font Family | `Menlo` | Terminal font (Menlo, SF Mono, Fira Code, JetBrains Mono, etc.) |
 | Line Height | `1.0` | Terminal line spacing (1.0 = default, up to 2.0) |
+| TIL Path | `til` | TIL folder path |
 | Auto Open New TIL | `true` | Open new TIL files in editor automatically |
-| MCP Server | `true` | Enable built-in MCP server |
-| MCP Port | `22360` | MCP server port |
+| Open Dashboard on Startup | `false` | Open learning dashboard when Obsidian starts |
+| Claude Args | *(empty)* | Additional arguments passed to `claude` command |
 
 ## MCP Tools
 
@@ -195,7 +196,6 @@ src/
     ├── main.ts              # Plugin entry point
     ├── settings.ts          # Settings tab & interface
     ├── watcher.ts           # File watcher → open in editor
-    ├── skills.ts            # Skill/rule auto-installer
     ├── terminal/
     │   ├── TerminalView.ts  # Sidebar terminal (ItemView + xterm.js)
     │   ├── MarkdownLinkProvider.ts  # 3 ILinkProviders: Markdown, Filepath, OSC 8
