@@ -53,34 +53,28 @@ Validate that documentation is up to date before bumping the version:
    - `versions.json` → add new version entry (read minAppVersion from manifest.json)
    - (`plugin-version` in `skills/` is auto-substituted via the `__PLUGIN_VERSION__` placeholder)
 5. Sync landing page version: run `npm run sync-version` (updates hero-badge version in `docs/index.html`, `docs/ko/index.html`)
-6. Commit changes on `develop`: `🔖 chore: release v{version}`
-7. Merge `develop` into `main`:
+6. Write release notes to `RELEASE_NOTES.md` (see template below) — this file is read by GitHub Actions to populate the GitHub Release body
+7. Commit all changes on `develop`: `🔖 chore: release v{version}`
+   - Includes: package.json, manifest.json, versions.json, RELEASE_NOTES.md, synced docs
+8. Merge `develop` into `main`:
    ```bash
    git checkout main
    git merge --no-ff develop -m "🔀 chore: merge develop into main for v{version}"
    ```
-8. Create tag on `main`: `git tag v{version}`
-9. Push both branches and tag: `git push origin main develop --tags`
-10. Switch back to `develop`: `git checkout develop`
-11. Write release notes (see template below)
-12. Publish to npm:
-    ```
-    npm publish
-    ```
-    Note: `prepublishOnly` script runs `npm run build` automatically before publishing.
-13. Create GitHub Release:
-    ```
-    gh release create v{version} main.js manifest.json styles.css --title "v{version}" --notes "{release notes}"
-    ```
+9. Create tag on `main`: `git tag v{version}`
+10. Push both branches and tag: `git push origin main develop --tags`
+11. Switch back to `develop`: `git checkout develop`
 
-Assets must be exactly these three files: `main.js`, `manifest.json`, `styles.css`.
+> **Note:** `npm publish` and GitHub Release creation are handled automatically by GitHub Actions
+> when the tag is pushed (`.github/workflows/release.yml`). No manual publish step needed.
 
 ## Post-Release Verification
 
 1. Verify the release commit is reflected on the remote with `git log origin/main --oneline -1`
 2. Verify the tag exists both locally and remotely with `git tag -l v{version}` and `git ls-remote origin refs/tags/v{version}`
 3. Verify the release commit is reachable from the `main` branch: `git branch --contains v{version}` must include `main`
-4. If any check fails, warn the user and provide guidance for manual remediation
+4. Verify GitHub Actions release workflow was triggered: `gh run list --workflow=release.yml -R SongYunSeop/oh-my-til --limit 1`
+5. If any check fails, warn the user and provide guidance for manual remediation
 
 ## Writing Release Notes
 
