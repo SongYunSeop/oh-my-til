@@ -130,9 +130,10 @@ claude mcp add --transport http oh-my-til http://localhost:22360/mcp
 | 글꼴 크기 | `13` | 터미널 글꼴 크기 (px) |
 | 글꼴 | `Menlo` | 터미널 글꼴 (Menlo, SF Mono, Fira Code, JetBrains Mono 등) |
 | 행간 | `1.0` | 터미널 행간 (1.0 = 기본, 최대 2.0) |
+| TIL 폴더 경로 | `til` | TIL 파일 저장 경로 |
 | 새 TIL 파일 자동 열기 | `true` | til/ 폴더에 새 파일 생성 시 자동 오픈 |
-| MCP 서버 활성화 | `true` | 내장 MCP 서버 실행 여부 |
-| MCP 포트 | `22360` | MCP 서버 포트 |
+| 시작 시 대시보드 열기 | `false` | Obsidian 시작 시 학습 대시보드 자동 열기 |
+| Claude 추가 인자 | *(비어 있음)* | `claude` 명령에 전달할 추가 인자 |
 
 ## MCP 도구
 
@@ -211,7 +212,6 @@ src/
     ├── main.ts              # 플러그인 진입점
     ├── settings.ts          # 설정 탭 + 인터페이스
     ├── watcher.ts           # 파일 감시 → 에디터에서 열기
-    ├── skills.ts            # 스킬/규칙 자동 설치
     ├── terminal/
     │   ├── TerminalView.ts  # 사이드바 터미널 (ItemView + xterm.js)
     │   ├── MarkdownLinkProvider.ts  # 3개 ILinkProvider: 마크다운, 파일경로, OSC 8
