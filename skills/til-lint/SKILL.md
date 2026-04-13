@@ -16,13 +16,16 @@ Scan the TIL collection for structural issues and suggest fixes. Diagnose, don't
 - `til_backlog_status`: Backlog progress per category (with sections when filtered)
 - `til_recent_context`: Recent activity (mtime-based)
 - `til_review_list`: SRS review stats (total tracked, due today)
+- `til_backlog_check`: Mark backlog item as completed (used in fix actions)
+- `til_review_update`: Record review result or register for SRS (used in fix actions)
 
 ## Step 1: Collect Inventory
 
 1. Call `til_list` (no filters) to get all TILs and categories
 2. Call `til_backlog_status` to get all backlog progress
 3. Call `til_review_list` (`include_content: false`) to get SRS stats
-4. If category argument provided, repeat above calls with category filter
+4. Use `Glob` with pattern `raw/**/*.md` to list all raw source files
+5. If category argument provided, repeat above calls with category filter
 
 ## Step 2: Run Checks
 
@@ -68,6 +71,14 @@ Call `til_recent_context` with `days: 180`.
 - TILs NOT in the recent list = older than 6 months without modification
 - Prioritize categories with fast-changing topics (framework, tool, library)
 
+### Check 7: Raw Source Coverage
+
+Scan all TIL files for `## References` sections containing `raw/` paths.
+Compare with the full raw file inventory from Step 1.
+
+- **Unprocessed raw**: Files in `raw/` not referenced by any TIL's References section
+- **Broken raw reference**: TIL References contains a `raw/` path but the file doesn't exist
+
 ## Step 3: Generate Report
 
 Present findings grouped by severity:
@@ -79,6 +90,7 @@ Present findings grouped by severity:
 - Broken links (N)
 - Missing required frontmatter (N)
 - Backlog mismatches (N)
+- Broken raw references (N)
 
 ### Warnings (should fix)
 - Orphan TILs — no inbound links (N)
@@ -88,6 +100,8 @@ Present findings grouped by severity:
 ### Info
 - Stale TILs — 6+ months without update (N)
 - SRS coverage: X%
+- Unprocessed raw sources (N)
+- Raw sources total: N files
 - Total: N TILs across M categories
 ```
 
@@ -105,6 +119,8 @@ If the user chooses to fix:
 - Backlog mismatches: Use `til_backlog_check` to sync check state
 - SRS registration: Use `til_review_update` (action: "review", grade: 4) per file
 - Broken links / orphans / stale: Suggest specific actions, don't auto-fix (requires user judgment)
+- Unprocessed raw: Suggest running `/til` on the topic to create a TIL from the raw source
+- Broken raw references: Remove dead raw links from TIL References section
 
 ## Rules
 
