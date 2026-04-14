@@ -40,6 +40,7 @@ til_save_note(category, slug, title, content, tags, date, fmCategory, aliases, a
 - `tags`: Must include "til"
 - `aliases`: ["Korean title", "English title"]
 - `content`: Body markdown excluding frontmatter
+- If raw sources were used during the learning session, include them in the body's References section as local links: `[Title](raw/{category}/{slug}.md)`
 
 **When a file with the same slug exists** (detected by `Read` in Step 1):
 - Auto-merge only when continuing a `/til` follow-up session (preserve existing content + reinforce, add `updated`)
@@ -84,3 +85,4 @@ If user agrees, call `til_review_update` (action: "review", grade: 4) to create 
 - Use callouts: `> [!tldr]`, `> [!example]`, `> [!warning]`, `> [!tip]`
 - Visualize complex concepts with Mermaid diagrams (max 1 per TIL)
 - Use placeholder values for sensitive information (avoid leaking real credentials)
+- If the TIL was created from raw sources, add a `## References` section with links to the raw files: `[Source Title](raw/{category}/{slug}.md)`. Include original URLs alongside raw paths when available.

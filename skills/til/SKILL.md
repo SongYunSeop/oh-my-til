@@ -19,8 +19,10 @@ Topic research → Interactive learning → Save TIL.
 1. Use `Read` to check if `til/{category}/{slug}.md` exists → if so, offer to expand the existing TIL or start a new topic
 2. Use `til_get_context` to check existing TILs. Fall back to `til_list` if MCP is unavailable
    - When learning a backlog item, call `til_backlog_status`(category) → reference `sections[].items[].sourceUrls`
-     - 1 URL: fetch directly with `WebFetch`
-     - 2+ URLs: pass all URLs to a single `til-fetcher` subagent
+     - For each source entry:
+       - If path starts with `raw/`: use `Read` to load local file (fast, reliable, no network)
+       - If URL: fetch with `WebFetch`
+     - 2+ sources (mixed raw + URL): read all raw files with `Read`, pass remaining URLs to a single `til-fetcher` subagent
 3. If no existing TIL is found, research the topic via web search
 4. Collect key concepts, examples, and references → summarize
 

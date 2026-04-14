@@ -4,7 +4,7 @@
 
 A Claude Code-based TIL learning workflow plugin. Can be run as a standalone CLI (`npx oh-my-til`) without Obsidian, or embedded as a sidebar Claude Code terminal via the Obsidian plugin. Built on xterm.js + node-pty.
 
-Core flow: Command palette → Open terminal → Run `/til`, `/backlog`, `/research`, `/save`, `/til-review`, `/dashboard`, `/omt-setup` skills directly in Claude Code → Open newly detected files in editor
+Core flow: Command palette → Open terminal → Run `/til`, `/backlog`, `/research`, `/save`, `/til-review`, `/til-lint`, `/dashboard`, `/omt-setup` skills directly in Claude Code → Open newly detected files in editor
 
 Obsidian's role is limited to "terminal embedding + file watching + skill deployment + MCP server + dashboard". Workflow control belongs to Claude Code. For standalone use, install the Claude Code plugin and register the MCP server with `npx oh-my-til mcp`.
 
@@ -79,6 +79,7 @@ src/
 
 skills/                   ← Claude Code Plugin skills + skill sources installed at Obsidian init
 agents/                   ← custom agents (til-fetcher)
+docs/superpowers/         ← design specs and implementation plans
 hooks/                    ← Claude Code Plugin hooks
 ├── hooks.json            ← hook declarations (uses ${CLAUDE_PLUGIN_ROOT} variable)
 ├── notify-complete.sh    ← task completion notification script
@@ -159,6 +160,7 @@ ELECTRON_VERSION=37.10.2 npx oh-my-til install-obsidian ~/vault  # manually spec
 - Skill files are installed at `.claude/skills/<name>/SKILL.md` (Claude Code only discovers 1 level deep, no nesting)
 - Skill file auto-updates are managed via `plugin-version` frontmatter. Files without it are treated as user-customized and will not be overwritten
 - Backlog files follow the `til/{category}/backlog.md` path pattern
+- Raw source files follow the `raw/{category}/{slug}.md` path pattern (immutable — never modified after creation)
 - Write in English; use original technical terms as-is
 - **Documentation sync**: When structural changes occur (new files added, settings changed, skills added/removed), update `CLAUDE.md`, `README.md`, and `README.ko.md` accordingly (structure section, feature list, settings table, skills list)
 - **Version management**: `plugin-version` in `skills/` is managed with the `__PLUGIN_VERSION__` placeholder, which `skills.ts` automatically substitutes with the `manifest.json` version at install time. Only 3 files need manual updates at release time: `package.json`, `manifest.json`, `versions.json`. Use the `/release` skill.

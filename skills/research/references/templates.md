@@ -8,7 +8,7 @@ tags: [backlog, {category}]
 aliases: ["Backlog - {topic}"]
 updated: YYYY-MM-DD
 sources:
-  slug-a: [https://url-1]
+  slug-a: [raw/{category}/source-article.md, https://url-1]
 ---
 
 # {topic} Learning Backlog
@@ -28,6 +28,6 @@ sources:
 - `tags`: Always include `backlog` and the category name
 - `aliases`: Human-readable name for Obsidian search
 - `updated`: Date of last modification (YYYY-MM-DD)
-- `sources`: Map of slug → source URL array. Used by `/til` skill to fetch reference material when learning a backlog item
+- `sources`: Map of slug → source list (raw file paths and/or URLs). Raw paths are preferred when the source was saved during /research. Used by `/til` skill to fetch reference material when learning a backlog item
 - Sections (Prerequisites / Core Concepts / Advanced): Order items by learning dependency — prerequisites first, advanced last
 - Each item: `- [ ] [Display Name](til/{category}/{slug}.md) - one-line description`
