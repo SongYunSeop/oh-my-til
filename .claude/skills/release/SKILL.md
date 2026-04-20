@@ -17,9 +17,13 @@ If no argument is given, apply a `patch` bump.
 ## Pre-flight Validation
 
 1. Verify the working tree is clean (`git status --porcelain`). Abort if there are uncommitted changes.
-2. Verify the current branch is `develop`. If on `main`, switch to `develop`. Abort if on any other branch.
-3. Verify `develop` is in sync with `origin/develop` (`git fetch origin && git diff develop origin/develop --quiet`). Notify the user and abort if there are differences.
+2. Determine the base branch:
+   - If `develop` exists and has commits the user wants to release, use `develop → main` flow
+   - If releasing only from `main` (e.g., a hotfix branch already merged to main), use `main-direct` flow
+   - Confirm with the user which flow to use
+3. Verify the base branch is in sync with its origin (`git fetch origin && git diff {branch} origin/{branch} --quiet`). Notify the user and abort if there are differences.
 4. Verify the `gh` CLI is installed. Abort if not found.
+5. Check if `main` is a protected branch: `gh api repos/{owner}/{repo}/branches/main --jq '.protected'`. If protected, the release MUST go through a PR (direct push will fail).
 
 ## Version Determination
 
@@ -54,27 +58,55 @@ Validate that documentation is up to date before bumping the version:
    - (`plugin-version` in `skills/` is auto-substituted via the `__PLUGIN_VERSION__` placeholder)
 5. Sync landing page version: run `npm run sync-version` (updates hero-badge version in `docs/index.html`, `docs/ko/index.html`)
 6. Write release notes to `RELEASE_NOTES.md` (see template below) — this file is read by GitHub Actions to populate the GitHub Release body
-7. Commit all changes on `develop`: `🔖 chore: release v{version}`
-   - Includes: package.json, manifest.json, versions.json, RELEASE_NOTES.md, synced docs
-8. Merge `develop` into `main`:
+7. Create a release branch from the base branch and commit all changes there:
    ```bash
-   git checkout main
-   git merge --no-ff develop -m "🔀 chore: merge develop into main for v{version}"
+   git checkout -b release/v{version}
+   git add package.json manifest.json versions.json RELEASE_NOTES.md <synced-docs>
+   git commit -m "🔖 chore: release v{version}"
+   git push -u origin release/v{version}
    ```
-9. Create tag on `main`: `git tag v{version}`
-10. Push both branches and tag: `git push origin main develop --tags`
-11. Switch back to `develop`: `git checkout develop`
+8. Open a PR against `main`:
+   ```bash
+   gh pr create --base main --head release/v{version} --title "chore: release v{version}" --body "..."
+   ```
+9. **Wait for the user to merge the PR.** Do NOT proceed until merge is confirmed. Ask the user to confirm when merge is done and to use "Merge commit" strategy (preserves the release commit SHA).
+10. After merge, fetch and pull main:
+    ```bash
+    git checkout main
+    git pull origin main
+    ```
+11. Create the tag on the merge commit on `main` and push it:
+    ```bash
+    git tag v{version}
+    git push origin v{version}
+    ```
+12. (Optional) Delete the release branch: `git push origin --delete release/v{version}` and `git branch -d release/v{version}`
 
-> **Note:** `npm publish` and GitHub Release creation are handled automatically by GitHub Actions
-> when the tag is pushed (`.github/workflows/release.yml`). No manual publish step needed.
+> **Critical rules:**
+> - **NEVER create the tag before the PR is merged.** If `git push origin main --tags` is rejected due to branch protection, the tag may still be pushed on its own — triggering the release workflow against an orphan commit. If this happens, delete the remote tag (`git push origin --delete v{version}`) immediately.
+> - **NEVER use `--tags` when pushing a protected main.** Push the tag separately AFTER the PR is merged and main is updated.
+> - `npm publish` and GitHub Release creation are handled automatically by GitHub Actions when the tag is pushed (`.github/workflows/release.yml`). No manual publish step needed.
 
 ## Post-Release Verification
 
 1. Verify the release commit is reflected on the remote with `git log origin/main --oneline -1`
 2. Verify the tag exists both locally and remotely with `git tag -l v{version}` and `git ls-remote origin refs/tags/v{version}`
-3. Verify the release commit is reachable from the `main` branch: `git branch --contains v{version}` must include `main`
-4. Verify GitHub Actions release workflow was triggered: `gh run list --workflow=release.yml -R SongYunSeop/oh-my-til --limit 1`
-5. If any check fails, warn the user and provide guidance for manual remediation
+3. Verify the tag points to a commit on `main` that contains the version bump (the merge commit or release commit). Run `git show v{version}:package.json | grep version` and confirm it shows the new version.
+4. Verify the release commit is reachable from the `main` branch: `git branch --contains v{version}` must include `main`
+5. Verify GitHub Actions release workflow was triggered: `gh run list --workflow=release.yml -R {owner}/{repo} --limit 1`
+6. Verify npm package was published: `npm view {package-name}@{version}` should return the package info.
+7. If any check fails, warn the user and provide guidance for manual remediation.
+
+### Recovery: tag points to the wrong commit
+
+If the tag ends up on an unexpected commit (e.g., `action-gh-release` retargeted it to `main` HEAD before the merge landed):
+
+```bash
+git tag -f v{version} <correct-commit-sha>
+git push origin v{version} --force
+```
+
+Note: this will re-trigger the release workflow, which will fail at `npm publish` if the version is already published (that's expected — the artifact is already live).
 
 ## Writing Release Notes
 

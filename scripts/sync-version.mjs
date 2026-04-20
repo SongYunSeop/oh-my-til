@@ -17,7 +17,7 @@ let updated = 0;
 for (const file of files) {
   const content = readFileSync(file, 'utf8');
   const next = content.replace(
-    /(<div class="hero-badge">v)[\d.]+( &mdash;)/,
+    /(<p class="hero-badge[^"]*"[^>]*>v)[\d.]+( (?:&mdash;|—))/,
     `$1${version}$2`,
   );
   if (content !== next) {
