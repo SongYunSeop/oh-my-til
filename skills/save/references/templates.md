@@ -10,6 +10,7 @@
 ## Key Concepts
 ## Examples
 ## References
+- [Source Title](raw/{category}/{slug}.md) ([original](https://url))
 - [Title](URL)
 ## Related Notes
 - [TIL](til/{category}/{slug}.md)

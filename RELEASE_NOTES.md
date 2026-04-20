@@ -1,11 +1,11 @@
 ## What's Changed
 
-### Improvements
-- Removed unused `serve` and `init` CLI commands, keeping only `mcp`, `install-obsidian`, `deploy`, and `version`
+### Features
+- New `/til-lint` skill — TIL wiki health-check detecting missing frontmatter, broken links, orphan TILs, SRS coverage gaps, and stale content
+- Raw source layer — `/research` now saves high-quality sources to `raw/{category}/{slug}.md` (immutable), `/til` reads raw files before falling back to WebFetch, `/save` links TILs back to raw sources in the References section
+- `/til-lint` also checks raw source coverage (unprocessed raw files, broken raw references)
 
-### Internal
-- Added CI/CD GitHub Actions workflows (CI on PRs to `develop`, automated npm publish + GitHub Release on tag push via Trusted Publishing)
-- Adopted `develop → main` branching strategy for releases
-- Switched to npm Trusted Publishing (OIDC) for secure, token-free CI/CD
+### Documentation
+- Updated CLAUDE.md and READMEs to reflect the new skill and raw layer convention
 
-**Full Changelog**: https://github.com/SongYunSeop/oh-my-til/compare/v1.2.0...v1.3.0
+**Full Changelog**: https://github.com/SongYunSeop/oh-my-til/compare/v1.3.0...v1.4.0
