@@ -31,3 +31,10 @@ npm-debug.log*
 
 # OMC
 .omc/
+
+# Superpowers workflow artifacts (design specs, implementation plans)
+docs/superpowers/
+
+# Claude Code worktrees and tools
+.claude/worktrees/
+.superset/

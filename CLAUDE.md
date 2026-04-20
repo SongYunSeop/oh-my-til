@@ -79,7 +79,6 @@ src/
 
 skills/                   ← Claude Code Plugin skills + skill sources installed at Obsidian init
 agents/                   ← custom agents (til-fetcher)
-docs/superpowers/         ← design specs and implementation plans
 hooks/                    ← Claude Code Plugin hooks
 ├── hooks.json            ← hook declarations (uses ${CLAUDE_PLUGIN_ROOT} variable)
 ├── notify-complete.sh    ← task completion notification script

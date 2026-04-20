@@ -6,7 +6,6 @@
 - `/til-lint` also checks raw source coverage (unprocessed raw files, broken raw references)
 
 ### Documentation
-- Added raw layer design spec and implementation plan under `docs/superpowers/`
 - Updated CLAUDE.md and READMEs to reflect the new skill and raw layer convention
 
 **Full Changelog**: https://github.com/SongYunSeop/oh-my-til/compare/v1.3.0...v1.4.0
